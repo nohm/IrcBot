@@ -20,7 +20,6 @@ import org.snack.irc.handler.TellHandler;
 import org.snack.irc.handler.WeatherHandler;
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
-import org.snack.irc.model.Tell;
 import org.snack.irc.settings.Configuration;
 import org.snack.irc.settings.SettingParser;
 import org.snack.irc.settings.SettingStorer;
@@ -99,28 +98,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	@Override
 	public void onJoin(JoinEvent event) throws Exception {
 		testFunctions(Configuration.CHANNELS.get(event.getChannel().getName()), event.getUser().getNick(), 0);
-		ArrayList<Tell> storage;
-		try {
-			storage = SettingParser.parseTells();
-		} catch (Exception e) {
-			// e.printStackTrace();
-			storage = new ArrayList<Tell>();
-		}
-
-		ArrayList<Tell> newStorage = new ArrayList<Tell>();
-		for (Tell tell : storage) {
-			if (tell.getName().equalsIgnoreCase(event.getUser().getNick())) {
-				event.getBot().sendMessage(event.getUser(), tell.getSender() + " sent you a message: " + tell.getMessage());
-			} else {
-				newStorage.add(tell);
-			}
-		}
-
-		try {
-			SettingStorer.storeTells(newStorage);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		TellHandler.tell(event);
 	}
 
 	@Override
@@ -191,19 +169,19 @@ public class SnackBot extends ListenerAdapter implements Listener {
 		Chan chan = Configuration.CHANNELS.get(event.getChannel().getName());
 		event.getBot().sendMessage(event.getUser(), "My commands:");
 		if (chan.getWeather()) {
-			event.getBot().sendMessage(event.getUser(), "Get weather: .we/,we/!we [name] (Name gets stored)");
+			event.getBot().sendNotice(event.getUser(), "Get weather: .we/,we/!we [name] (Name gets stored)");
 		}
 		if (chan.getLastfm()) {
-			event.getBot().sendMessage(event.getUser(), "Get lastfm: .np/,np/!np [name] (Name gets stored)");
+			event.getBot().sendNotice(event.getUser(), "Get lastfm: .np/,np/!np [name] (Name gets stored)");
 		}
 		if (chan.getHtml()) {
-			event.getBot().sendMessage(event.getUser(), "Auto respond to http(s):// links");
+			event.getBot().sendNotice(event.getUser(), "Auto respond to http(s):// links");
 		}
 		if (chan.getQuote()) {
-			event.getBot().sendMessage(event.getUser(), "Quotes: .quote/,quote/!quote [name] (Name is optional)");
+			event.getBot().sendNotice(event.getUser(), "Quotes: .quote/,quote/!quote [name] (Name is optional)");
 		}
 		if (chan.getTell()) {
-			event.getBot().sendMessage(event.getUser(), "Tell someone on join: .tell/,tell/!tell [message]");
+			event.getBot().sendNotice(event.getUser(), "Tell someone on join: .tell/,tell/!tell [message]");
 		}
 	}
 }
