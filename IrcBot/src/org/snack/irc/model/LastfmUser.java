@@ -1,4 +1,4 @@
-package org.snack.irc.lastfm;
+package org.snack.irc.model;
 
 /**
  * Simply represents someone that stored an last.fm username

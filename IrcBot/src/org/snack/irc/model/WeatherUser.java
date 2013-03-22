@@ -1,4 +1,4 @@
-package org.snack.irc.weather;
+package org.snack.irc.model;
 
 /**
  * Simply represents someone that stored an weather location

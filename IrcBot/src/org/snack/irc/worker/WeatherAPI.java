@@ -1,4 +1,4 @@
-package org.snack.irc.weather;
+package org.snack.irc.worker;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
