@@ -1,95 +1,60 @@
 package org.snack.irc.worker;
+
+import java.io.ByteArrayOutputStream;
 import java.net.URL;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.apache.commons.io.IOUtils;
 
 /**
- * Calls google for weather information for the given location, parses that and returns it.
+ * Calls google for weather information for the given location, parses that and
+ * returns it.
+ * 
  * @author snack
- *
+ * 
  */
 public class WeatherAPI {
 
 	/**
-	 * Connect with google, parses xml and returns the given data
+	 * Connect with wunderground, parses xml and returns the given data
+	 * 
 	 * @param location
 	 * @return data
 	 */
-	public static final String[] getWeather(String location){
-	    String data[] = new String[6];
-	    try {
-	    	String fixedLoc = location.replaceAll(" ", "+");
-	    	fixedLoc = fixedLoc.substring(0, 1).toUpperCase() + fixedLoc.substring(1);
-	        URL googleWeatherXml = new URL("http://api.wunderground.com/api/bf6fcb121000e936/geolookup/conditions/q/" + fixedLoc + ".xml");
-	        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	        DocumentBuilder db = dbf.newDocumentBuilder(); 
-	        Document doc = db.parse(googleWeatherXml.openStream());
-	        
-	        // Get City
-	        NodeList nodeLst = doc.getElementsByTagName("city");
-	        Element birthTime = (Element) nodeLst.item(0);
-	        nodeLst = doc.getElementsByTagName("country_name");
-	        Element countryName = (Element) nodeLst.item(0);
-	        String value = birthTime.getTextContent() + ", " + countryName.getTextContent();
-	        data[0] = value;
-	 
-	        // Get Condition
-	        nodeLst = doc.getElementsByTagName("weather");
-	        Element curCond = (Element) nodeLst.item(0);
-	        String curCondStr = curCond.getTextContent();
-	       	data[1] = curCondStr;
-	
-	        // Get Temp C
-	        nodeLst = doc.getElementsByTagName("temp_c");
-	        Element curTempC = (Element) nodeLst.item(0);
-	        String curTempCStr = curTempC.getTextContent();
-	        data[2] = curTempCStr;
-	        
-	        // Get Temp F
-	        nodeLst = doc.getElementsByTagName("temp_f");
-	        Element curTempF = (Element) nodeLst.item(0);
-	        String curTempFStr = curTempF.getTextContent();
-	        data[3] = curTempFStr;
-	        
-	        if (countryName.getTextContent().equals("USA")) {
-		        // Get Wind
-		        nodeLst = doc.getElementsByTagName("wind_dir");
-		        Element curWindDir = (Element) nodeLst.item(0);
-		        nodeLst = doc.getElementsByTagName("wind_mph");
-		        Element curWindMph = (Element) nodeLst.item(0);
-		        nodeLst = doc.getElementsByTagName("wind_gust_mph");
-		        Element curWindGustMph = (Element) nodeLst.item(0);
-		        String curWindStr = curWindDir.getTextContent() + " at " + curWindMph.getTextContent() + "MPH gusting to " + curWindGustMph.getTextContent() + "MPH";
-		        data[4] = curWindStr;
-	        } else {
-		        // Get Wind
-		        nodeLst = doc.getElementsByTagName("wind_dir");
-		        Element curWindDir = (Element) nodeLst.item(0);
-		        nodeLst = doc.getElementsByTagName("wind_kph");
-		        Element curWindKph = (Element) nodeLst.item(0);
-		        nodeLst = doc.getElementsByTagName("wind_gust_kph");
-		        Element curWindGustKph = (Element) nodeLst.item(0);
-		        String curWindStr = curWindDir.getTextContent() + " at " + curWindKph.getTextContent() + "KPH gusting to " + curWindGustKph.getTextContent() + "KPH";
-		        data[4] = curWindStr;
-	        }
-	        
-	        // Get Humidity
-	        nodeLst = doc.getElementsByTagName("relative_humidity");
-	        Element curHumidity = (Element) nodeLst.item(0);
-	        String curHumidityStr = curHumidity.getTextContent();
-	        data[5] = curHumidityStr;
-	        
-	        return data;
-	    }
-	    catch(Exception e){
-	    	//ex.printStackTrace();
-	    	data[0] = "No data found for the given location, or too many request made to the API.";
-	        return data;
-	    }
+	public static final String[] getWeather(String location) {
+		String data[] = new String[6];
+		try {
+			String fixedLoc = location.replaceAll(" ", "+");
+			fixedLoc = fixedLoc.substring(0, 1).toUpperCase() + fixedLoc.substring(1);
+			URL url = new URL("http://api.wunderground.com/api/bf6fcb121000e936/geolookup/conditions/q/" + fixedLoc + ".json");
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			IOUtils.copy(url.openStream(), output);
+			// Cut first char, it's a newline and bugs the serializer!
+			JSONObject jo = (JSONObject) JSONSerializer.toJSON(output.toString().substring(1));
+			JSONObject loc = jo.getJSONObject("location");
+			// City
+			data[0] = loc.getString("city") + ", " + loc.getString("country_name");
+			JSONObject obs = jo.getJSONObject("current_observation");
+			// Condition
+			data[1] = obs.getString("weather");
+			// Temp_C
+			data[2] = obs.getString("temp_c");
+			// Temp_F
+			data[3] = obs.getString("temp_f");
+			// Wind
+			if (loc.getString("country_name").equals("USA")) {
+				data[4] = obs.getString("wind_dir") + " at " + obs.getString("wind_mph") + "MPH gusting to " + obs.getString("wind_gust_mph") + "MPH";
+			} else {
+				data[4] = obs.getString("wind_dir") + " at " + obs.getString("wind_kph") + "KPH gusting to " + obs.getString("wind_gust_kph") + "KPH";
+			}
+			// Humidity
+			data[5] = obs.getString("relative_humidity");
+		} catch (Exception e) {
+			e.printStackTrace();
+			data[0] = "No data found for the given location, or too many request made to the API.";
+		}
+		return data;
 	}
 }

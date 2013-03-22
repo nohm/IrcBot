@@ -13,12 +13,28 @@ import org.snack.irc.settings.Configuration;
  */
 public class Startup {
 
+	private static PircBotX bot;
+
 	public static void main(String[] args) {
+		start();
+	}
+
+	public static void restart() {
+		stop();
+		start();
+	}
+
+	private static void stop() {
+		bot.quitServer("Restarting.");
+		bot = null;
+	}
+
+	private static void start() {
 		// Read config
 		Configuration.initialize();
 
 		// Setup a new bot
-		PircBotX bot = new PircBotX();
+		bot = new PircBotX();
 
 		// Fill in it's name, login, etc.
 		bot.setName(Configuration.BOT_NAME);

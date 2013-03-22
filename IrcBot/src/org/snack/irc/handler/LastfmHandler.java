@@ -17,6 +17,7 @@ public class LastfmHandler {
 	 * @param event
 	 */
 	public static void getLastfm(MessageEvent<?> event) {
+		System.out.println(event.getMessage());
 		ArrayList<LastfmUser> storage;
 		try {
 			storage = SettingParser.parseLUsers();

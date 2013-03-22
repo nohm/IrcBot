@@ -1,13 +1,13 @@
 package org.snack.irc.worker;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URL;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Calls last.fm for song information for the given username, parses that and
@@ -32,54 +32,33 @@ public class LastfmAPI {
 	public static String[] getSong(String username) {
 		String data[] = new String[4];
 		try {
-			URL lastfmXml = new URL("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=" + username + "&limit=1&api_key=97f9215a0928d47eca2b08408f252ba7");
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(lastfmXml.openStream());
-			doc.getDocumentElement().normalize();
+			URL url = new URL("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=" + username + "&limit=1&api_key=97f9215a0928d47eca2b08408f252ba7&format=json");
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			IOUtils.copy(url.openStream(), output);
 
-			// Get now playing or not
-			NodeList nodeLst = doc.getElementsByTagName("track");
-			Element nowPlaying = (Element) nodeLst.item(0);
-			String value = nowPlaying.getAttribute("nowplaying");
-			data[0] = value;
-
-			// Get artist
-			nodeLst = doc.getElementsByTagName("artist");
-			Element artistName = (Element) nodeLst.item(0);
-			String artist = artistName.getTextContent();
-			if (artist.equals("")) {
-				data[1] = "Unknown Artist";
-			} else {
-				data[1] = artist;
-			}
-
-			// Get song
-			nodeLst = doc.getElementsByTagName("name");
-			Element songName = (Element) nodeLst.item(0);
-			String song = songName.getTextContent();
-			if (song.equals("")) {
-				data[2] = "Unknown Song";
-			} else {
-				data[2] = song;
-			}
-
-			// Get album
-			nodeLst = doc.getElementsByTagName("album");
-			Element albumName = (Element) nodeLst.item(0);
-			String album = albumName.getTextContent();
-			if (album.equals("")) {
-				data[3] = "Unknown Album";
-			} else {
-				data[3] = album;
-			}
-
+			JSONObject jo = (JSONObject) JSONSerializer.toJSON(output.toString());
+			JSONObject recenttracks = jo.getJSONObject("recenttracks");
+			JSONArray tracks = recenttracks.getJSONArray("track");
+			JSONObject track = tracks.getJSONObject(0);
+			// Now playing
+			JSONObject attr = track.getJSONObject("@attr");
+			data[0] = attr.getString("nowplaying");
+			// Artist
+			JSONObject artist = track.getJSONObject("artist");
+			String artist_data = artist.getString("#text");
+			data[1] = artist_data.equals("") ? "Unknown Artist" : artist_data;
+			// Song
+			String song = track.getString("name");
+			data[2] = song.equals("") ? "Unknown Song" : song;
+			// Album
+			JSONObject album = track.getJSONObject("album");
+			String album_data = album.getString("#text");
+			data[3] = album_data.equals("") ? "Unknown Album" : album_data;
 		} catch (Exception e) {
 			// Unknown username? Return an error.
-			// e.printStackTrace();
+			e.printStackTrace();
 			data[0] = "No data found for the given name.";
 		}
-
 		return data;
 	}
 }

@@ -60,7 +60,7 @@ public class Configuration {
 			DEBUG = jo.getBoolean("debug");
 
 			// Bot settings
-			JSONObject joResultBot = (JSONObject) jo.get("bot");
+			JSONObject joResultBot = (JSONObject) jo.getJSONObject("bot");
 			BOT_NAME = joResultBot.getString("name");
 			BOT_ALT_NAME = joResultBot.getString("alt_name");
 			BOT_LOGIN = joResultBot.getString("login");
@@ -72,23 +72,23 @@ public class Configuration {
 
 			// Channels
 			CHANNELS = new HashMap<String, Chan>();
-			JSONObject joResultChannels = (JSONObject) jo.get("channels");
+			JSONObject joResultChannels = (JSONObject) jo.getJSONObject("channels");
 			for (int i = 1; i <= joResultChannels.size(); i++) {
-				JSONObject obj = (JSONObject) joResultChannels.get("channel" + i);
+				JSONObject obj = (JSONObject) joResultChannels.getJSONObject("channel" + i);
 				Chan chan = new Chan(obj.getString("name"), obj.getBoolean("html"), obj.getBoolean("lastfm"), obj.getBoolean("weather"), obj.getBoolean("quote"),
 						obj.getBoolean("tell"));
 				CHANNELS.put(chan.getName(), chan);
 			}
 
 			// Save location
-			JSONObject joResultSettings = (JSONObject) jo.get("settings");
+			JSONObject joResultSettings = (JSONObject) jo.getJSONObject("settings");
 			SAVE_LOC = joResultSettings.getString("config");
 
 			// Bots
 			BOTS = new ArrayList<Bot>();
-			JSONObject joResultBots = (JSONObject) jo.get("disable");
+			JSONObject joResultBots = (JSONObject) jo.getJSONObject("disable");
 			for (int i = 1; i <= joResultBots.size(); i++) {
-				JSONObject bot = (JSONObject) joResultBots.get("bot" + i);
+				JSONObject bot = (JSONObject) joResultBots.getJSONObject("bot" + i);
 				BOTS.add(new Bot(bot.getString("name"), bot.getBoolean("html"), bot.getBoolean("lastfm"), bot.getBoolean("weather"), bot.getBoolean("quote"), bot
 						.getBoolean("tell")));
 			}

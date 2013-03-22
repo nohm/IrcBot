@@ -10,6 +10,7 @@ import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
+import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.UserListEvent;
@@ -37,6 +38,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	/**
 	 * Called on every message, determines what to do with it.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
 		Chan chan = Configuration.CHANNELS.get(event.getChannel().getName());
@@ -79,11 +81,20 @@ public class SnackBot extends ListenerAdapter implements Listener {
 				HelpHandler.sendHelp(event);
 			}
 
-		} else if (event.getMessage().equals("snackbot:mute") || event.getMessage().equals("snackbot:unmute")) {
+			// Admin commands
+		} else if (event.getMessage().startsWith("snackbot:")) {
 			if (event.getUser().getNick().equals(Configuration.ADMIN)) {
-				chan.setMute((event.getMessage().equals("snackbot:mute")) ? true : false);
-				String response = chan.getMute() ? "I'll be silent." : "Yay! I can speak again.";
-				event.getBot().sendMessage(event.getChannel(), response);
+				if (event.getMessage().equals("snackbot:mute") || event.getMessage().equals("snackbot:unmute")) {
+					chan.setMute((event.getMessage().equals("snackbot:mute")) ? true : false);
+					String response = chan.getMute() ? "I'll be silent." : "Yay! I can speak again.";
+					event.getBot().sendMessage(event.getChannel(), response);
+				} else if (event.getMessage().equals("snackbot:we")) {
+					WeatherHandler.getWeather(new MessageEvent(event.getBot(), event.getChannel(), event.getUser(), ".we"));
+				} else if (event.getMessage().equals("snackbot:np")) {
+					LastfmHandler.getLastfm(new MessageEvent(event.getBot(), event.getChannel(), event.getUser(), ".np"));
+				} else if (event.getMessage().equals("snackbot:restart")) {
+					Startup.restart();
+				}
 			}
 
 			// Add random quotes
@@ -102,6 +113,14 @@ public class SnackBot extends ListenerAdapter implements Listener {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Auto-rejoin on kick.
+	 */
+	@Override
+	public void onKick(KickEvent event) {
+		event.getBot().sendRawLine("JOIN " + event.getChannel().getName());
 	}
 
 	/**
