@@ -26,7 +26,7 @@ public class HtmlGetter {
 				if (title.length() > 100) {
 					title = title.substring(0, 59) + "...";
 				}
-				return "[URI] " + title;
+				return title;
 			} else {
 				throw new Exception();
 			}

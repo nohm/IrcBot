@@ -30,7 +30,7 @@ public class HtmlHandler {
 			}
 		}
 		for (String toPrint : cleaned) {
-			event.getBot().sendMessage(event.getChannel(), HtmlGetter.getTitle(toPrint));
+			event.getBot().sendMessage(event.getChannel(), "[URI] " + HtmlGetter.getTitle(toPrint));
 		}
 	}
 }

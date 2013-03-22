@@ -24,7 +24,9 @@ public class Configuration {
 	}
 
 	// All the settings
+	public static String ADMIN;
 	public static boolean DEBUG;
+	public static boolean SILENT;
 	public static String BOT_NAME;
 	public static String BOT_ALT_NAME;
 	public static String BOT_LOGIN;
@@ -52,8 +54,14 @@ public class Configuration {
 
 			JSONObject jo = (JSONObject) JSONSerializer.toJSON(json);
 
+			// Admin
+			ADMIN = jo.getString("admin");
+
 			// Debug
-			DEBUG = Boolean.valueOf(jo.getString("debug"));
+			DEBUG = jo.getBoolean("debug");
+
+			// Silent
+			SILENT = jo.getBoolean("silent");
 
 			// Bot settings
 			JSONObject joResultBot = (JSONObject) jo.get("bot");
