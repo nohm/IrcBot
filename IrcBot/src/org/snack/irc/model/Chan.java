@@ -1,5 +1,11 @@
 package org.snack.irc.model;
 
+/**
+ * Stores all the channel settings, also keeps defaults
+ * 
+ * @author snack
+ * 
+ */
 public class Chan {
 	// Name
 	private String name;

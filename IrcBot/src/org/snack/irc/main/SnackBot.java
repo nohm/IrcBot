@@ -13,6 +13,7 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.UserListEvent;
+import org.snack.irc.handler.HelpHandler;
 import org.snack.irc.handler.HtmlHandler;
 import org.snack.irc.handler.LastfmHandler;
 import org.snack.irc.handler.QuoteHandler;
@@ -53,7 +54,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 				LastfmHandler.getLastfm(event);
 			}
 
-			// TODO: DOCS
+			// Call for quotes
 		} else if (event.getMessage().startsWith(",quote ") || event.getMessage().equals(",quote") || event.getMessage().startsWith(".quote ")
 				|| event.getMessage().equals(".quote") || event.getMessage().startsWith("!quote ") || event.getMessage().equals("!quote")) {
 			if (chan.getQuote()) {
@@ -66,18 +67,17 @@ public class SnackBot extends ListenerAdapter implements Listener {
 				HtmlHandler.getHTMLTitle(event);
 			}
 
-			// TODO: DOCS
+			// Call for tell
 		} else if (event.getMessage().startsWith(",tell ") || event.getMessage().startsWith(".tell ") || event.getMessage().startsWith("!tell ")) {
 			if (chan.getTell()) {
-				TellHandler.addTell(event);
+				TellHandler.add(event);
 			}
 
-			// TODO: DOCS
+			// Call for help
 		} else if (event.getMessage().startsWith(",help ") || event.getMessage().startsWith(".help ") || event.getMessage().startsWith("!help ")) {
-			sendHelp(event);
+			HelpHandler.sendHelp(event);
 
-			// } else if (event.getMessage().contains(",dis")) {
-			// event.getBot().disconnect();
+			// Add random quotes
 		} else {
 			boolean add = false;
 			if (new Random().nextInt(100) > 95) {
@@ -95,17 +95,26 @@ public class SnackBot extends ListenerAdapter implements Listener {
 		}
 	}
 
+	/**
+	 * Called whenever someone (or the bot) joins, updates the functions.
+	 */
 	@Override
 	public void onJoin(JoinEvent event) throws Exception {
 		testFunctions(Configuration.CHANNELS.get(event.getChannel().getName()), event.getUser().getNick(), 0);
 		TellHandler.tell(event);
 	}
 
+	/**
+	 * Called whenever someone (or the bot) parts/leaves, updates the functions.
+	 */
 	@Override
 	public void onPart(PartEvent event) {
 		testFunctions(Configuration.CHANNELS.get(event.getChannel().getName()), event.getUser().getNick(), 1);
 	}
 
+	/**
+	 * Called when the bot has fully started, updates the functions.
+	 */
 	@Override
 	public void onUserList(UserListEvent event) {
 		for (Channel chan : event.getBot().getChannels()) {
@@ -120,7 +129,35 @@ public class SnackBot extends ListenerAdapter implements Listener {
 		}
 	}
 
-	// TODO: DOCS
+	/**
+	 * Called when the connection gets lost, will retry to join every 5000ms
+	 */
+	@Override
+	public void onDisconnect(DisconnectEvent event) throws Exception {
+		try {
+			event.getBot().connect(Configuration.SERVER);
+			if (!Configuration.BOT_PASS.equals("") && Configuration.BOT_PASS != null) {
+				event.getBot().sendRawLine("NICKSERV IDENTIFY " + Configuration.BOT_PASS);
+			}
+			for (Chan channel : Configuration.CHANNELS.values()) {
+				event.getBot().sendRawLine("JOIN " + channel.getName());
+			}
+		} catch (Exception e) {
+			Thread.sleep(5000);
+			onDisconnect(event);
+		}
+	}
+
+	/**
+	 * Tests whether each function should be on or off per channel
+	 * 
+	 * @param chan
+	 *            The channel in question
+	 * @param nick
+	 *            The nick of the user that joined/parted/left
+	 * @param event
+	 *            Is it a join(0) or a part/leave(0)?
+	 */
 	private void testFunctions(Chan chan, String nick, int event) {
 		for (Bot bot : Configuration.BOTS) {
 			if (bot.getName().equals(nick)) {
@@ -145,43 +182,6 @@ public class SnackBot extends ListenerAdapter implements Listener {
 					System.out.println(chan.getName() + " TELL: " + chan.getTell());
 				}
 			}
-		}
-	}
-
-	@Override
-	public void onDisconnect(DisconnectEvent event) throws Exception {
-		try {
-			event.getBot().connect(Configuration.SERVER);
-			if (!Configuration.BOT_PASS.equals("") && Configuration.BOT_PASS != null) {
-				event.getBot().sendRawLine("NICKSERV IDENTIFY " + Configuration.BOT_PASS);
-			}
-			for (Chan channel : Configuration.CHANNELS.values()) {
-				event.getBot().sendRawLine("JOIN " + channel.getName());
-			}
-		} catch (Exception e) {
-			Thread.sleep(5000);
-			onDisconnect(event);
-		}
-	}
-
-	// TODO: DOCS
-	private void sendHelp(MessageEvent event) {
-		Chan chan = Configuration.CHANNELS.get(event.getChannel().getName());
-		event.getBot().sendMessage(event.getUser(), "My commands:");
-		if (chan.getWeather()) {
-			event.getBot().sendNotice(event.getUser(), "Get weather: .we/,we/!we [name] (Name gets stored)");
-		}
-		if (chan.getLastfm()) {
-			event.getBot().sendNotice(event.getUser(), "Get lastfm: .np/,np/!np [name] (Name gets stored)");
-		}
-		if (chan.getHtml()) {
-			event.getBot().sendNotice(event.getUser(), "Auto respond to http(s):// links");
-		}
-		if (chan.getQuote()) {
-			event.getBot().sendNotice(event.getUser(), "Quotes: .quote/,quote/!quote [name] (Name is optional)");
-		}
-		if (chan.getTell()) {
-			event.getBot().sendNotice(event.getUser(), "Tell someone on join: .tell/,tell/!tell [message]");
 		}
 	}
 }

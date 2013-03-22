@@ -9,17 +9,20 @@ import org.snack.irc.model.Tell;
 import org.snack.irc.model.WeatherUser;
 
 /**
- * Reads data from the txt files with usernames
+ * Reads data from ttxt files
  * 
  * @author snack
  * 
  */
 public class SettingParser {
 
-	// TODO: docs
+	/*
+	 * Reads txt files and returns them as string array
+	 * 
+	 * @param path The path where the file is
+	 */
 	public static String[] parseTxt(String path) throws Exception {
 		ArrayList<String> parsed = new ArrayList<String>();
-		// Parsed de data uit het txt-bestand
 		Scanner in = new Scanner(new File(path));
 		while (in.hasNextLine()) {
 			parsed.add(in.nextLine());
@@ -34,6 +37,7 @@ public class SettingParser {
 	 * 
 	 * @return parsed users
 	 * @throws Exception
+	 *             Generic exception
 	 */
 	public static ArrayList<WeatherUser> parseWUsers() throws Exception {
 		String[] parsed = parseTxt(Configuration.SAVE_LOC + "wUsers.txt");
@@ -59,6 +63,7 @@ public class SettingParser {
 	 * 
 	 * @return parsed users
 	 * @throws Exception
+	 *             Generic exception
 	 */
 	public static ArrayList<LastfmUser> parseLUsers() throws Exception {
 		String[] parsed = parseTxt(Configuration.SAVE_LOC + "lUsers.txt");
@@ -77,7 +82,13 @@ public class SettingParser {
 		return lUsers;
 	}
 
-	// TODO: docs
+	/**
+	 * Reads data from the txt file and parses it into string objects.
+	 * 
+	 * @return parsed quotes
+	 * @throws Exception
+	 *             Generic exception
+	 */
 	public static ArrayList<String> parseQuotes() throws Exception {
 		String[] parsed = parseTxt(Configuration.SAVE_LOC + "quotes.txt");
 		ArrayList<String> quotes = new ArrayList<String>();
@@ -91,7 +102,13 @@ public class SettingParser {
 		return quotes;
 	}
 
-	// TODO: docs
+	/**
+	 * Reads data from the txt file and parses it into Tell objects.
+	 * 
+	 * @return parsed tells
+	 * @throws Exception
+	 *             Generic exception
+	 */
 	public static ArrayList<Tell> parseTells() throws Exception {
 		String[] parsed = parseTxt(Configuration.SAVE_LOC + "tell.txt");
 		ArrayList<Tell> tells = new ArrayList<Tell>();

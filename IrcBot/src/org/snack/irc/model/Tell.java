@@ -1,6 +1,11 @@
 package org.snack.irc.model;
 
-// TODO: DOCS
+/**
+ * Stores the name, sender and message for each tell case.
+ * 
+ * @author snack
+ * 
+ */
 public class Tell {
 
 	private final String name;

@@ -10,7 +10,7 @@ import org.snack.irc.settings.SettingStorer;
 
 public class TellHandler {
 
-	public static void addTell(MessageEvent<?> event) {
+	public static void add(MessageEvent<?> event) {
 		ArrayList<Tell> storage;
 		try {
 			storage = SettingParser.parseTells();

@@ -1,5 +1,11 @@
 package org.snack.irc.model;
 
+/**
+ * Stores all the bot settings this bot needs to keep track of
+ * 
+ * @author snack
+ * 
+ */
 public class Bot {
 	private final String name;
 	private final boolean html;

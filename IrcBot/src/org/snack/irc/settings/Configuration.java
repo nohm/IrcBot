@@ -14,12 +14,16 @@ import org.snack.irc.model.Chan;
 public class Configuration {
 	private static Configuration c;
 
+	/**
+	 * Make sure it only gets read once
+	 */
 	public static void initialize() {
 		if (c == null) {
 			c = new Configuration();
 		}
 	}
 
+	// All the settings
 	public static boolean DEBUG;
 	public static String BOT_NAME;
 	public static String BOT_ALT_NAME;
@@ -31,6 +35,9 @@ public class Configuration {
 	public static String SAVE_LOC;
 	public static ArrayList<Bot> BOTS;
 
+	/**
+	 * Reads a config file and stores the data
+	 */
 	private Configuration() {
 		try {
 			String path = Configuration.class.getProtectionDomain().getCodeSource().getLocation().getPath();
