@@ -26,7 +26,6 @@ public class Configuration {
 	// All the settings
 	public static String ADMIN;
 	public static boolean DEBUG;
-	public static boolean SILENT;
 	public static String BOT_NAME;
 	public static String BOT_ALT_NAME;
 	public static String BOT_LOGIN;
@@ -59,9 +58,6 @@ public class Configuration {
 
 			// Debug
 			DEBUG = jo.getBoolean("debug");
-
-			// Silent
-			SILENT = jo.getBoolean("silent");
 
 			// Bot settings
 			JSONObject joResultBot = (JSONObject) jo.get("bot");

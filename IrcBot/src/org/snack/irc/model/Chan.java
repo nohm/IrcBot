@@ -15,6 +15,8 @@ public class Chan {
 	private boolean weather;
 	private boolean quote;
 	private boolean tell;
+	// Mute
+	private boolean mute;
 	// Default function settings
 	private final boolean func_html;
 	private final boolean func_lastfm;
@@ -29,6 +31,11 @@ public class Chan {
 		this.weather = this.func_weather = weather;
 		this.quote = this.func_quote = quote;
 		this.tell = this.func_tell = tell;
+		this.mute = false;
+	}
+
+	public boolean getMute() {
+		return mute;
 	}
 
 	public boolean getFunc_html() {
@@ -73,6 +80,10 @@ public class Chan {
 
 	public boolean getTell() {
 		return tell;
+	}
+
+	public void setMute(boolean mute) {
+		this.mute = mute;
 	}
 
 	public void setName(String name) {

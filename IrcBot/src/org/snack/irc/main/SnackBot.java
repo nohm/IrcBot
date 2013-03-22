@@ -43,46 +43,46 @@ public class SnackBot extends ListenerAdapter implements Listener {
 		// Call for weather
 		if (event.getMessage().startsWith(",we ") || event.getMessage().equals(",we") || event.getMessage().startsWith(".we ") || event.getMessage().equals(".we")
 				|| event.getMessage().startsWith("!we ") || event.getMessage().equals("!we")) {
-			if (chan.getWeather() && !Configuration.SILENT) {
+			if (chan.getWeather() && !chan.getMute()) {
 				WeatherHandler.getWeather(event);
 			}
 
 			// Call for now playing
 		} else if (event.getMessage().startsWith(",np ") || event.getMessage().equals(",np") || event.getMessage().startsWith(".np ") || event.getMessage().equals(".np")
 				|| event.getMessage().startsWith("!np ") || event.getMessage().equals("!np")) {
-			if (chan.getLastfm() && !Configuration.SILENT) {
+			if (chan.getLastfm() && !chan.getMute()) {
 				LastfmHandler.getLastfm(event);
 			}
 
 			// Call for quotes
 		} else if (event.getMessage().startsWith(",quote ") || event.getMessage().equals(",quote") || event.getMessage().startsWith(".quote ")
 				|| event.getMessage().equals(".quote") || event.getMessage().startsWith("!quote ") || event.getMessage().equals("!quote")) {
-			if (chan.getQuote() && !Configuration.SILENT) {
+			if (chan.getQuote() && !chan.getMute()) {
 				QuoteHandler.getQuote(event);
 			}
 
 			// Call for HTML Title
 		} else if (event.getMessage().contains("http://") || event.getMessage().contains("https://")) {
-			if (chan.getHtml() && !Configuration.SILENT) {
+			if (chan.getHtml() && !chan.getMute()) {
 				HtmlHandler.getHTMLTitle(event);
 			}
 
 			// Call for tell
 		} else if (event.getMessage().startsWith(",tell ") || event.getMessage().startsWith(".tell ") || event.getMessage().startsWith("!tell ")) {
-			if (chan.getTell() && !Configuration.SILENT) {
+			if (chan.getTell() && !chan.getMute()) {
 				TellHandler.add(event);
 			}
 
 			// Call for help
 		} else if (event.getMessage().startsWith(",help ") || event.getMessage().startsWith(".help ") || event.getMessage().startsWith("!help ")) {
-			if (!Configuration.SILENT) {
+			if (!chan.getMute()) {
 				HelpHandler.sendHelp(event);
 			}
 
 		} else if (event.getMessage().equals("snackbot:mute") || event.getMessage().equals("snackbot:unmute")) {
 			if (event.getUser().getNick().equals(Configuration.ADMIN)) {
-				Configuration.SILENT = (event.getMessage().equals("snackbot:mute")) ? true : false;
-				String response = Configuration.SILENT ? "I'll be silent." : "Yay! I can speak again.";
+				chan.setMute((event.getMessage().equals("snackbot:mute")) ? true : false);
+				String response = chan.getMute() ? "I'll be silent." : "Yay! I can speak again.";
 				event.getBot().sendMessage(event.getChannel(), response);
 			}
 
