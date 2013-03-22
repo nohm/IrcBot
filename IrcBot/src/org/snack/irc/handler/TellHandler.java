@@ -25,6 +25,6 @@ public class TellHandler {
 			e.printStackTrace();
 		}
 
-		event.getBot().sendMessage(event.getChannel(), "I'll do that for you.");
+		event.getBot().sendMessage(event.getChannel(), "I'll tell that to " + event.getMessage().split(" ")[1] + " for you.");
 	}
 }
