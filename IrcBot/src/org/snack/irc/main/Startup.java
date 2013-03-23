@@ -1,8 +1,10 @@
 package org.snack.irc.main;
 
+import java.util.concurrent.Semaphore;
+
 import org.pircbotx.PircBotX;
 import org.snack.irc.model.Chan;
-import org.snack.irc.settings.Configuration;
+import org.snack.irc.settings.Config;
 
 /**
  * Starts the bot up, gives it all the info it needs, adds an event handler and
@@ -14,45 +16,53 @@ import org.snack.irc.settings.Configuration;
 public class Startup {
 
 	private static PircBotX bot;
+	private static Semaphore restart;
 
 	public static void main(String[] args) {
 		start();
 	}
 
 	public static void restart() {
+		restart = new Semaphore(0);
 		stop();
+		restart.acquireUninterruptibly();
 		start();
 	}
 
 	private static void stop() {
-		bot.quitServer("Restarting.");
+		bot.disconnect();
 		bot = null;
+		restart.release();
 	}
 
 	private static void start() {
-		// Read config
-		Configuration.initialize();
+		try {
+			// Read config
+			Config.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		// Setup a new bot
 		bot = new PircBotX();
 
 		// Fill in it's name, login, etc.
-		bot.setName(Configuration.BOT_NAME);
-		bot.setLogin(Configuration.BOT_LOGIN);
-		bot.setVersion(Configuration.BOT_VERSION);
+		bot.setName(Config.sett_str.get("BOT_NAME"));
+		bot.setLogin(Config.sett_str.get("BOT_LOGIN"));
+		bot.setVersion(Config.sett_str.get("BOT_VERSION"));
 		// Toggle debugging
-		bot.setVerbose(Configuration.DEBUG);
+		bot.setVerbose(Config.sett_bool.get("DEBUG"));
 		// Give the bot a listener
 		bot.getListenerManager().addListener(new SnackBot());
 
 		// Connect to a server & channel
 		try {
-			bot.connect(Configuration.SERVER);
+			bot.connect(Config.sett_str.get("SERVER"));
 		} catch (Exception e) {
 			try {
 				Thread.sleep(5000);
-				bot.setName(Configuration.BOT_ALT_NAME);
-				bot.connect(Configuration.SERVER);
+				bot.setName(Config.sett_str.get("BOT_ALT_NAME"));
+				bot.connect(Config.sett_str.get("SERVER"));
 			} catch (Exception e1) {
 				System.out.println("Couldn't connect, fix it or try later.");
 				System.exit(-1);
@@ -60,11 +70,11 @@ public class Startup {
 		}
 
 		// Authenticate
-		if (!Configuration.BOT_PASS.equals("") && Configuration.BOT_PASS != null) {
-			bot.sendRawLine("NICKSERV IDENTIFY " + Configuration.BOT_PASS);
+		if (!Config.sett_str.get("BOT_PASS").equals("") && Config.sett_str.get("BOT_PASS") != null) {
+			bot.sendRawLine("NICKSERV IDENTIFY " + Config.sett_str.get("BOT_PASS"));
 		}
 		// Join channels
-		for (Chan channel : Configuration.CHANNELS.values()) {
+		for (Chan channel : Config.channels.values()) {
 			bot.sendRawLine("JOIN " + channel.getName());
 		}
 	}

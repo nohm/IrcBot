@@ -24,7 +24,7 @@ public class WeatherAPI {
 	 * @return data
 	 */
 	public static final String[] getWeather(String location) {
-		String data[] = new String[6];
+		String data[] = new String[9];
 		try {
 			String fixedLoc = location.replaceAll(" ", "+");
 			fixedLoc = fixedLoc.substring(0, 1).toUpperCase() + fixedLoc.substring(1);
@@ -44,16 +44,22 @@ public class WeatherAPI {
 			// Temp_F
 			data[3] = obs.getString("temp_f");
 			// Wind
+			data[4] = obs.getString("wind_dir");
 			if (loc.getString("country_name").equals("USA")) {
-				data[4] = obs.getString("wind_dir") + " at " + obs.getString("wind_mph") + "MPH gusting to " + obs.getString("wind_gust_mph") + "MPH";
+				data[5] = "MPH";
+				data[6] = obs.getString("wind_mph");
+				data[7] = obs.getString("wind_gust_mph");
 			} else {
-				data[4] = obs.getString("wind_dir") + " at " + obs.getString("wind_kph") + "KPH gusting to " + obs.getString("wind_gust_kph") + "KPH";
+				data[5] = "KPH";
+				data[6] = obs.getString("wind_kph");
+				System.out.println("KPH: " + data[6]);
+				data[7] = obs.getString("wind_gust_kph");
 			}
 			// Humidity
-			data[5] = obs.getString("relative_humidity");
+			data[8] = obs.getString("relative_humidity");
 		} catch (Exception e) {
 			e.printStackTrace();
-			data[0] = "No data found for the given location, or too many request made to the API.";
+			return null;
 		}
 		return data;
 	}

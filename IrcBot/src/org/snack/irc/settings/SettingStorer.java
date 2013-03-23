@@ -26,7 +26,7 @@ public class SettingStorer {
 	 */
 	public static void storeWUsers(ArrayList<WeatherUser> wUsers) throws Exception {
 
-		FileWriter fstream = new FileWriter(Configuration.SAVE_LOC + "wUsers.txt");
+		FileWriter fstream = new FileWriter(Config.sett_str.get("SAVE_LOC") + "wUsers.txt");
 		BufferedWriter out = new BufferedWriter(fstream);
 		for (WeatherUser user : wUsers) {
 			out.write(user.getName() + "::" + user.getLocation());
@@ -45,7 +45,7 @@ public class SettingStorer {
 	 */
 	public static void storeLUsers(ArrayList<LastfmUser> lUsers) throws Exception {
 
-		FileWriter fstream = new FileWriter(Configuration.SAVE_LOC + "lUsers.txt");
+		FileWriter fstream = new FileWriter(Config.sett_str.get("SAVE_LOC") + "lUsers.txt");
 		BufferedWriter out = new BufferedWriter(fstream);
 		for (LastfmUser user : lUsers) {
 			out.write(user.getName() + "::" + user.getUsername());
@@ -64,7 +64,7 @@ public class SettingStorer {
 	 */
 	public static void storeQuotes(ArrayList<String> quotes) throws Exception {
 
-		FileWriter fstream = new FileWriter(Configuration.SAVE_LOC + "quotes.txt");
+		FileWriter fstream = new FileWriter(Config.sett_str.get("SAVE_LOC") + "quotes.txt");
 		BufferedWriter out = new BufferedWriter(fstream);
 		for (String quote : quotes) {
 			out.write(quote);
@@ -83,7 +83,7 @@ public class SettingStorer {
 	 */
 	public static void storeTells(ArrayList<Tell> tells) throws Exception {
 
-		FileWriter fstream = new FileWriter(Configuration.SAVE_LOC + "tell.txt");
+		FileWriter fstream = new FileWriter(Config.sett_str.get("SAVE_LOC") + "tell.txt");
 		BufferedWriter out = new BufferedWriter(fstream);
 		for (Tell tell : tells) {
 			out.write(tell.getName() + "::" + tell.getSender() + "::" + tell.getMessage());

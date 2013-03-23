@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.model.LastfmUser;
+import org.snack.irc.settings.Config;
 import org.snack.irc.settings.SettingParser;
 import org.snack.irc.settings.SettingStorer;
 import org.snack.irc.worker.LastfmAPI;
@@ -40,13 +41,15 @@ public class LastfmHandler {
 		}
 
 		String data[] = LastfmAPI.getSong(username);
-		if (data[0] == null || data[1] == null || data[2] == null || data[3] == null) {
-			event.getBot().sendMessage(event.getChannel(), data[0]);
+		if (data == null) {
+			event.getBot().sendMessage(event.getChannel(), Config.speech.get("LA_ERR"));
 		} else {
 			if (data[0].equals("true")) {
-				event.getBot().sendMessage(event.getChannel(), username + " is now playing: " + data[2] + " by " + data[1] + " on " + data[3]);
+				event.getBot().sendMessage(event.getChannel(),
+						Config.speech.get("LA_SUC_NP").replace("<username>", username).replace("<song>", data[2]).replace("<artist>", data[1]).replace("<album>", data[3]));
 			} else {
-				event.getBot().sendMessage(event.getChannel(), username + " last played: " + data[2] + " by " + data[1] + " on " + data[3]);
+				event.getBot().sendMessage(event.getChannel(),
+						Config.speech.get("LA_SUC_LP").replace("<username>", username).replace("<song>", data[2]).replace("<artist>", data[1]).replace("<album>", data[3]));
 			}
 		}
 

@@ -8,6 +8,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.apache.commons.io.IOUtils;
+import org.snack.irc.settings.Config;
 
 /**
  * Calls last.fm for song information for the given username, parses that and
@@ -38,26 +39,31 @@ public class LastfmAPI {
 
 			JSONObject jo = (JSONObject) JSONSerializer.toJSON(output.toString());
 			JSONObject recenttracks = jo.getJSONObject("recenttracks");
-			JSONArray tracks = recenttracks.getJSONArray("track");
-			JSONObject track = tracks.getJSONObject(0);
+			JSONObject track;
+			try {
+				JSONArray tracks = recenttracks.getJSONArray("track");
+				track = tracks.getJSONObject(0);
+			} catch (Exception e) {
+				track = recenttracks.getJSONObject("track");
+			}
 			// Now playing
 			JSONObject attr = track.getJSONObject("@attr");
-			data[0] = attr.getString("nowplaying");
+			data[0] = (attr.isNullObject()) ? "false" : attr.getString("nowplaying");
 			// Artist
 			JSONObject artist = track.getJSONObject("artist");
 			String artist_data = artist.getString("#text");
-			data[1] = artist_data.equals("") ? "Unknown Artist" : artist_data;
+			data[1] = artist_data.equals("") ? Config.speech.get("LA_SUC_ART") : artist_data;
 			// Song
 			String song = track.getString("name");
-			data[2] = song.equals("") ? "Unknown Song" : song;
+			data[2] = song.equals("") ? Config.speech.get("LA_SUC_SON") : song;
 			// Album
 			JSONObject album = track.getJSONObject("album");
 			String album_data = album.getString("#text");
-			data[3] = album_data.equals("") ? "Unknown Album" : album_data;
+			data[3] = album_data.equals("") ? Config.speech.get("LA_SUC_ALB") : album_data;
 		} catch (Exception e) {
 			// Unknown username? Return an error.
 			e.printStackTrace();
-			data[0] = "No data found for the given name.";
+			return null;
 		}
 		return data;
 	}

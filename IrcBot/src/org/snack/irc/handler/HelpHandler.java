@@ -2,13 +2,13 @@ package org.snack.irc.handler;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.model.Chan;
-import org.snack.irc.settings.Configuration;
+import org.snack.irc.settings.Config;
 
 public class HelpHandler {
 
 	// TODO: DOCS
 	public static void sendHelp(MessageEvent<?> event) {
-		Chan chan = Configuration.CHANNELS.get(event.getChannel().getName());
+		Chan chan = Config.channels.get(event.getChannel().getName());
 		event.getBot().sendMessage(event.getUser(), "My commands:");
 		if (chan.getWeather()) {
 			event.getBot().sendNotice(event.getUser(), "Get weather: .we/,we/!we [name] (Name gets stored)");

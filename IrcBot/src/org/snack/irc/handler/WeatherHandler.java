@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.model.WeatherUser;
+import org.snack.irc.settings.Config;
 import org.snack.irc.settings.SettingParser;
 import org.snack.irc.settings.SettingStorer;
 import org.snack.irc.worker.WeatherAPI;
@@ -39,10 +40,14 @@ public class WeatherHandler {
 		}
 
 		String data[] = WeatherAPI.getWeather(location);
-		if (data[0] == null || data[1] == null || data[2] == null || data[3] == null || data[4] == null) {
-			event.getBot().sendMessage(event.getChannel(), data[0]);
+		if (data == null) {
+			event.getBot().sendMessage(event.getChannel(), Config.speech.get("WE_ERR"));
 		} else {
-			event.getBot().sendMessage(event.getChannel(), data[0] + ": " + data[1] + " " + data[2] + "°C/" + data[3] + "°F Wind: " + data[4] + " Humidity: " + data[5]);
+			event.getBot().sendMessage(
+					event.getChannel(),
+					Config.speech.get("WE_SUC").replace("<city>", data[0]).replace("<condition>", data[1]).replace("<degrees_c>", data[2]).replace("<degrees_f>", data[3])
+							.replace("<wind_dir>", data[4]).replace("<wind_type>", data[5]).replace("<wind_speed>", data[6]).replace("<wind_speed_gust>", data[7])
+							.replace("<humidity>", data[8]));
 		}
 		for (int i = 0; i < (storage.size()); i++) {
 			if (storage.get(i).getName().equals(event.getUser().getNick())) {

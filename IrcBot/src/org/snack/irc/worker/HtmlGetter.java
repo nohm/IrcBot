@@ -5,6 +5,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.jsoup.Jsoup;
+import org.snack.irc.settings.Config;
 
 /**
  * Get's the title from a http(s) link, if there is no title it tries to
@@ -43,7 +44,7 @@ public class HtmlGetter {
 				double chosen = 0;
 				String output = "";
 				if (size <= 0) {
-					output = "Unknown size";
+					output = Config.speech.get("HT_SUC_SIZE0");
 				} else {
 					double bytes = Double.valueOf(size);
 					double kilobytes = (bytes / 1024);
@@ -64,27 +65,29 @@ public class HtmlGetter {
 						chosen = gigabytes;
 					}
 
-					chosen = Double.valueOf(new BigDecimal(chosen).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
-					output = chosen + " " + sizeString;
+					String choStr = new BigDecimal(chosen).setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+					output = Config.speech.get("HT_SUC_!SIZE0").replace("<size>", choStr).replace("<format>", sizeString);
 				}
 
+				String encoding = "";
 				conn.getInputStream().close();
 				try {
 					conn.getContentEncoding().isEmpty();
-					return "[" + conn.getContentType() + ", " + conn.getContentEncoding() + "] " + output;
+					encoding = Config.speech.get("HT_SUC_ENC").replace("<content-type>", conn.getContentType()).replace("<content-encoding>", conn.getContentEncoding());
 				} catch (Exception conEx) {
 					// conEx.printStackTrace();
-					return "[" + conn.getContentType() + "] " + output;
+					encoding = Config.speech.get("HT_SUC_!ENC").replace("<content-type>", conn.getContentType());
 				}
+				return Config.speech.get("HT_SUC").replace("<encoding>", encoding).replace("<size>", output);
 			} catch (Exception ex) {
 				// Only got errors? Return it.
 				// ex.printStackTrace();
 				if (ex.getMessage().contains("403")) {
-					return "403 Forbidden";
+					return Config.speech.get("HT_ERR_403");
 				} else if (ex.getMessage().contains("404")) {
-					return "404 Not Found";
+					return Config.speech.get("HT_ERR_404");
 				} else {
-					return "No title or file found.";
+					return Config.speech.get("HT_ERR_?");
 				}
 			}
 		}

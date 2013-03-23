@@ -22,7 +22,7 @@ import org.snack.irc.handler.TellHandler;
 import org.snack.irc.handler.WeatherHandler;
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
-import org.snack.irc.settings.Configuration;
+import org.snack.irc.settings.Config;
 import org.snack.irc.settings.SettingParser;
 import org.snack.irc.settings.SettingStorer;
 
@@ -41,7 +41,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
-		Chan chan = Configuration.CHANNELS.get(event.getChannel().getName());
+		Chan chan = Config.channels.get(event.getChannel().getName());
 		// Call for weather
 		if (event.getMessage().startsWith(",we ") || event.getMessage().equals(",we") || event.getMessage().startsWith(".we ") || event.getMessage().equals(".we")
 				|| event.getMessage().startsWith("!we ") || event.getMessage().equals("!we")) {
@@ -82,17 +82,18 @@ public class SnackBot extends ListenerAdapter implements Listener {
 			}
 
 			// Admin commands
-		} else if (event.getMessage().startsWith("snackbot:")) {
-			if (event.getUser().getNick().equals(Configuration.ADMIN)) {
-				if (event.getMessage().equals("snackbot:mute") || event.getMessage().equals("snackbot:unmute")) {
-					chan.setMute((event.getMessage().equals("snackbot:mute")) ? true : false);
-					String response = chan.getMute() ? "I'll be silent." : "Yay! I can speak again.";
+		} else if (event.getMessage().startsWith(event.getBot().getNick() + ":")) {
+			String nick = event.getBot().getNick();
+			if (event.getUser().getNick().equals(Config.sett_str.get("ADMIN"))) {
+				if (event.getMessage().equals(nick + ":mute") || event.getMessage().equals(nick + ":unmute")) {
+					chan.setMute((event.getMessage().equals(nick + ":mute")) ? true : false);
+					String response = chan.getMute() ? Config.speech.get("MUTE") : Config.speech.get("UNMUTE");
 					event.getBot().sendMessage(event.getChannel(), response);
-				} else if (event.getMessage().equals("snackbot:we")) {
+				} else if (event.getMessage().equals(nick + ":we")) {
 					WeatherHandler.getWeather(new MessageEvent(event.getBot(), event.getChannel(), event.getUser(), ".we"));
-				} else if (event.getMessage().equals("snackbot:np")) {
+				} else if (event.getMessage().equals(nick + ":np")) {
 					LastfmHandler.getLastfm(new MessageEvent(event.getBot(), event.getChannel(), event.getUser(), ".np"));
-				} else if (event.getMessage().equals("snackbot:restart")) {
+				} else if (event.getMessage().equals(nick + ":restart")) {
 					Startup.restart();
 				}
 			}
@@ -106,7 +107,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 			if (add) {
 				try {
 					ArrayList<String> storage = SettingParser.parseQuotes();
-					storage.add("<" + event.getUser().getNick() + "> " + event.getMessage());
+					storage.add(Config.speech.get("QU_SUC").replace("<name>", "<" + event.getUser().getNick() + ">").replace("<quote>", event.getMessage()));
 					SettingStorer.storeQuotes(storage);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -128,7 +129,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onJoin(JoinEvent event) throws Exception {
-		testFunctions(Configuration.CHANNELS.get(event.getChannel().getName()), event.getUser().getNick(), 0);
+		testFunctions(Config.channels.get(event.getChannel().getName()), event.getUser().getNick(), 0);
 		TellHandler.tell(event);
 	}
 
@@ -137,7 +138,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onPart(PartEvent event) {
-		testFunctions(Configuration.CHANNELS.get(event.getChannel().getName()), event.getUser().getNick(), 1);
+		testFunctions(Config.channels.get(event.getChannel().getName()), event.getUser().getNick(), 1);
 	}
 
 	/**
@@ -148,9 +149,9 @@ public class SnackBot extends ListenerAdapter implements Listener {
 		for (Channel chan : event.getBot().getChannels()) {
 			Set<User> users = event.getBot().getUsers(chan);
 			for (User user : users) {
-				for (Bot b : Configuration.BOTS) {
+				for (Bot b : Config.bots) {
 					if (b.getName().equalsIgnoreCase(user.getNick())) {
-						testFunctions(Configuration.CHANNELS.get(chan.getName()), b.getName(), 0);
+						testFunctions(Config.channels.get(chan.getName()), b.getName(), 0);
 					}
 				}
 			}
@@ -163,11 +164,11 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	@Override
 	public void onDisconnect(DisconnectEvent event) throws Exception {
 		try {
-			event.getBot().connect(Configuration.SERVER);
-			if (!Configuration.BOT_PASS.equals("") && Configuration.BOT_PASS != null) {
-				event.getBot().sendRawLine("NICKSERV IDENTIFY " + Configuration.BOT_PASS);
+			event.getBot().connect(Config.sett_str.get("SERVER"));
+			if (!Config.sett_str.get("BOT_PASS").equals("") && Config.sett_str.get("BOT_PASS") != null) {
+				event.getBot().sendRawLine("NICKSERV IDENTIFY " + Config.sett_str.get("BOT_PASS"));
 			}
-			for (Chan channel : Configuration.CHANNELS.values()) {
+			for (Chan channel : Config.channels.values()) {
 				event.getBot().sendRawLine("JOIN " + channel.getName());
 			}
 		} catch (Exception e) {
@@ -187,7 +188,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	 *            Is it a join(0) or a part/leave(0)?
 	 */
 	private void testFunctions(Chan chan, String nick, int event) {
-		for (Bot bot : Configuration.BOTS) {
+		for (Bot bot : Config.bots) {
 			if (bot.getName().equals(nick)) {
 				if (bot.getHtml() && chan.getFunc_html()) {
 					chan.setHtml((event == 0) ? false : true);

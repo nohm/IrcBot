@@ -40,7 +40,7 @@ public class SettingParser {
 	 *             Generic exception
 	 */
 	public static ArrayList<WeatherUser> parseWUsers() throws Exception {
-		String[] parsed = parseTxt(Configuration.SAVE_LOC + "wUsers.txt");
+		String[] parsed = parseTxt(Config.sett_str.get("SAVE_LOC") + "wUsers.txt");
 		ArrayList<WeatherUser> wUsers = new ArrayList<WeatherUser>();
 
 		for (String strLine : parsed) {
@@ -66,7 +66,7 @@ public class SettingParser {
 	 *             Generic exception
 	 */
 	public static ArrayList<LastfmUser> parseLUsers() throws Exception {
-		String[] parsed = parseTxt(Configuration.SAVE_LOC + "lUsers.txt");
+		String[] parsed = parseTxt(Config.sett_str.get("SAVE_LOC") + "lUsers.txt");
 		ArrayList<LastfmUser> lUsers = new ArrayList<LastfmUser>();
 
 		for (String strLine : parsed) {
@@ -90,7 +90,7 @@ public class SettingParser {
 	 *             Generic exception
 	 */
 	public static ArrayList<String> parseQuotes() throws Exception {
-		String[] parsed = parseTxt(Configuration.SAVE_LOC + "quotes.txt");
+		String[] parsed = parseTxt(Config.sett_str.get("SAVE_LOC") + "quotes.txt");
 		ArrayList<String> quotes = new ArrayList<String>();
 
 		for (String strLine : parsed) {
@@ -110,7 +110,7 @@ public class SettingParser {
 	 *             Generic exception
 	 */
 	public static ArrayList<Tell> parseTells() throws Exception {
-		String[] parsed = parseTxt(Configuration.SAVE_LOC + "tell.txt");
+		String[] parsed = parseTxt(Config.sett_str.get("SAVE_LOC") + "tell.txt");
 		ArrayList<Tell> tells = new ArrayList<Tell>();
 
 		for (String strLine : parsed) {

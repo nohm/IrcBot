@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.pircbotx.hooks.events.MessageEvent;
+import org.snack.irc.settings.Config;
 import org.snack.irc.settings.SettingParser;
 
 public class QuoteHandler {
@@ -37,7 +38,7 @@ public class QuoteHandler {
 			if (name.equals(user)) {
 				event.getBot().sendMessage(event.getChannel(), quote);
 			} else {
-				event.getBot().sendMessage(event.getChannel(), "No quote found.");
+				event.getBot().sendMessage(event.getChannel(), Config.speech.get("QU_ERR"));
 			}
 		}
 	}
