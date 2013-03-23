@@ -18,14 +18,18 @@ public class TranslateHandler {
 
 		// Set your Windows Azure Marketplace client info - See
 		// http://msdn.microsoft.com/en-us/library/hh454950.aspx
-		Translate.setClientId("Snack-Ircbot");
-		Translate.setClientSecret("ZCUBUZxekDrqvkKWPGriMQdHw7yGSut4YgaFvioUFEU=");
+		Translate.setClientId("92ef8ea3-08d0-4642-8f7c-af1898ac47b6");
+		Translate.setClientSecret("i4nycktHpUOs5eTgvo1AabpVSUGPqbgrVydJF2nVmtM=");
 
 		String translatedText = "";
 		try {
+			String response = Translate.execute(text, Language.AUTO_DETECT, Language.ENGLISH);
+			if (response.startsWith("TranslateApiException:")) {
+				throw new Exception();
+			}
 			translatedText = Config.speech.get("TR_SUC").replace("<response>", Translate.execute(text, Language.AUTO_DETECT, Language.ENGLISH));
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 			translatedText = Config.speech.get("TR_ERR");
 		}
 
