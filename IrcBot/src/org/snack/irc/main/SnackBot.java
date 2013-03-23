@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.DisconnectEvent;
@@ -18,7 +19,9 @@ import org.snack.irc.handler.HelpHandler;
 import org.snack.irc.handler.HtmlHandler;
 import org.snack.irc.handler.LastfmHandler;
 import org.snack.irc.handler.QuoteHandler;
+import org.snack.irc.handler.RomajiHandler;
 import org.snack.irc.handler.TellHandler;
+import org.snack.irc.handler.TranslateHandler;
 import org.snack.irc.handler.WeatherHandler;
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
@@ -75,6 +78,24 @@ public class SnackBot extends ListenerAdapter implements Listener {
 				TellHandler.add(event);
 			}
 
+			// Call for translate
+		} else if (event.getMessage().startsWith(",translate ") || event.getMessage().startsWith(".translate ") || event.getMessage().startsWith("!translate ")) {
+			if (chan.getTranslate() && !chan.getMute()) {
+				TranslateHandler.translate(event);
+			}
+
+			// Call for romaji
+		} else if (event.getMessage().startsWith(",romaji ") || event.getMessage().startsWith(".romaji ") || event.getMessage().startsWith("!romaji ")) {
+			if (chan.getRomaji() && !chan.getMute()) {
+				RomajiHandler.romaji(event);
+			}
+
+			// Call for katakana
+		} else if (event.getMessage().startsWith(",katakana ") || event.getMessage().startsWith(".katakana ") || event.getMessage().startsWith("!katakana ")) {
+			if (chan.getRomaji() && !chan.getMute()) {
+				RomajiHandler.katakana(event);
+			}
+
 			// Call for help
 		} else if (event.getMessage().startsWith(",help ") || event.getMessage().startsWith(".help ") || event.getMessage().startsWith("!help ")) {
 			if (!chan.getMute()) {
@@ -89,13 +110,14 @@ public class SnackBot extends ListenerAdapter implements Listener {
 					chan.setMute((event.getMessage().equals(nick + ":mute")) ? true : false);
 					String response = chan.getMute() ? Config.speech.get("MUTE") : Config.speech.get("UNMUTE");
 					event.getBot().sendMessage(event.getChannel(), response);
-				} else if (event.getMessage().equals(nick + ":we")) {
-					WeatherHandler.getWeather(new MessageEvent(event.getBot(), event.getChannel(), event.getUser(), ".we"));
-				} else if (event.getMessage().equals(nick + ":np")) {
-					LastfmHandler.getLastfm(new MessageEvent(event.getBot(), event.getChannel(), event.getUser(), ".np"));
 				} else if (event.getMessage().equals(nick + ":restart")) {
 					Startup.restart();
 				}
+			}
+			if (event.getMessage().equals(nick + ":we")) {
+				WeatherHandler.getWeather(new MessageEvent(event.getBot(), event.getChannel(), event.getUser(), event.getMessage().replace(nick + ":", ".")));
+			} else if (event.getMessage().equals(nick + ":np")) {
+				LastfmHandler.getLastfm(new MessageEvent(event.getBot(), event.getChannel(), event.getUser(), event.getMessage().replace(nick + ":", ".")));
 			}
 
 			// Add random quotes
@@ -129,7 +151,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onJoin(JoinEvent event) throws Exception {
-		testFunctions(Config.channels.get(event.getChannel().getName()), event.getUser().getNick(), 0);
+		prepareTest(event, 0);
 		TellHandler.tell(event);
 	}
 
@@ -138,7 +160,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onPart(PartEvent event) {
-		testFunctions(Config.channels.get(event.getChannel().getName()), event.getUser().getNick(), 1);
+		prepareTest(event, 1);
 	}
 
 	/**
@@ -146,16 +168,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onUserList(UserListEvent event) {
-		for (Channel chan : event.getBot().getChannels()) {
-			Set<User> users = event.getBot().getUsers(chan);
-			for (User user : users) {
-				for (Bot b : Config.bots) {
-					if (b.getName().equalsIgnoreCase(user.getNick())) {
-						testFunctions(Config.channels.get(chan.getName()), b.getName(), 0);
-					}
-				}
-			}
-		}
+		prepareTest(event, 0);
 	}
 
 	/**
@@ -178,6 +191,28 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	}
 
 	/**
+	 * Prepares testing all users on all channels
+	 * 
+	 * @param event
+	 *            The event to get the user/bot from
+	 * @param ev
+	 *            The join orpart variable
+	 */
+	private void prepareTest(Event event, int ev) {
+		for (Channel chan : event.getBot().getChannels()) {
+			Set<User> users = event.getBot().getUsers(chan);
+			Chan ch = Config.channels.get(chan.getName());
+			for (User user : users) {
+				for (Bot b : ch.getBots()) {
+					if (b.getName().equalsIgnoreCase(user.getNick())) {
+						testFunctions(Config.channels.get(chan.getName()), b.getName(), ev);
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * Tests whether each function should be on or off per channel
 	 * 
 	 * @param chan
@@ -188,7 +223,7 @@ public class SnackBot extends ListenerAdapter implements Listener {
 	 *            Is it a join(0) or a part/leave(0)?
 	 */
 	private void testFunctions(Chan chan, String nick, int event) {
-		for (Bot bot : Config.bots) {
+		for (Bot bot : chan.getBots()) {
 			if (bot.getName().equals(nick)) {
 				if (bot.getHtml() && chan.getFunc_html()) {
 					chan.setHtml((event == 0) ? false : true);
@@ -209,6 +244,14 @@ public class SnackBot extends ListenerAdapter implements Listener {
 				if (bot.getTell() && chan.getFunc_tell()) {
 					chan.setTell((event == 0) ? false : true);
 					System.out.println(chan.getName() + " TELL: " + chan.getTell());
+				}
+				if (bot.getTranslate() && chan.getFunc_translate()) {
+					chan.setTranslate((event == 0) ? false : true);
+					System.out.println(chan.getName() + " TRANSLATE: " + chan.getTranslate());
+				}
+				if (bot.getRomaji() && chan.getFunc_romaji()) {
+					chan.setRomaji((event == 0) ? false : true);
+					System.out.println(chan.getName() + " ROMAJI: " + chan.getRomaji());
 				}
 			}
 		}

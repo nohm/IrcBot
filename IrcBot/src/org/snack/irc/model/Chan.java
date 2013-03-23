@@ -1,5 +1,7 @@
 package org.snack.irc.model;
 
+import java.util.ArrayList;
+
 /**
  * Stores all the channel settings, also keeps defaults
  * 
@@ -15,6 +17,10 @@ public class Chan {
 	private boolean weather;
 	private boolean quote;
 	private boolean tell;
+	private boolean translate;
+	private boolean romaji;
+	// Associated bots
+	private final ArrayList<Bot> bots;
 	// Mute
 	private boolean mute;
 	// Default function settings
@@ -23,15 +29,20 @@ public class Chan {
 	private final boolean func_weather;
 	private final boolean func_quote;
 	private final boolean func_tell;
+	private final boolean func_translate;
+	private final boolean func_romaji;
 
-	public Chan(String name, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell) {
+	public Chan(String name, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji, ArrayList<Bot> bots) {
 		this.name = name;
 		this.html = this.func_html = html;
 		this.lastfm = this.func_lastfm = lastfm;
 		this.weather = this.func_weather = weather;
 		this.quote = this.func_quote = quote;
 		this.tell = this.func_tell = tell;
+		this.translate = this.func_translate = translate;
+		this.romaji = this.func_romaji = romaji;
 		this.mute = false;
+		this.bots = bots;
 	}
 
 	public boolean getMute() {
@@ -58,6 +69,14 @@ public class Chan {
 		return func_tell;
 	}
 
+	public boolean getFunc_translate() {
+		return func_translate;
+	}
+
+	public boolean getFunc_romaji() {
+		return func_romaji;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -80,6 +99,18 @@ public class Chan {
 
 	public boolean getTell() {
 		return tell;
+	}
+
+	public boolean getTranslate() {
+		return translate;
+	}
+
+	public boolean getRomaji() {
+		return romaji;
+	}
+
+	public ArrayList<Bot> getBots() {
+		return bots;
 	}
 
 	public void setMute(boolean mute) {
@@ -108,5 +139,13 @@ public class Chan {
 
 	public void setTell(boolean tell) {
 		this.tell = tell;
+	}
+
+	public void setTranslate(boolean translate) {
+		this.translate = translate;
+	}
+
+	public void setRomaji(boolean romaji) {
+		this.romaji = romaji;
 	}
 }

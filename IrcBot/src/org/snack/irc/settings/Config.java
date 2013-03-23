@@ -39,7 +39,6 @@ public class Config {
 	public static HashMap<String, String> sett_str;
 	public static HashMap<String, Boolean> sett_bool;
 	public static HashMap<String, Chan> channels;
-	public static ArrayList<Bot> bots;
 
 	/**
 	 * Initialize the settings
@@ -48,7 +47,6 @@ public class Config {
 		sett_str = new HashMap<String, String>();
 		sett_bool = new HashMap<String, Boolean>();
 		channels = new HashMap<String, Chan>();
-		bots = new ArrayList<Bot>();
 
 		sett_str.put("ADMIN", jo.getString("admin"));
 		sett_bool.put("DEBUG", jo.getBoolean("debug"));
@@ -65,19 +63,20 @@ public class Config {
 		JSONObject joResultChannels = jo.getJSONObject("channels");
 		for (int i = 1; i <= joResultChannels.size(); i++) {
 			JSONObject obj = joResultChannels.getJSONObject("channel" + i);
+			JSONObject joResultBots = obj.getJSONObject("disable");
+			ArrayList<Bot> bots = new ArrayList<Bot>();
+			for (int j = 1; j <= joResultBots.size(); j++) {
+				JSONObject bot = joResultBots.getJSONObject("bot" + j);
+				bots.add(new Bot(bot.getString("name"), bot.getBoolean("html"), bot.getBoolean("lastfm"), bot.getBoolean("weather"), bot.getBoolean("quote"), bot
+						.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji")));
+			}
 			Chan chan = new Chan(obj.getString("name"), obj.getBoolean("html"), obj.getBoolean("lastfm"), obj.getBoolean("weather"), obj.getBoolean("quote"),
-					obj.getBoolean("tell"));
+					obj.getBoolean("tell"), obj.getBoolean("translate"), obj.getBoolean("romaji"), bots);
 			channels.put(chan.getName(), chan);
 		}
 
 		JSONObject joResultSettings = jo.getJSONObject("settings");
 		sett_str.put("SAVE_LOC", joResultSettings.getString("config"));
-
-		JSONObject joResultBots = jo.getJSONObject("disable");
-		for (int i = 1; i <= joResultBots.size(); i++) {
-			JSONObject bot = joResultBots.getJSONObject("bot" + i);
-			bots.add(new Bot(bot.getString("name"), bot.getBoolean("html"), bot.getBoolean("lastfm"), bot.getBoolean("weather"), bot.getBoolean("quote"), bot.getBoolean("tell")));
-		}
 	}
 
 	// All the speech lines
@@ -129,5 +128,13 @@ public class Config {
 		JSONObject joTell = joSpeech.getJSONObject("tell");
 		speech.put("TE_ADD", joTell.getString("add"));
 		speech.put("TE_TEL", joTell.getString("tell"));
+
+		JSONObject joTranslate = joSpeech.getJSONObject("translate");
+		speech.put("TR_SUC", joTranslate.getString("success"));
+		speech.put("TR_ERR", joTranslate.getString("error"));
+
+		JSONObject joRomaji = joSpeech.getJSONObject("romaji");
+		speech.put("TR_ROM", joRomaji.getString("romaji"));
+		speech.put("TR_KAT", joRomaji.getString("katakana"));
 	}
 }

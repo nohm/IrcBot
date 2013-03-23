@@ -25,5 +25,12 @@ public class HelpHandler {
 		if (chan.getTell()) {
 			event.getBot().sendNotice(event.getUser(), "Tell someone on join: .tell/,tell/!tell [message]");
 		}
+		if (chan.getTranslate()) {
+			event.getBot().sendNotice(event.getUser(), "Translate to english: .translate/,translate/!translate [message]");
+		}
+		if (chan.getRomaji()) {
+			event.getBot().sendNotice(event.getUser(), "Change romaji to katakana: .romaji/,romaji/!romaji [message]");
+			event.getBot().sendNotice(event.getUser(), "Change katakana to romaji: .katakana/,katakana/!katakana [message]");
+		}
 	}
 }
