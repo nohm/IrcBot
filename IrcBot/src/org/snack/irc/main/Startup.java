@@ -3,6 +3,7 @@ package org.snack.irc.main;
 import java.util.concurrent.Semaphore;
 
 import org.pircbotx.PircBotX;
+import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.model.Chan;
 import org.snack.irc.settings.Config;
 
@@ -23,7 +24,7 @@ public class Startup {
 	}
 
 	public static void restart() {
-		restart = new Semaphore(0);
+		restart = new Semaphore(1);
 		stop();
 		restart.acquireUninterruptibly();
 		start();
@@ -32,6 +33,7 @@ public class Startup {
 	private static void stop() {
 		bot.disconnect();
 		bot = null;
+		DatabaseManager.getInstance().closeConnection();
 		restart.release();
 	}
 
@@ -53,7 +55,7 @@ public class Startup {
 		// Toggle debugging
 		bot.setVerbose(Config.sett_bool.get("DEBUG"));
 		// Give the bot a listener
-		bot.getListenerManager().addListener(new SnackBot());
+		bot.getListenerManager().addListener(new BotListener());
 
 		// Connect to a server & channel
 		try {
@@ -77,5 +79,9 @@ public class Startup {
 		for (Chan channel : Config.channels.values()) {
 			bot.sendRawLine("JOIN " + channel.getName());
 		}
+
+		// Start DB
+		DatabaseManager.getInstance().initializeConnection();
+		System.out.println("Booted succesfully.");
 	}
 }

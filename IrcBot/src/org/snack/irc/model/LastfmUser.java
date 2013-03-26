@@ -1,26 +1,24 @@
 package org.snack.irc.model;
 
-/**
- * Simply represents someone that stored an last.fm username
- * 
- * @author snack
- * 
- */
-public class LastfmUser {
+import com.mongodb.BasicDBObject;
 
-	private final String name;
-	private final String username;
+public class LastfmUser extends BasicDBObject {
+	private static final long serialVersionUID = 3877490741872271987L;
+
+	public static final String NAME_KEY = "Name";
+	public static final String USERNAME_KEY = "Username";
 
 	public LastfmUser(String name, String username) {
-		this.name = name;
-		this.username = username;
+		super(2);
+		put(NAME_KEY, name);
+		put(USERNAME_KEY, username);
 	}
 
 	public String getName() {
-		return name;
+		return (String) get(NAME_KEY);
 	}
 
 	public String getUsername() {
-		return username;
+		return (String) get(USERNAME_KEY);
 	}
 }

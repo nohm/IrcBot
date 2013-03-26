@@ -1,42 +1,24 @@
 package org.snack.irc.handler;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import org.pircbotx.hooks.events.MessageEvent;
+import org.snack.irc.database.DatabaseManager;
+import org.snack.irc.model.Quote;
 import org.snack.irc.settings.Config;
-import org.snack.irc.settings.SettingParser;
 
 public class QuoteHandler {
 
 	public static void getQuote(MessageEvent<?> event) {
-		ArrayList<String> storage;
-		try {
-			storage = SettingParser.parseQuotes();
-		} catch (Exception e) {
-			// e.printStackTrace();
-			storage = new ArrayList<String>();
-		}
+		DatabaseManager db = DatabaseManager.getInstance();
 
-		String quote = "";
-
-		if (event.getMessage().equalsIgnoreCase(",quote") || event.getMessage().equalsIgnoreCase(".quote") || event.getMessage().equalsIgnoreCase("!quote")) {
-			quote = storage.get(new Random().nextInt(storage.size() - 1));
-			event.getBot().sendMessage(event.getChannel(), quote);
+		if (event.getMessage().length() == 6) {
+			Quote quote = db.getRandomQuote(event.getChannel().getName());
+			event.getBot().sendMessage(event.getChannel(), Config.speech.get("QU_SUC").replace("<name>", quote.getName()).replace("<quote>", quote.getMessage()));
 		} else {
-			String name = "";
-			String user = "<" + event.getMessage().split(" ")[1] + ">";
-			int index = 0;
-			while (!name.equalsIgnoreCase(user)) {
-				if (index == storage.size() - 1) {
-					break;
-				}
-				quote = storage.get(new Random().nextInt(storage.size() - 1));
-				name = quote.split(" ")[0];
-				index++;
-			}
-			if (name.equals(user)) {
-				event.getBot().sendMessage(event.getChannel(), quote);
+			String user = event.getMessage().split(" ")[1];
+			Quote quote = db.getQuoteByName(event.getChannel().getName(), user);
+			System.out.println(quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
+			if (quote.getName().equals(user)) {
+				event.getBot().sendMessage(event.getChannel(), Config.speech.get("QU_SUC").replace("<name>", quote.getName()).replace("<quote>", quote.getMessage()));
 			} else {
 				event.getBot().sendMessage(event.getChannel(), Config.speech.get("QU_ERR"));
 			}

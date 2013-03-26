@@ -62,7 +62,7 @@ public class LastfmAPI {
 			data[3] = album_data.equals("") ? Config.speech.get("LA_SUC_ALB") : album_data;
 		} catch (Exception e) {
 			// Unknown username? Return an error.
-			e.printStackTrace();
+			// e.printStackTrace();
 			return null;
 		}
 		return data;

@@ -8,8 +8,9 @@ public class HelpHandler {
 
 	// TODO: DOCS
 	public static void sendHelp(MessageEvent<?> event) {
+		System.out.println("HELP");
 		Chan chan = Config.channels.get(event.getChannel().getName());
-		event.getBot().sendMessage(event.getUser(), "My commands:");
+		event.getBot().sendNotice(event.getUser(), "My commands:");
 		if (chan.getWeather()) {
 			event.getBot().sendNotice(event.getUser(), "Get weather: .we/,we/!we [name] (Name gets stored)");
 		}

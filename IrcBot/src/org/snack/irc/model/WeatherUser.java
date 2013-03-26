@@ -1,25 +1,24 @@
 package org.snack.irc.model;
 
-/**
- * Simply represents someone that stored an weather location
- * @author snack
- *
- */
-public class WeatherUser {
-	
-	private String name;
-	private String location;
+import com.mongodb.BasicDBObject;
+
+public class WeatherUser extends BasicDBObject {
+	private static final long serialVersionUID = 3877490741872271987L;
+
+	public static final String NAME_KEY = "Name";
+	public static final String LOCATION_KEY = "Location";
 
 	public WeatherUser(String name, String location) {
-		this.name = name;
-		this.location = location;
+		super(2);
+		put(NAME_KEY, name);
+		put(LOCATION_KEY, location);
 	}
-		
+
 	public String getName() {
-		return name;
+		return (String) get(NAME_KEY);
 	}
 
 	public String getLocation() {
-		return location;
+		return (String) get(LOCATION_KEY);
 	}
 }

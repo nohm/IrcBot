@@ -1,6 +1,5 @@
 package org.snack.irc.settings;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,10 +20,7 @@ public class Config {
 		if (c == null) {
 			c = new Config();
 		}
-		String path = Config.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-		String decodedPath = URLDecoder.decode(path, "UTF-8");
-		System.out.println(decodedPath);
-		String[] jsonArray = SettingParser.parseTxt(decodedPath + "config.txt");
+		String[] jsonArray = TxtReader.parseTxt("config.txt");
 		String json = "";
 		for (String j : jsonArray) {
 			json += j;
@@ -38,6 +34,7 @@ public class Config {
 	// All the settings
 	public static HashMap<String, String> sett_str;
 	public static HashMap<String, Boolean> sett_bool;
+	public static HashMap<String, Integer> sett_int;
 	public static HashMap<String, Chan> channels;
 
 	/**
@@ -46,6 +43,7 @@ public class Config {
 	private static void initSettings() {
 		sett_str = new HashMap<String, String>();
 		sett_bool = new HashMap<String, Boolean>();
+		sett_int = new HashMap<String, Integer>();
 		channels = new HashMap<String, Chan>();
 
 		sett_str.put("ADMIN", jo.getString("admin"));
@@ -77,6 +75,10 @@ public class Config {
 
 		JSONObject joResultSettings = jo.getJSONObject("settings");
 		sett_str.put("SAVE_LOC", joResultSettings.getString("config"));
+		sett_str.put("IDENTIFIERS", joResultSettings.getString("identifiers"));
+		JSONObject joQuoteSettings = joResultSettings.getJSONObject("quote");
+		sett_int.put("QUOTE_MIN", joQuoteSettings.getInt("min"));
+		sett_int.put("QUOTE_MAX", joQuoteSettings.getInt("max"));
 	}
 
 	// All the speech lines
@@ -128,13 +130,14 @@ public class Config {
 		JSONObject joTell = joSpeech.getJSONObject("tell");
 		speech.put("TE_ADD", joTell.getString("add"));
 		speech.put("TE_TEL", joTell.getString("tell"));
+		speech.put("TE_ERR", joTell.getString("error"));
 
 		JSONObject joTranslate = joSpeech.getJSONObject("translate");
 		speech.put("TR_SUC", joTranslate.getString("success"));
 		speech.put("TR_ERR", joTranslate.getString("error"));
 
 		JSONObject joRomaji = joSpeech.getJSONObject("romaji");
-		speech.put("TR_ROM", joRomaji.getString("romaji"));
-		speech.put("TR_KAT", joRomaji.getString("katakana"));
+		speech.put("RK_ROM", joRomaji.getString("romaji"));
+		speech.put("RK_KAT", joRomaji.getString("katakana"));
 	}
 }

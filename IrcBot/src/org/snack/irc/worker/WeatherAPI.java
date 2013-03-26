@@ -58,7 +58,7 @@ public class WeatherAPI {
 			// Humidity
 			data[8] = obs.getString("relative_humidity");
 		} catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			return null;
 		}
 		return data;

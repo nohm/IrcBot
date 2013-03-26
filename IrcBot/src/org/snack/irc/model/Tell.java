@@ -1,32 +1,30 @@
 package org.snack.irc.model;
 
-/**
- * Stores the name, sender and message for each tell case.
- * 
- * @author snack
- * 
- */
-public class Tell {
+import com.mongodb.BasicDBObject;
 
-	private final String name;
-	private final String sender;
-	private final String message;
+public class Tell extends BasicDBObject {
+	private static final long serialVersionUID = 3877490741872271987L;
 
-	public Tell(String name, String sender, String message) {
-		this.name = name;
-		this.sender = sender;
-		this.message = message;
-	}
+	public static final String SENDER_KEY = "Sender";
+	public static final String NAME_KEY = "Name";
+	public static final String MESSAGE_KEY = "Message";
 
-	public String getName() {
-		return name;
+	public Tell(String sender, String name, String message) {
+		super(3);
+		put(SENDER_KEY, sender);
+		put(NAME_KEY, name);
+		put(MESSAGE_KEY, message);
 	}
 
 	public String getSender() {
-		return sender;
+		return (String) get(SENDER_KEY);
+	}
+
+	public String getName() {
+		return (String) get(NAME_KEY);
 	}
 
 	public String getMessage() {
-		return message;
+		return (String) get(MESSAGE_KEY);
 	}
 }

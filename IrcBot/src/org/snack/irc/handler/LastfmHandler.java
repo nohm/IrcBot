@@ -1,12 +1,9 @@
 package org.snack.irc.handler;
 
-import java.util.ArrayList;
-
 import org.pircbotx.hooks.events.MessageEvent;
+import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.model.LastfmUser;
 import org.snack.irc.settings.Config;
-import org.snack.irc.settings.SettingParser;
-import org.snack.irc.settings.SettingStorer;
 import org.snack.irc.worker.LastfmAPI;
 
 public class LastfmHandler {
@@ -18,23 +15,14 @@ public class LastfmHandler {
 	 * @param event
 	 */
 	public static void getLastfm(MessageEvent<?> event) {
-		System.out.println(event.getMessage());
-		ArrayList<LastfmUser> storage;
-		try {
-			storage = SettingParser.parseLUsers();
-		} catch (Exception e) {
-			// e.printStackTrace();
-			storage = new ArrayList<LastfmUser>();
-		}
-
-		int changeNum = -1;
+		DatabaseManager db = DatabaseManager.getInstance();
 		String username = "";
+		LastfmUser user = db.getLastfmUser(event.getUser().getNick());
 
-		if (event.getMessage().equalsIgnoreCase(",np") || event.getMessage().equalsIgnoreCase(".np") || event.getMessage().equalsIgnoreCase("!np")) {
-			for (LastfmUser user : storage) {
-				if (user.getName().equals(event.getUser().getNick())) {
-					username = user.getUsername();
-				}
+		if (event.getMessage().length() == 3) {
+			username = user.getUsername();
+			if (username.equals("")) {
+				username = event.getUser().getNick();
 			}
 		} else {
 			username = event.getMessage().split("np ")[1];
@@ -53,22 +41,11 @@ public class LastfmHandler {
 			}
 		}
 
-		for (int i = 0; i < (storage.size()); i++) {
-			if (storage.get(i).getName().equals(event.getUser().getNick())) {
-				changeNum = i;
-			}
-		}
 		if (username != "") {
-			if (changeNum == -1) {
-				storage.add(new LastfmUser(event.getUser().getNick(), username));
-			} else {
-				storage.set(changeNum, new LastfmUser(event.getUser().getNick(), username));
-			}
-
-			try {
-				SettingStorer.storeLUsers(storage);
-			} catch (Exception e) {
-				// e.printStackTrace();
+			if (user.getName().equals("")) {
+				db.putLastfmUser(new LastfmUser(event.getUser().getNick(), username));
+			} else if (!user.getUsername().equalsIgnoreCase(username)) {
+				db.updateLastfmUser(new LastfmUser(user.getName(), username));
 			}
 		}
 	}
