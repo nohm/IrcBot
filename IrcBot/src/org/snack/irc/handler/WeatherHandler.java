@@ -6,7 +6,18 @@ import org.snack.irc.model.WeatherUser;
 import org.snack.irc.settings.Config;
 import org.snack.irc.worker.WeatherAPI;
 
-public class WeatherHandler {
+public class WeatherHandler implements Runnable {
+
+	private final MessageEvent<?> event;
+
+	public WeatherHandler(MessageEvent<?> event) {
+		this.event = event;
+	}
+
+	@Override
+	public void run() {
+		getWeather();
+	}
 
 	/**
 	 * Parses the event for the location, makes WeatherAPI return the weather
@@ -14,7 +25,7 @@ public class WeatherHandler {
 	 * 
 	 * @param event
 	 */
-	public static void getWeather(MessageEvent<?> event) {
+	private void getWeather() {
 		DatabaseManager db = DatabaseManager.getInstance();
 		String location = "";
 		WeatherUser user = db.getWeatherUser(event.getUser().getNick());

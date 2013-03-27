@@ -4,10 +4,21 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.model.Chan;
 import org.snack.irc.settings.Config;
 
-public class HelpHandler {
+public class HelpHandler implements Runnable {
+
+	private final MessageEvent<?> event;
+
+	public HelpHandler(MessageEvent<?> event) {
+		this.event = event;
+	}
+
+	@Override
+	public void run() {
+		sendHelp();
+	}
 
 	// TODO: DOCS
-	public static void sendHelp(MessageEvent<?> event) {
+	private void sendHelp() {
 		System.out.println("HELP");
 		Chan chan = Config.channels.get(event.getChannel().getName());
 		event.getBot().sendNotice(event.getUser(), "My commands:");

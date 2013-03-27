@@ -6,7 +6,18 @@ import org.snack.irc.model.LastfmUser;
 import org.snack.irc.settings.Config;
 import org.snack.irc.worker.LastfmAPI;
 
-public class LastfmHandler {
+public class LastfmHandler implements Runnable {
+
+	private final MessageEvent<?> event;
+
+	public LastfmHandler(MessageEvent<?> event) {
+		this.event = event;
+	}
+
+	@Override
+	public void run() {
+		getLastfm();
+	}
 
 	/**
 	 * Parses the event for the username, makes LastfmAPI return their now
@@ -14,7 +25,7 @@ public class LastfmHandler {
 	 * 
 	 * @param event
 	 */
-	public static void getLastfm(MessageEvent<?> event) {
+	private void getLastfm() {
 		DatabaseManager db = DatabaseManager.getInstance();
 		String username = "";
 		LastfmUser user = db.getLastfmUser(event.getUser().getNick());
@@ -41,7 +52,7 @@ public class LastfmHandler {
 			}
 		}
 
-		if (username != "") {
+		if (!username.equals("")) {
 			if (user.getName().equals("")) {
 				db.putLastfmUser(new LastfmUser(event.getUser().getNick(), username));
 			} else if (!user.getUsername().equalsIgnoreCase(username)) {

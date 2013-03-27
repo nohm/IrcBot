@@ -4,6 +4,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
@@ -41,6 +42,8 @@ public class DatabaseManager {
 	private DBCollection weather_collection, lastfm_collection, quote_collection, tell_collection;
 
 	private static DatabaseManager instance = null;
+
+	private int tries = 0;
 
 	public static DatabaseManager getInstance() {
 		if (instance == null) {
@@ -98,6 +101,8 @@ public class DatabaseManager {
 		try {
 			JSONObject jsonObject = (JSONObject) JSONSerializer.toJSON(cursor.next().toString());
 			return new WeatherUser(jsonObject.getString(WeatherUser.NAME_KEY), jsonObject.getString(WeatherUser.LOCATION_KEY));
+		} catch (JSONException e) {
+			return new WeatherUser("", "");
 		} finally {
 			cursor.close();
 		}
@@ -139,6 +144,8 @@ public class DatabaseManager {
 		try {
 			JSONObject jsonObject = (JSONObject) JSONSerializer.toJSON(cursor.next().toString());
 			return new LastfmUser(jsonObject.getString(LastfmUser.NAME_KEY), jsonObject.getString(LastfmUser.USERNAME_KEY));
+		} catch (JSONException e) {
+			return new LastfmUser("", "");
 		} finally {
 			cursor.close();
 		}
@@ -168,19 +175,30 @@ public class DatabaseManager {
 		query.put(Quote.CHANNEL_KEY, channel);
 		query.put(Quote.NAME_KEY, name);
 		DBCursor cursor = quote_collection.find(query);
-
+		System.out.println(cursor.count());
 		if (cursor.count() == 0) {
 			return new Quote("", "", "");
 		}
-
 		try {
-			int random = new Random().nextInt(cursor.count());
 			String next = "";
-			for (int i = 0; i < random; i++) {
+			if (cursor.count() == 1) {
 				next = cursor.next().toString();
+			} else {
+				int random = new Random().nextInt(cursor.count());
+				for (int i = 0; i <= random; i++) {
+					next = cursor.next().toString();
+				}
 			}
 			JSONObject jsonObject = (JSONObject) JSONSerializer.toJSON(next);
+			tries = 0;
 			return new Quote(jsonObject.getString(Quote.CHANNEL_KEY), jsonObject.getString(Quote.NAME_KEY), jsonObject.getString(Quote.MESSAGE_KEY));
+		} catch (JSONException e) {
+			tries++;
+			if (tries <= 3) {
+				return getQuoteByName(channel, name);
+			} else {
+				return new Quote("", "", "");
+			}
 		} finally {
 			cursor.close();
 		}
@@ -195,13 +213,25 @@ public class DatabaseManager {
 			return new Quote("", "", "");
 		}
 		try {
-			int random = new Random().nextInt(cursor.count());
 			String next = "";
-			for (int i = 0; i < random; i++) {
+			if (cursor.count() == 1) {
 				next = cursor.next().toString();
+			} else {
+				int random = new Random().nextInt(cursor.count());
+				for (int i = 0; i < random; i++) {
+					next = cursor.next().toString();
+				}
 			}
 			JSONObject jsonObject = (JSONObject) JSONSerializer.toJSON(next);
+			tries = 0;
 			return new Quote(jsonObject.getString(Quote.CHANNEL_KEY), jsonObject.getString(Quote.NAME_KEY), jsonObject.getString(Quote.MESSAGE_KEY));
+		} catch (JSONException e) {
+			tries++;
+			if (tries <= 3) {
+				return getRandomQuote(channel);
+			} else {
+				return new Quote("", "", "");
+			}
 		} finally {
 			cursor.close();
 		}
@@ -228,6 +258,8 @@ public class DatabaseManager {
 				tells.add(t);
 			}
 			return tells;
+		} catch (JSONException e) {
+			return null;
 		} finally {
 			cursor.close();
 		}

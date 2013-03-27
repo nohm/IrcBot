@@ -5,7 +5,6 @@ import java.util.Random;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.DisconnectEvent;
@@ -52,67 +51,67 @@ public class BotListener extends ListenerAdapter implements Listener {
 		// Command handler
 		if (Config.sett_str.get("IDENTIFIERS").contains(message.substring(0, 1))) {
 
-			// Cal for help
-			if (message.substring(1, 5).equals("help")) {
-				if (!chan.getMute()) {
-					HelpHandler.sendHelp(event);
-					System.out.println("Helped: " + nick);
-				}
-
-				// Call for weather
-			} else if (message.substring(1, 3).equals("we")) {
+			// Call for weather
+			if (message.substring(1, 3).equals("we")) {
 				if (chan.getWeather() && !chan.getMute()) {
-					WeatherHandler.getWeather(event);
+					new WeatherHandler(event).run();
 					System.out.println("Weather: " + nick);
 				}
 
 				// Call for now playing
 			} else if (message.substring(1, 3).equals("np")) {
 				if (chan.getLastfm() && !chan.getMute()) {
-					LastfmHandler.getLastfm(event);
+					new LastfmHandler(event).run();
 					System.out.println("Lastfm: " + nick);
+				}
+
+				// Cal for help
+			} else if (message.substring(1, 5).equals("help")) {
+				if (!chan.getMute()) {
+					new HelpHandler(event).run();
+					System.out.println("Helped: " + nick);
 				}
 
 				// Call for quotes
 			} else if (message.substring(1, 6).equals("quote")) {
 				if (chan.getQuote() && !chan.getMute()) {
-					QuoteHandler.getQuote(event);
+					new QuoteHandler(event).run();
 					System.out.println("Quote: " + nick);
 				}
 
 				// Call for tell
 			} else if (message.substring(1, 6).equals("tell ")) {
 				if (chan.getTell() && !chan.getMute()) {
-					TellHandler.add(event);
+					new TellHandler(event, null, true).run();
 					System.out.println("Tell: " + nick);
-				}
-
-				// Call for translate
-			} else if (message.substring(1, 11).equals("translate ")) {
-				if (chan.getTranslate() && !chan.getMute()) {
-					TranslateHandler.translate(event);
-					System.out.println("Translate: " + nick);
 				}
 
 				// Call for romaji
 			} else if (message.substring(1, 8).equals("romaji ")) {
 				if (chan.getRomaji() && !chan.getMute()) {
-					RomajiHandler.romaji(event);
+					new RomajiHandler(event, true).run();
 					System.out.println("Romaji: " + nick);
 				}
 
 				// Call for katakana
 			} else if (message.substring(1, 10).equals("katakana ")) {
 				if (chan.getRomaji() && !chan.getMute()) {
-					RomajiHandler.katakana(event);
+					new RomajiHandler(event, false).run();
 					System.out.println("Katakana: " + nick);
+				}
+
+				// Call for translate
+			} else if (message.substring(1, 11).equals("translate ")) {
+				if (chan.getTranslate() && !chan.getMute()) {
+					new TranslateHandler(event).run();
+					System.out.println("Translate: " + nick);
 				}
 			}
 
 			// Call for HTML Title
 		} else if (message.contains("http://") || message.contains("https://")) {
 			if (chan.getHtml() && !chan.getMute()) {
-				HtmlHandler.getHTMLTitle(event);
+				new HtmlHandler(event).run();
 				System.out.println("Html: " + nick);
 			}
 
@@ -162,8 +161,8 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onJoin(JoinEvent event) throws Exception {
-		prepareTest(event, 0);
-		TellHandler.tell(event);
+		new FunctionTester(event, 0).run();
+		new TellHandler(null, event, false).run();
 		System.out.println("Cleaned tells: " + event.getChannel().getName());
 	}
 
@@ -172,7 +171,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onPart(PartEvent event) {
-		prepareTest(event, 1);
+		new FunctionTester(event, 1).run();
 	}
 
 	/**
@@ -180,7 +179,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onUserList(UserListEvent event) {
-		prepareTest(event, 0);
+		new FunctionTester(event, 0).run();
 	}
 
 	/**
@@ -199,68 +198,6 @@ public class BotListener extends ListenerAdapter implements Listener {
 		} catch (Exception e) {
 			Thread.sleep(5000);
 			onDisconnect(event);
-		}
-	}
-
-	/**
-	 * Prepares testing all users on all channels
-	 * 
-	 * @param event
-	 *            The event to get the user/bot from
-	 * @param ev
-	 *            The join or part variable
-	 */
-	private void prepareTest(Event event, int ev) {
-		for (Channel chan : event.getBot().getChannels()) {
-			Chan ch = Config.channels.get(chan.getName());
-			for (User user : event.getBot().getUsers(chan)) {
-				for (Bot b : ch.getBots()) {
-					if (b.getName().equalsIgnoreCase(user.getNick())) {
-						testFunctions(Config.channels.get(chan.getName()), b.getName(), ev);
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Tests whether each function should be on or off per channel
-	 * 
-	 * @param chan
-	 *            The channel in question
-	 * @param nick
-	 *            The nick of the user that joined/parted/left
-	 * @param event
-	 *            Is it a join(0) or a part/leave(0)?
-	 */
-	private void testFunctions(Chan chan, String nick, int event) {
-		System.out.println(((event == 0) ? "Join: " : "Part: ") + chan.getName() + " " + nick);
-		for (Bot bot : chan.getBots()) {
-			if (bot.getName().equals(nick)) {
-				if (bot.getHtml() && chan.getFunc_html()) {
-					chan.setHtml((event == 0) ? false : true);
-				}
-				if (bot.getLastfm() && chan.getFunc_lastfm()) {
-					chan.setLastfm((event == 0) ? false : true);
-				}
-				if (bot.getWeather() && chan.getFunc_weather()) {
-					chan.setWeather((event == 0) ? false : true);
-				}
-				if (bot.getQuote() && chan.getFunc_quote()) {
-					chan.setQuote((event == 0) ? false : true);
-				}
-				if (bot.getTell() && chan.getFunc_tell()) {
-					chan.setTell((event == 0) ? false : true);
-				}
-				if (bot.getTranslate() && chan.getFunc_translate()) {
-					chan.setTranslate((event == 0) ? false : true);
-				}
-				if (bot.getRomaji() && chan.getFunc_romaji()) {
-					chan.setRomaji((event == 0) ? false : true);
-				}
-				System.out.println("Functions: html:" + chan.getHtml() + " lastfm:" + chan.getLastfm() + " weather:" + chan.getWeather() + " quote:" + chan.getQuote() + " tell:"
-						+ chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji());
-			}
 		}
 	}
 }

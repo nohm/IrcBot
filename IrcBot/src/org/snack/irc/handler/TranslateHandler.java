@@ -6,14 +6,25 @@ import org.snack.irc.settings.Config;
 import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 
-public class TranslateHandler {
+public class TranslateHandler implements Runnable {
+
+	private final MessageEvent<?> event;
+
+	public TranslateHandler(MessageEvent<?> event) {
+		this.event = event;
+	}
+
+	@Override
+	public void run() {
+		translate();
+	}
 
 	/**
 	 * Translates text using the Bing translate API
 	 * 
 	 * @param event
 	 */
-	public static void translate(MessageEvent<?> event) {
+	private void translate() {
 		String text = event.getMessage().substring(11); // Cut off the command
 
 		// Set your Windows Azure Marketplace client info - See

@@ -3,14 +3,31 @@ package org.snack.irc.handler;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.settings.Config;
 
-public class RomajiHandler {
+public class RomajiHandler implements Runnable {
+
+	private final MessageEvent<?> event;
+	private final boolean romaji;
+
+	public RomajiHandler(MessageEvent<?> event, boolean romaji) {
+		this.event = event;
+		this.romaji = romaji;
+	}
+
+	@Override
+	public void run() {
+		if (romaji) {
+			romaji();
+		} else {
+			katakana();
+		}
+	}
 
 	/**
 	 * Change romaji to katakana
 	 * 
 	 * @param event
 	 */
-	public static void romaji(MessageEvent<?> event) {
+	private void romaji() {
 		String romaji = event.getMessage().substring(9);
 
 		romaji = romaji.replace("ん", "n");
@@ -236,7 +253,7 @@ public class RomajiHandler {
 	 * 
 	 * @param event
 	 */
-	public static void katakana(MessageEvent<?> event) {
+	private void katakana() {
 		String katakana = event.getMessage().substring(11);
 
 		katakana = katakana.replace("l", "r");

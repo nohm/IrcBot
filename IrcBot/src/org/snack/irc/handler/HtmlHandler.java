@@ -6,7 +6,18 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.settings.Config;
 import org.snack.irc.worker.HtmlGetter;
 
-public class HtmlHandler {
+public class HtmlHandler implements Runnable {
+
+	private final MessageEvent<?> event;
+
+	public HtmlHandler(MessageEvent<?> event) {
+		this.event = event;
+	}
+
+	@Override
+	public void run() {
+		getHTMLTitle();
+	}
 
 	/**
 	 * Parses an event's text for http(s) links, cleans them and makes
@@ -14,7 +25,7 @@ public class HtmlHandler {
 	 * 
 	 * @param event
 	 */
-	public static void getHTMLTitle(MessageEvent<?> event) {
+	private void getHTMLTitle() {
 		String[] split = event.getMessage().split(" ");
 		ArrayList<String> links = new ArrayList<String>();
 		for (String toLinks : split) {
