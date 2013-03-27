@@ -45,10 +45,10 @@ public class WeatherHandler implements Runnable {
 
 		if (!location.equals("")) {
 			if (user.getName().equals("")) {
-				Monitor.print("Put weatheruser: " + event.getUser().getNick() + location);
+				Monitor.print("~INFO Put weatheruser: " + event.getUser().getNick() + " " + location);
 				db.putWeatherUser(new WeatherUser(event.getUser().getNick(), location));
 			} else if (!user.getLocation().equalsIgnoreCase(location)) {
-				Monitor.print("Updated weatheruser: " + user.getName() + location);
+				Monitor.print("~INFO Updated weatheruser: " + user.getName() + " " + location);
 				db.updateWeatherUser(new WeatherUser(user.getName(), location));
 			}
 		}

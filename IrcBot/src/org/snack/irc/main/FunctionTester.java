@@ -10,39 +10,39 @@ import org.snack.irc.settings.Config;
 public class FunctionTester implements Runnable {
 
 	private final Event<?> event;
+	private final Channel channel;
 	private final int joinpart;
 
-	public FunctionTester(Event<?> event, int joinpart) {
+	public FunctionTester(Event<?> event, Channel channel, int joinpart) {
 		this.event = event;
 		this.joinpart = joinpart;
+		this.channel = channel;
 	}
 
 	@Override
 	public void run() {
-		prepareTest(event, joinpart);
+		prepareTestOne(event, channel, joinpart);
 	}
 
 	/**
-	 * Prepares testing all users on all channels
+	 * Tests one channel
 	 * 
-	 * @param event
-	 *            The event to get the user/bot from
+	 * @param channel
+	 *            The channel to test
 	 * @param ev
 	 *            The join or part variable
 	 */
-	private void prepareTest(Event<?> event, int ev) {
-		Monitor.print("--------------------------------------------------");
-		for (Channel chan : event.getBot().getChannels()) {
-			Chan ch = Config.channels.get(chan.getName());
-			for (User user : event.getBot().getUsers(chan)) {
-				for (Bot b : ch.bots) {
-					if (b.name.equalsIgnoreCase(user.getNick())) {
-						testFunctions(Config.channels.get(chan.getName()), b.name, ev);
-					}
+	private void prepareTestOne(Event<?> event, Channel channel, int ev) {
+		Chan chan = Config.channels.get(channel.getName());
+		for (User user : event.getBot().getUsers(channel)) {
+			for (Bot b : chan.bots) {
+				if (b.name.equalsIgnoreCase(user.getNick())) {
+					testFunctions(Config.channels.get(channel.getName()), b.name, ev);
 				}
 			}
 		}
-		Monitor.print("--------------------------------------------------");
+		Monitor.print("~INFO " + ((joinpart == 0) ? "Join: " : "Part: ") + chan.name + " Functions: html:" + chan.getHtml() + " lastfm:" + chan.getLastfm() + " weather:"
+				+ chan.getWeather() + " quote:" + chan.getQuote() + " tell:" + chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji());
 	}
 
 	/**
@@ -79,8 +79,6 @@ public class FunctionTester implements Runnable {
 				if (bot.romaji && chan.func_romaji) {
 					chan.setRomaji((event == 0) ? false : true);
 				}
-				Monitor.print(((event == 0) ? "Join: " : "Part: ") + chan.name + " " + nick + " Functions: html:" + chan.getHtml() + " lastfm:" + chan.getLastfm() + " weather:"
-						+ chan.getWeather() + " quote:" + chan.getQuote() + " tell:" + chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji());
 			}
 		}
 	}

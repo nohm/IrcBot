@@ -16,7 +16,9 @@ public class Prompt extends JFrame {
 	private final JTextField typeBox, targetBox, messageBox;
 	private final JButton saveButton, cancelButton;
 
-	// the add/update prompt
+	/*
+	 * Prompt to send messages through the bot manually
+	 */
 	public Prompt(JFrame frame) {
 		super("Send message");
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -40,11 +42,11 @@ public class Prompt extends JFrame {
 
 		// set up fields
 		typeBox = new JTextField();
-		typeBox.setBounds(50, 37, 250, 20);
+		typeBox.setBounds(55, 37, 250, 20);
 		targetBox = new JTextField();
-		targetBox.setBounds(50, 62, 250, 20);
+		targetBox.setBounds(55, 62, 250, 20);
 		messageBox = new JTextField();
-		messageBox.setBounds(50, 87, 250, 20);
+		messageBox.setBounds(55, 87, 250, 20);
 		// add fields
 		this.getContentPane().add(typeBox);
 		this.getContentPane().add(targetBox);
@@ -52,7 +54,7 @@ public class Prompt extends JFrame {
 
 		// set up buttons
 		saveButton = new JButton("Send");
-		saveButton.setBounds(50, 120, 100, 20);
+		saveButton.setBounds(55, 120, 100, 20);
 		cancelButton = new JButton("Cancel");
 		cancelButton.setBounds(200, 120, 100, 20);
 		// add buttons
@@ -63,12 +65,12 @@ public class Prompt extends JFrame {
 		saveButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String a = typeBox.getText();
-				String b = targetBox.getText();
-				String c = messageBox.getText();
+				String type = typeBox.getText().toUpperCase();
+				String target = targetBox.getText();
+				String message = messageBox.getText();
 
-				// add or update the item
-				BotListener.sendCustomMessage(a, b, c);
+				// send the message
+				BotListener.sendCustomMessage(type, target, message);
 
 				// close the frame
 				getFrame().dispose();

@@ -53,7 +53,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 		String message = event.getMessage();
 		User user = event.getUser();
 		String nick = user.getNick();
-		Monitor.print("~MSG " + chan.name + " " + nick + ": " + message);
+		Monitor.print("<<MSG " + chan.name + " " + nick + ": " + message);
 
 		// Command handler
 		if (Config.sett_str.get("IDENTIFIERS").contains(message.substring(0, 1))) {
@@ -61,56 +61,56 @@ public class BotListener extends ListenerAdapter implements Listener {
 			// Call for weather
 			if (message.substring(1, 3).equals("we")) {
 				if (chan.getWeather() && !chan.getMute()) {
-					Monitor.print("Weather: " + nick);
+					Monitor.print("~COMMAND Weather: " + nick);
 					new WeatherHandler(event).run();
 				}
 
 				// Call for now playing
 			} else if (message.substring(1, 3).equals("np")) {
 				if (chan.getLastfm() && !chan.getMute()) {
-					Monitor.print("Lastfm: " + nick);
+					Monitor.print("~COMMAND Lastfm: " + nick);
 					new LastfmHandler(event).run();
 				}
 
 				// Cal for help
 			} else if (message.substring(1, 5).equals("help")) {
 				if (!chan.getMute()) {
-					Monitor.print("Helped: " + nick);
+					Monitor.print("~COMMAND Help: " + nick);
 					new HelpHandler(event).run();
 				}
 
 				// Call for quotes
 			} else if (message.substring(1, 6).equals("quote")) {
 				if (chan.getQuote() && !chan.getMute()) {
-					Monitor.print("Quote: " + nick);
+					Monitor.print("~COMMAND Quote: " + nick);
 					new QuoteHandler(event, message.split(" ")[1].equals("add") && message.split(" ").length >= 4).run();
 				}
 
 				// Call for tell
 			} else if (message.substring(1, 6).equals("tell ")) {
 				if (chan.getTell() && !chan.getMute()) {
-					Monitor.print("Tell: " + nick);
+					Monitor.print("~COMMAND Tell: " + nick);
 					new TellHandler(event, null, true).run();
 				}
 
 				// Call for romaji
 			} else if (message.substring(1, 8).equals("romaji ")) {
 				if (chan.getRomaji() && !chan.getMute()) {
-					Monitor.print("Romaji: " + nick);
+					Monitor.print("~COMMAND Romaji: " + nick);
 					new RomajiHandler(event, true).run();
 				}
 
 				// Call for katakana
 			} else if (message.substring(1, 10).equals("katakana ")) {
 				if (chan.getRomaji() && !chan.getMute()) {
-					Monitor.print("Katakana: " + nick);
+					Monitor.print("~COMMAND Katakana: " + nick);
 					new RomajiHandler(event, false).run();
 				}
 
 				// Call for translate
 			} else if (message.substring(1, 11).equals("translate ")) {
 				if (chan.getTranslate() && !chan.getMute()) {
-					Monitor.print("Translate: " + nick);
+					Monitor.print("~COMMAND Translate: " + nick);
 					new TranslateHandler(event).run();
 				}
 			}
@@ -128,7 +128,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 				if (message.equals(nick + ":mute") || message.equals(nick + ":unmute")) {
 					chan.setMute((message.equals(nick + ":mute")) ? true : false);
 					bot.sendMessage(channel, chan.getMute() ? Config.speech.get("MUTE") : Config.speech.get("UNMUTE"));
-					Monitor.print("Muted: " + chan.getMute());
+					Monitor.print("~INFO Muted: " + chan.getMute());
 				} else if (message.equals(nick + ":restart")) {
 					Startup.restart();
 				}
@@ -146,12 +146,8 @@ public class BotListener extends ListenerAdapter implements Listener {
 			}
 			// Add random quotes
 			if (new Random().nextInt(100) > 95 && add && message.length() <= Config.sett_int.get("QUOTE_MAX") && message.length() >= Config.sett_int.get("QUOTE_MIN")) {
-				try {
-					Monitor.print("Added quote: " + chan.name + " <" + user.getNick() + "> " + message);
-					DatabaseManager.getInstance().putQuote(new Quote(chan.name, user.getNick(), message));
-				} catch (Exception e) {
-					// e.printStackTrace();
-				}
+				Monitor.print("~INFO Added quote: " + chan.name + " <" + user.getNick() + "> " + message);
+				DatabaseManager.getInstance().putQuote(new Quote(chan.name, user.getNick(), message));
 			}
 		}
 	}
@@ -161,9 +157,9 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onKick(KickEvent event) {
-		Monitor.print("~KICK " + event.getChannel().getName());
+		Monitor.print("<<KICK " + event.getChannel().getName());
 		event.getBot().sendRawLine("JOIN " + event.getChannel().getName());
-		Monitor.print("Rejoined");
+		Monitor.print("~INFO Rejoined");
 	}
 
 	/**
@@ -171,10 +167,12 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onJoin(JoinEvent event) throws Exception {
-		Monitor.print("~JOIN " + event.getChannel().getName() + " " + event.getUser().getNick());
-		new FunctionTester(event, 0).run();
+		if (!event.getUser().getNick().equals(Config.sett_str.get("BOT_NAME"))) {
+			Monitor.print("<<JOIN " + event.getChannel().getName() + " " + event.getUser().getNick());
+			new FunctionTester(event, event.getChannel(), 0).run();
+		}
 		new TellHandler(null, event, false).run();
-		Monitor.print("Cleaned tells: " + event.getChannel().getName());
+		Monitor.print("~INFO Cleaned tells: " + event.getChannel().getName());
 	}
 
 	/**
@@ -182,8 +180,8 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onPart(PartEvent event) {
-		Monitor.print("~PART " + event.getChannel().getName() + " " + event.getUser().getNick());
-		new FunctionTester(event, 1).run();
+		Monitor.print("<<PART " + event.getChannel().getName() + " " + event.getUser().getNick());
+		new FunctionTester(event, event.getChannel(), 1).run();
 	}
 
 	/**
@@ -191,9 +189,8 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onUserList(UserListEvent event) {
-		Monitor.print("~USERLIST");
-		new FunctionTester(event, 0).run();
-		Monitor.print("--------------------------------------------------");
+		Monitor.print("<<USERLIST");
+		new FunctionTester(event, event.getChannel(), 0).run();
 	}
 
 	/**
@@ -201,7 +198,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onDisconnect(DisconnectEvent event) throws Exception {
-		Monitor.print("~DISCONNECT");
+		Monitor.print("<<DISCONNECT");
 		try {
 			event.getBot().connect(Config.sett_str.get("SERVER"));
 			if (!Config.sett_str.get("BOT_PASS").equals("") && Config.sett_str.get("BOT_PASS") != null) {
@@ -210,7 +207,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 			for (Chan channel : Config.channels.values()) {
 				event.getBot().sendRawLine("JOIN " + channel.name);
 			}
-			Monitor.print("Reconnected");
+			Monitor.print("~INFO Reconnected");
 		} catch (Exception e) {
 			Thread.sleep(5000);
 			onDisconnect(event);
@@ -219,11 +216,14 @@ public class BotListener extends ListenerAdapter implements Listener {
 
 	public static void sendCustomMessage(String type, String target, String message) {
 		if (type.equalsIgnoreCase("PRIVMSG") && (!target.equals("") || target == null)) {
-			Monitor.print(">>MSG " + target + " " + message);
+			Monitor.print(">>MSG " + target + ": " + message);
 			bot.sendMessage(target, message);
+		} else if (type.equalsIgnoreCase("ACTION")) {
+			Monitor.print(">>ACTION " + target + ": " + message);
+			bot.sendAction(target, message);
 		} else {
-			Monitor.print(">>RAW " + type + " " + target + " " + message);
-			bot.sendRawLine(type + " " + target + " " + message);
+			Monitor.print(">>RAW " + type + " " + target + ": " + message);
+			bot.sendRawLine(type + " " + target + " :" + message);
 		}
 	}
 }

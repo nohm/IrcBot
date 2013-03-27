@@ -42,7 +42,7 @@ public class TranslateHandler implements Runnable {
 			translatedText = Config.speech.get("TR_ERR");
 		}
 
-		Monitor.print("Translate: " + translatedText);
+		Monitor.print("~INFO Translate: " + translatedText);
 		event.getBot().sendMessage(event.getChannel(), translatedText);
 	}
 }

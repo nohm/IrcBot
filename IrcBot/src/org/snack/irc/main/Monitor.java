@@ -3,13 +3,19 @@ package org.snack.irc.main;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -39,9 +45,10 @@ public class Monitor {
 	private Monitor(boolean showInterface) {
 		Monitor.showInterface = showInterface;
 		if (showInterface) {
+			redirectSystemStreams();
 			createAndShowGUI();
 		}
-		Monitor.print("Initialized interface");
+		Monitor.print("~INFO Initialized interface");
 	}
 
 	/**
@@ -85,10 +92,10 @@ public class Monitor {
 		mainMenu.add(menuQuit);
 		monitorFrame.setJMenuBar(menuBar);
 		// set up the frame
-		monitorFrame.setTitle("Server Monitor");
+		monitorFrame.setTitle("Bot Monitor");
 		monitorFrame.setSize(600, 800);
 		monitorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		monitorFrame.setResizable(false);
+		monitorFrame.setResizable(true);
 		monitorFrame.setLocationRelativeTo(null);
 		monitorFrame.getContentPane().setLayout(null);
 		// set up the text area
@@ -96,14 +103,33 @@ public class Monitor {
 		monitorTextArea.setEditable(false);
 		// set up the frame to hold the text area
 		monitorScrollPane.getViewport().add(monitorTextArea);
-		monitorScrollPane.setPreferredSize(new Dimension(monitorFrame.getWidth() - 20, monitorFrame.getHeight() - 55));
+		resizeArea();
 		monitorPanel.add(monitorScrollPane);
 		monitorPanel.setBounds(-5, 0, monitorFrame.getWidth(), monitorFrame.getHeight());
 		monitorFrame.getContentPane().add(monitorPanel);
+		// updates textarea size, fails on snap
+		monitorFrame.getRootPane().addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				resizeArea();
+			}
+		});
 		// show frame
 		monitorFrame.setVisible(true);
 	}
 
+	/**
+	 * Resizes the textarea
+	 */
+	private static void resizeArea() {
+		monitorScrollPane.setPreferredSize(new Dimension(monitorFrame.getWidth() - 20, monitorFrame.getHeight() - 55));
+	}
+
+	/**
+	 * Returns the frame
+	 * 
+	 * @return The frame
+	 */
 	private static JFrame getFrame() {
 		return monitorFrame;
 	}
@@ -120,9 +146,39 @@ public class Monitor {
 				monitorTextArea.remove(0);
 			}
 			monitorTextArea.append(message + "\n");
+			// scroll down
+			JScrollBar sb = monitorScrollPane.getVerticalScrollBar();
+			while (!(sb.getMaximum() == (sb.getValue() + sb.getVisibleAmount()))) {
+				sb.setValue(sb.getMaximum());
+			}
 		} else {
 			System.out.println(message);
 		}
+	}
+
+	/**
+	 * Redirects system.out/err to the monitor
+	 */
+	private void redirectSystemStreams() {
+		OutputStream out = new OutputStream() {
+			@Override
+			public void write(int b) throws IOException {
+				print(String.valueOf((char) b));
+			}
+
+			@Override
+			public void write(byte[] b, int off, int len) throws IOException {
+				print(new String(b, off, len));
+			}
+
+			@Override
+			public void write(byte[] b) throws IOException {
+				write(b, 0, b.length);
+			}
+		};
+
+		System.setOut(new PrintStream(out, true));
+		System.setErr(new PrintStream(out, true));
 	}
 
 }
