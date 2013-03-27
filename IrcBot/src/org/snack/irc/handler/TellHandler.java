@@ -6,6 +6,7 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.database.DatabaseManager;
+import org.snack.irc.main.Monitor;
 import org.snack.irc.model.Tell;
 import org.snack.irc.settings.Config;
 
@@ -45,10 +46,12 @@ public class TellHandler implements Runnable {
 		}
 
 		if (!online) {
-			db.putTell(new Tell(mEvent.getUser().getNick(), nick, mEvent.getMessage().split("tell " + mEvent.getUser().getNick())[1]));
-
+			Tell tell = new Tell(mEvent.getUser().getNick(), nick, mEvent.getMessage().split("tell " + mEvent.getUser().getNick())[1]);
+			db.putTell(tell);
+			Monitor.print("Added tell: " + tell.getSender() + " > " + tell.getName() + " : " + tell.getMessage());
 			mEvent.getBot().sendMessage(mEvent.getChannel(), Config.speech.get("TE_ADD").replace("<name>", nick));
 		} else {
+			Monitor.print("Error adding tell.");
 			mEvent.getBot().sendMessage(mEvent.getChannel(), Config.speech.get("TE_ERR").replace("<name>", nick));
 		}
 	}
@@ -62,7 +65,9 @@ public class TellHandler implements Runnable {
 		ArrayList<Tell> tells = db.getTells(jEvent.getUser().getNick());
 		for (Tell tell : tells) {
 			if (tell.getName().equalsIgnoreCase(jEvent.getUser().getNick())) {
-				jEvent.getBot().sendNotice(jEvent.getUser(), Config.speech.get("TE_TEL").replace("<sender>", tell.getSender()).replace("<message>", tell.getMessage()));
+				String response = Config.speech.get("TE_TEL").replace("<sender>", tell.getSender()).replace("<message>", tell.getMessage());
+				Monitor.print("Told: " + response);
+				jEvent.getBot().sendNotice(jEvent.getUser(), response);
 				db.removeTell(tell);
 			}
 		}

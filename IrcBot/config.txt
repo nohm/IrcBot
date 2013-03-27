@@ -1,6 +1,8 @@
 {
 	"admin": "snack",
-	"debug": "true",
+	"debug": "false",
+	"interface": "true",
+	"scrollback": "250",
 	
 	"bot": {
 		"name": "snackbot",
@@ -54,7 +56,7 @@
 					"romaji": "true"
 				},
 				"bot4": {
-					"name": "moelicious",
+					"name": "Moelicious",
 					"html": "false",
 					"lastfm": "false",
 					"weather": "false",
@@ -86,7 +88,7 @@
 					"romaji": "false"
 				},
 				"bot2": {
-					"name": "moelicious",
+					"name": "Moelicious",
 					"html": "false",
 					"lastfm": "false",
 					"weather": "false",
@@ -108,16 +110,6 @@
 			"romaji": "false",
 			"disable": {
 				"bot1": {
-					"name": "moelicious",
-					"html": "false",
-					"lastfm": "false",
-					"weather": "false",
-					"quote": "false",
-					"tell": "false",
-					"translate": "false",
-					"romaji": "false"
-				},
-				"bot2": {
 					"name": "NBA",
 					"html": "false",
 					"lastfm": "false",
@@ -127,7 +119,7 @@
 					"translate": "false",
 					"romaji": "false"
 				},
-				"bot3": {
+				"bot2": {
 					"name": "godzilla",
 					"html": "true",
 					"lastfm": "false",

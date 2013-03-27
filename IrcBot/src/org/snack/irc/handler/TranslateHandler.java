@@ -1,6 +1,7 @@
 package org.snack.irc.handler;
 
 import org.pircbotx.hooks.events.MessageEvent;
+import org.snack.irc.main.Monitor;
 import org.snack.irc.settings.Config;
 
 import com.memetix.mst.language.Language;
@@ -41,6 +42,7 @@ public class TranslateHandler implements Runnable {
 			translatedText = Config.speech.get("TR_ERR");
 		}
 
+		Monitor.print("Translate: " + translatedText);
 		event.getBot().sendMessage(event.getChannel(), translatedText);
 	}
 }

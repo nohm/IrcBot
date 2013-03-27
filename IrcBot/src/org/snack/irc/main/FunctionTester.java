@@ -31,6 +31,7 @@ public class FunctionTester implements Runnable {
 	 *            The join or part variable
 	 */
 	private void prepareTest(Event<?> event, int ev) {
+		Monitor.print("--------------------------------------------------");
 		for (Channel chan : event.getBot().getChannels()) {
 			Chan ch = Config.channels.get(chan.getName());
 			for (User user : event.getBot().getUsers(chan)) {
@@ -41,6 +42,7 @@ public class FunctionTester implements Runnable {
 				}
 			}
 		}
+		Monitor.print("--------------------------------------------------");
 	}
 
 	/**
@@ -54,7 +56,6 @@ public class FunctionTester implements Runnable {
 	 *            Is it a join(0) or a part/leave(0)?
 	 */
 	private void testFunctions(Chan chan, String nick, int event) {
-		System.out.println(((event == 0) ? "Join: " : "Part: ") + chan.name + " " + nick);
 		for (Bot bot : chan.bots) {
 			if (bot.name.equals(nick)) {
 				if (bot.html && chan.func_html) {
@@ -78,8 +79,8 @@ public class FunctionTester implements Runnable {
 				if (bot.romaji && chan.func_romaji) {
 					chan.setRomaji((event == 0) ? false : true);
 				}
-				System.out.println("Functions: html:" + chan.getHtml() + " lastfm:" + chan.getLastfm() + " weather:" + chan.getWeather() + " quote:" + chan.getQuote() + " tell:"
-						+ chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji());
+				Monitor.print(((event == 0) ? "Join: " : "Part: ") + chan.name + " " + nick + " Functions: html:" + chan.getHtml() + " lastfm:" + chan.getLastfm() + " weather:"
+						+ chan.getWeather() + " quote:" + chan.getQuote() + " tell:" + chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji());
 			}
 		}
 	}

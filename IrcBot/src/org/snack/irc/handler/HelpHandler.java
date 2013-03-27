@@ -21,7 +21,6 @@ public class HelpHandler implements Runnable {
 	 * Returns help based on the channels enabled functions
 	 */
 	private void sendHelp() {
-		System.out.println("HELP");
 		Chan chan = Config.channels.get(event.getChannel().getName());
 		event.getBot().sendNotice(event.getUser(), "My commands:");
 		if (chan.getWeather()) {

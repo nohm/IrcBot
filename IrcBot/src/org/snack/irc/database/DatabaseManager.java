@@ -8,6 +8,7 @@ import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
+import org.snack.irc.main.Monitor;
 import org.snack.irc.model.LastfmUser;
 import org.snack.irc.model.Quote;
 import org.snack.irc.model.Tell;
@@ -47,7 +48,9 @@ public class DatabaseManager {
 
 	public static DatabaseManager getInstance() {
 		if (instance == null) {
+			Monitor.print("Initializing database");
 			instance = new DatabaseManager();
+			Monitor.print("Initialized database");
 		}
 		return instance;
 	}

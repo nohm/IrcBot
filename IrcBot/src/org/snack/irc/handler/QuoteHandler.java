@@ -2,6 +2,7 @@ package org.snack.irc.handler;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.database.DatabaseManager;
+import org.snack.irc.main.Monitor;
 import org.snack.irc.model.Quote;
 import org.snack.irc.settings.Config;
 
@@ -46,7 +47,7 @@ public class QuoteHandler implements Runnable {
 				response = Config.speech.get("QU_ERR");
 			}
 		}
-		System.out.println(quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
+		Monitor.print("Quoted: " + quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
 		event.getBot().sendMessage(event.getChannel(), response);
 	}
 
@@ -59,7 +60,9 @@ public class QuoteHandler implements Runnable {
 		String name = event.getMessage().split(" ")[2];
 		String message = event.getMessage().substring(event.getMessage().indexOf(name) + name.length() + 1);
 
-		db.putQuote(new Quote(event.getChannel().getName(), name, message));
+		Quote quote = new Quote(event.getChannel().getName(), name, message);
+		db.putQuote(quote);
+		Monitor.print("Added: " + quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
 		event.getBot().sendMessage(event.getChannel(), Config.speech.get("QU_ADD"));
 	}
 }

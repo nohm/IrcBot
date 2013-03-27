@@ -1,6 +1,7 @@
 package org.snack.irc.handler;
 
 import org.pircbotx.hooks.events.MessageEvent;
+import org.snack.irc.main.Monitor;
 import org.snack.irc.settings.Config;
 
 public class RomajiHandler implements Runnable {
@@ -243,6 +244,7 @@ public class RomajiHandler implements Runnable {
 		romaji = romaji.replace("ou", "ō");
 		romaji = romaji.replace("uu", "ū");
 
+		Monitor.print("Romaji: " + event.getMessage().substring(9) + " > " + romaji);
 		event.getBot().sendMessage(event.getChannel(), Config.speech.get("RK_ROM").replace("<response>", romaji));
 	}
 
@@ -358,6 +360,7 @@ public class RomajiHandler implements Runnable {
 		katakana = katakana.replace("zu", "ズ");
 		katakana = katakana.replace("u", "ウ");
 
+		Monitor.print("Katakana: " + event.getMessage().substring(11) + " > " + katakana);
 		event.getBot().sendMessage(event.getChannel(), Config.speech.get("RK_KAT").replace("<response>", katakana));
 	}
 }

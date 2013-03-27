@@ -3,6 +3,7 @@ package org.snack.irc.handler;
 import java.util.ArrayList;
 
 import org.pircbotx.hooks.events.MessageEvent;
+import org.snack.irc.main.Monitor;
 import org.snack.irc.settings.Config;
 import org.snack.irc.worker.HtmlGetter;
 
@@ -40,7 +41,9 @@ public class HtmlHandler implements Runnable {
 			}
 		}
 		for (String toPrint : cleaned) {
-			event.getBot().sendMessage(event.getChannel(), Config.speech.get("HT_TIT").replace("<title>", HtmlGetter.getTitle(toPrint)));
+			String response = HtmlGetter.getTitle(toPrint);
+			Monitor.print(response);
+			event.getBot().sendMessage(event.getChannel(), Config.speech.get("HT_TIT").replace("<title>", response));
 		}
 	}
 }

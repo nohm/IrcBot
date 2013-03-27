@@ -52,7 +52,6 @@ public class WeatherAPI {
 			} else {
 				data[5] = "KPH";
 				data[6] = obs.getString("wind_kph");
-				System.out.println("KPH: " + data[6]);
 				data[7] = obs.getString("wind_gust_kph");
 			}
 			// Humidity

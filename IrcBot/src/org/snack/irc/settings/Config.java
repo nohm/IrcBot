@@ -43,6 +43,8 @@ public class Config {
 
 		sett_str.put("ADMIN", jo.getString("admin"));
 		sett_bool.put("DEBUG", jo.getBoolean("debug"));
+		sett_bool.put("INTERFACE", jo.getBoolean("interface"));
+		sett_int.put("SCROLLBACK", jo.getInt("scrollback"));
 
 		JSONObject joResultBot = jo.getJSONObject("bot");
 		sett_str.put("BOT_NAME", joResultBot.getString("name"));
