@@ -121,6 +121,7 @@ public class Config {
 		JSONObject joQuote = joSpeech.getJSONObject("quote");
 		speech.put("QU_SUC", joQuote.getString("success"));
 		speech.put("QU_ERR", joQuote.getString("error"));
+		speech.put("QU_ADD", joQuote.getString("add"));
 
 		JSONObject joTell = joSpeech.getJSONObject("tell");
 		speech.put("TE_ADD", joTell.getString("add"));

@@ -34,7 +34,7 @@ public class HelpHandler implements Runnable {
 			event.getBot().sendNotice(event.getUser(), "Auto respond to http(s):// links");
 		}
 		if (chan.getQuote()) {
-			event.getBot().sendNotice(event.getUser(), "Quotes: .quote/,quote/!quote [name] (Name is optional)");
+			event.getBot().sendNotice(event.getUser(), "Quotes: .quote/,quote/!quote [add] (To add) [name] (Name is optional) [quote] (If adding)");
 		}
 		if (chan.getTell()) {
 			event.getBot().sendNotice(event.getUser(), "Tell someone on join: .tell/,tell/!tell [message]");

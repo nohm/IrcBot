@@ -8,14 +8,20 @@ import org.snack.irc.settings.Config;
 public class QuoteHandler implements Runnable {
 
 	private final MessageEvent<?> event;
+	private final boolean add;
 
-	public QuoteHandler(MessageEvent<?> event) {
+	public QuoteHandler(MessageEvent<?> event, boolean add) {
 		this.event = event;
+		this.add = add;
 	}
 
 	@Override
 	public void run() {
-		getQuote();
+		if (add) {
+			addQuote();
+		} else {
+			getQuote();
+		}
 	}
 
 	/**
@@ -42,5 +48,18 @@ public class QuoteHandler implements Runnable {
 		}
 		System.out.println(quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
 		event.getBot().sendMessage(event.getChannel(), response);
+	}
+
+	/**
+	 * Add a new quote to the database
+	 */
+	private void addQuote() {
+		DatabaseManager db = DatabaseManager.getInstance();
+
+		String name = event.getMessage().split(" ")[2];
+		String message = event.getMessage().substring(event.getMessage().indexOf(name) + name.length() + 1);
+
+		db.putQuote(new Quote(event.getChannel().getName(), name, message));
+		event.getBot().sendMessage(event.getChannel(), Config.speech.get("QU_ADD"));
 	}
 }

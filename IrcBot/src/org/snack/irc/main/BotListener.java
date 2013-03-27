@@ -75,7 +75,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 				// Call for quotes
 			} else if (message.substring(1, 6).equals("quote")) {
 				if (chan.getQuote() && !chan.getMute()) {
-					new QuoteHandler(event).run();
+					new QuoteHandler(event, message.split(" ")[1].equals("add") && message.split(" ").length >= 4).run();
 					System.out.println("Quote: " + nick);
 				}
 

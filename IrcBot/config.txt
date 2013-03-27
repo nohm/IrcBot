@@ -188,7 +188,8 @@
 		},
 		"quote": {
 			"success": "<<name>> <quote>",
-			"error": "No quote found."
+			"error": "No quote found.",
+			"add": "Quote added."
 		},
 		"tell": {
 			"add": "I'll tell that to <name> for you.",
