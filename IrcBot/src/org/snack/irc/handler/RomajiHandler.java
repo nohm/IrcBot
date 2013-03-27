@@ -244,7 +244,7 @@ public class RomajiHandler implements Runnable {
 		romaji = romaji.replace("ou", "ō");
 		romaji = romaji.replace("uu", "ū");
 
-		Monitor.print("~INFO Romaji: " + event.getMessage().substring(9) + " > " + romaji);
+		Monitor.print("~RESPONSE  Romaji: " + event.getMessage().substring(9) + " > " + romaji);
 		event.getBot().sendMessage(event.getChannel(), Config.speech.get("RK_ROM").replace("<response>", romaji));
 	}
 
@@ -360,7 +360,7 @@ public class RomajiHandler implements Runnable {
 		katakana = katakana.replace("zu", "ズ");
 		katakana = katakana.replace("u", "ウ");
 
-		Monitor.print("~INFO Katakana: " + event.getMessage().substring(11) + " > " + katakana);
+		Monitor.print("~RESPONSE  Katakana: " + event.getMessage().substring(11) + " > " + katakana);
 		event.getBot().sendMessage(event.getChannel(), Config.speech.get("RK_KAT").replace("<response>", katakana));
 	}
 }

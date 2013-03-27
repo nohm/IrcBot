@@ -48,9 +48,9 @@ public class DatabaseManager {
 
 	public static DatabaseManager getInstance() {
 		if (instance == null) {
-			Monitor.print("Initializing database");
+			Monitor.print("~INFO Initializing database");
 			instance = new DatabaseManager();
-			Monitor.print("Initialized database");
+			Monitor.print("~INFO Initialized database");
 		}
 		return instance;
 	}

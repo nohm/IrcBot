@@ -47,7 +47,7 @@ public class QuoteHandler implements Runnable {
 				response = Config.speech.get("QU_ERR");
 			}
 		}
-		Monitor.print("~INFO Quoted: " + quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
+		Monitor.print("~RESPONSE  Quoted: " + quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
 		event.getBot().sendMessage(event.getChannel(), response);
 	}
 
@@ -62,7 +62,7 @@ public class QuoteHandler implements Runnable {
 
 		Quote quote = new Quote(event.getChannel().getName(), name, message);
 		db.putQuote(quote);
-		Monitor.print("~INFO Added: " + quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
+		Monitor.print("~RESPONSE  Added: " + quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
 		event.getBot().sendMessage(event.getChannel(), Config.speech.get("QU_ADD"));
 	}
 }

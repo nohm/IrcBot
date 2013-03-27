@@ -42,7 +42,7 @@ public class HtmlHandler implements Runnable {
 		}
 		for (String toPrint : cleaned) {
 			String response = HtmlGetter.getTitle(toPrint);
-			Monitor.print(response);
+			Monitor.print("~RESPONSE " + response);
 			event.getBot().sendMessage(event.getChannel(), Config.speech.get("HT_TIT").replace("<title>", response));
 		}
 	}

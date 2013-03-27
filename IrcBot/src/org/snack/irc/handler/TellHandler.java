@@ -48,10 +48,10 @@ public class TellHandler implements Runnable {
 		if (!online) {
 			Tell tell = new Tell(mEvent.getUser().getNick(), nick, mEvent.getMessage().split("tell " + mEvent.getUser().getNick())[1]);
 			db.putTell(tell);
-			Monitor.print("~INFO Added tell: " + tell.getSender() + " > " + tell.getName() + " : " + tell.getMessage());
+			Monitor.print("~RESPONSE  Added tell: " + tell.getSender() + " > " + tell.getName() + " : " + tell.getMessage());
 			mEvent.getBot().sendMessage(mEvent.getChannel(), Config.speech.get("TE_ADD").replace("<name>", nick));
 		} else {
-			Monitor.print("~INFO Error adding tell.");
+			Monitor.print("~RESPONSE  Error adding tell.");
 			mEvent.getBot().sendMessage(mEvent.getChannel(), Config.speech.get("TE_ERR").replace("<name>", nick));
 		}
 	}
@@ -66,7 +66,7 @@ public class TellHandler implements Runnable {
 		for (Tell tell : tells) {
 			if (tell.getName().equalsIgnoreCase(jEvent.getUser().getNick())) {
 				String response = Config.speech.get("TE_TEL").replace("<sender>", tell.getSender()).replace("<message>", tell.getMessage());
-				Monitor.print("~INFO Told: " + response);
+				Monitor.print("~RESPONSE  Told: " + response);
 				jEvent.getBot().sendNotice(jEvent.getUser(), response);
 				db.removeTell(tell);
 			}

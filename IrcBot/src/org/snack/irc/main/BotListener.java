@@ -12,8 +12,10 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PartEvent;
+import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.snack.irc.database.DatabaseManager;
+import org.snack.irc.enums.EventType;
 import org.snack.irc.handler.HelpHandler;
 import org.snack.irc.handler.HtmlHandler;
 import org.snack.irc.handler.LastfmHandler;
@@ -118,7 +120,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 			// Call for HTML Title
 		} else if (message.contains("http://") || message.contains("https://")) {
 			if (chan.getHtml() && !chan.getMute()) {
-				Monitor.print("Html: " + nick);
+				Monitor.print("~COMMAND Html: " + nick);
 				new HtmlHandler(event).run();
 			}
 
@@ -169,7 +171,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	public void onJoin(JoinEvent event) throws Exception {
 		if (!event.getUser().getNick().equals(Config.sett_str.get("BOT_NAME"))) {
 			Monitor.print("<<JOIN " + event.getChannel().getName() + " " + event.getUser().getNick());
-			new FunctionTester(event, event.getChannel(), 0).run();
+			new FunctionTester(event, event.getChannel(), EventType.JOIN).run();
 		}
 		new TellHandler(null, event, false).run();
 		Monitor.print("~INFO Cleaned tells: " + event.getChannel().getName());
@@ -181,7 +183,17 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onPart(PartEvent event) {
 		Monitor.print("<<PART " + event.getChannel().getName() + " " + event.getUser().getNick());
-		new FunctionTester(event, event.getChannel(), 1).run();
+		new FunctionTester(event, event.getChannel(), EventType.PART).run();
+	}
+
+	/**
+	 * Called whenever someone (or the bot) quits, updates the functions. Checks
+	 * all channels because the user can leave unlimited channels at once
+	 */
+	@Override
+	public void onQuit(QuitEvent event) {
+		Monitor.print("<<QUIT " + event.getUser().getNick());
+		new FunctionTester(event, null, EventType.QUIT).run();
 	}
 
 	/**
@@ -190,7 +202,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onUserList(UserListEvent event) {
 		Monitor.print("<<USERLIST");
-		new FunctionTester(event, event.getChannel(), 0).run();
+		new FunctionTester(event, event.getChannel(), EventType.USERLIST).run();
 	}
 
 	/**

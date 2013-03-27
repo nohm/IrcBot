@@ -43,15 +43,15 @@ public class LastfmHandler implements Runnable {
 				response = Config.speech.get("LA_SUC_LP").replace("<username>", username).replace("<song>", data[2]).replace("<artist>", data[1]).replace("<album>", data[3]);
 			}
 		}
-		Monitor.print("~INFO " + response);
+		Monitor.print("~RESPONSE  " + response);
 		event.getBot().sendMessage(event.getChannel(), response);
 
 		if (!username.equals("")) {
 			if (user.getName().equals("")) {
-				Monitor.print("~INFO Put lastfmuser: " + event.getUser().getNick() + " " + username);
+				Monitor.print("~RESPONSE  Put lastfmuser: " + event.getUser().getNick() + " " + username);
 				db.putLastfmUser(new LastfmUser(event.getUser().getNick(), username));
 			} else if (!user.getUsername().equalsIgnoreCase(username)) {
-				Monitor.print("~INFO Updated lastfmuser: " + user.getName() + " " + username);
+				Monitor.print("~RESPONSE  Updated lastfmuser: " + user.getName() + " " + username);
 				db.updateLastfmUser(new LastfmUser(user.getName(), username));
 			}
 		}

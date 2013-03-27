@@ -3,8 +3,6 @@ package org.snack.irc.main;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -93,7 +91,7 @@ public class Monitor {
 		monitorFrame.setJMenuBar(menuBar);
 		// set up the frame
 		monitorFrame.setTitle("Bot Monitor");
-		monitorFrame.setSize(600, 800);
+		monitorFrame.setSize(700, 800);
 		monitorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		monitorFrame.setResizable(true);
 		monitorFrame.setLocationRelativeTo(null);
@@ -103,26 +101,12 @@ public class Monitor {
 		monitorTextArea.setEditable(false);
 		// set up the frame to hold the text area
 		monitorScrollPane.getViewport().add(monitorTextArea);
-		resizeArea();
+		monitorScrollPane.setPreferredSize(new Dimension(monitorFrame.getWidth() - 25, monitorFrame.getHeight() - 60));
 		monitorPanel.add(monitorScrollPane);
 		monitorPanel.setBounds(-5, 0, monitorFrame.getWidth(), monitorFrame.getHeight());
 		monitorFrame.getContentPane().add(monitorPanel);
-		// updates textarea size, fails on snap
-		monitorFrame.getRootPane().addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				resizeArea();
-			}
-		});
 		// show frame
 		monitorFrame.setVisible(true);
-	}
-
-	/**
-	 * Resizes the textarea
-	 */
-	private static void resizeArea() {
-		monitorScrollPane.setPreferredSize(new Dimension(monitorFrame.getWidth() - 20, monitorFrame.getHeight() - 55));
 	}
 
 	/**
