@@ -7,14 +7,14 @@ package org.snack.irc.model;
  * 
  */
 public class Bot {
-	private final String name;
-	private final boolean html;
-	private final boolean lastfm;
-	private final boolean weather;
-	private final boolean quote;
-	private final boolean tell;
-	private final boolean translate;
-	private final boolean romaji;
+	public final String name;
+	public final boolean html;
+	public final boolean lastfm;
+	public final boolean weather;
+	public final boolean quote;
+	public final boolean tell;
+	public final boolean translate;
+	public final boolean romaji;
 
 	public Bot(String name, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji) {
 		this.name = name;
@@ -25,37 +25,5 @@ public class Bot {
 		this.tell = tell;
 		this.translate = translate;
 		this.romaji = romaji;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public boolean getHtml() {
-		return html;
-	}
-
-	public boolean getLastfm() {
-		return lastfm;
-	}
-
-	public boolean getWeather() {
-		return weather;
-	}
-
-	public boolean getQuote() {
-		return quote;
-	}
-
-	public boolean getTell() {
-		return tell;
-	}
-
-	public boolean getTranslate() {
-		return translate;
-	}
-
-	public boolean getRomaji() {
-		return romaji;
 	}
 }

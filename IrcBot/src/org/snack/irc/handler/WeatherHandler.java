@@ -27,13 +27,8 @@ public class WeatherHandler implements Runnable {
 	 */
 	private void getWeather() {
 		DatabaseManager db = DatabaseManager.getInstance();
-		String location = "";
 		WeatherUser user = db.getWeatherUser(event.getUser().getNick());
-		if (event.getMessage().length() == 3) {
-			location = user.getLocation();
-		} else {
-			location = event.getMessage().split("we ")[1];
-		}
+		String location = (event.getMessage().length() == 3) ? user.getLocation() : event.getMessage().split("we ")[1];
 
 		String data[] = WeatherAPI.getWeather(location);
 		if (data == null) {
@@ -46,7 +41,7 @@ public class WeatherHandler implements Runnable {
 							.replace("<humidity>", data[8]));
 		}
 
-		if (location != "") {
+		if (!location.equals("")) {
 			if (user.getName().equals("")) {
 				db.putWeatherUser(new WeatherUser(event.getUser().getNick(), location));
 			} else if (!user.getLocation().equalsIgnoreCase(location)) {

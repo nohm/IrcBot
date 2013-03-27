@@ -77,7 +77,7 @@ public class Startup {
 		}
 		// Join channels
 		for (Chan channel : Config.channels.values()) {
-			bot.sendRawLine("JOIN " + channel.getName());
+			bot.sendRawLine("JOIN " + channel.name);
 		}
 
 		// Start DB

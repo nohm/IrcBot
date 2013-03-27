@@ -30,6 +30,9 @@ public class TellHandler implements Runnable {
 		}
 	}
 
+	/**
+	 * Adds a new tell to the database
+	 */
 	private void add() {
 		DatabaseManager db = DatabaseManager.getInstance();
 		String nick = mEvent.getMessage().split(" ")[1];
@@ -50,6 +53,9 @@ public class TellHandler implements Runnable {
 		}
 	}
 
+	/**
+	 * Tells all the tells it has to tell.
+	 */
 	private void tell() {
 		DatabaseManager db = DatabaseManager.getInstance();
 

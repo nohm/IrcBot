@@ -21,8 +21,6 @@ public class TranslateHandler implements Runnable {
 
 	/**
 	 * Translates text using the Bing translate API
-	 * 
-	 * @param event
 	 */
 	private void translate() {
 		String text = event.getMessage().substring(11); // Cut off the command
@@ -40,7 +38,6 @@ public class TranslateHandler implements Runnable {
 			}
 			translatedText = Config.speech.get("TR_SUC").replace("<response>", Translate.execute(text, Language.AUTO_DETECT, Language.ENGLISH));
 		} catch (Exception e) {
-			e.printStackTrace();
 			translatedText = Config.speech.get("TR_ERR");
 		}
 

@@ -27,17 +27,9 @@ public class LastfmHandler implements Runnable {
 	 */
 	private void getLastfm() {
 		DatabaseManager db = DatabaseManager.getInstance();
-		String username = "";
 		LastfmUser user = db.getLastfmUser(event.getUser().getNick());
-
-		if (event.getMessage().length() == 3) {
-			username = user.getUsername();
-			if (username.equals("")) {
-				username = event.getUser().getNick();
-			}
-		} else {
-			username = event.getMessage().split("np ")[1];
-		}
+		String username = (event.getMessage().length() == 3) ? user.getUsername() : event.getMessage().split("np ")[1];
+		username = (username.equals("")) ? event.getUser().getNick() : username;
 
 		String data[] = LastfmAPI.getSong(username);
 		if (data == null) {

@@ -17,7 +17,9 @@ public class HelpHandler implements Runnable {
 		sendHelp();
 	}
 
-	// TODO: DOCS
+	/**
+	 * Returns help based on the channels enabled functions
+	 */
 	private void sendHelp() {
 		System.out.println("HELP");
 		Chan chan = Config.channels.get(event.getChannel().getName());

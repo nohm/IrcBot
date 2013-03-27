@@ -175,7 +175,7 @@ public class DatabaseManager {
 		query.put(Quote.CHANNEL_KEY, channel);
 		query.put(Quote.NAME_KEY, name);
 		DBCursor cursor = quote_collection.find(query);
-		System.out.println(cursor.count());
+
 		if (cursor.count() == 0) {
 			return new Quote("", "", "");
 		}

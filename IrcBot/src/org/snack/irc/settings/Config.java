@@ -20,12 +20,7 @@ public class Config {
 		if (c == null) {
 			c = new Config();
 		}
-		String[] jsonArray = TxtReader.parseTxt("config.txt");
-		String json = "";
-		for (String j : jsonArray) {
-			json += j;
-		}
-		jo = (JSONObject) JSONSerializer.toJSON(json);
+		jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config.txt"));
 
 		initSettings();
 		initSpeech();
@@ -70,7 +65,7 @@ public class Config {
 			}
 			Chan chan = new Chan(obj.getString("name"), obj.getBoolean("html"), obj.getBoolean("lastfm"), obj.getBoolean("weather"), obj.getBoolean("quote"),
 					obj.getBoolean("tell"), obj.getBoolean("translate"), obj.getBoolean("romaji"), bots);
-			channels.put(chan.getName(), chan);
+			channels.put(chan.name, chan);
 		}
 
 		JSONObject joResultSettings = jo.getJSONObject("settings");

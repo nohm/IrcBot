@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class Chan {
 	// Name
-	private String name;
+	public final String name;
 	// Functions that can be switched
 	private boolean html;
 	private boolean lastfm;
@@ -20,17 +20,17 @@ public class Chan {
 	private boolean translate;
 	private boolean romaji;
 	// Associated bots
-	private final ArrayList<Bot> bots;
+	public final ArrayList<Bot> bots;
 	// Mute
 	private boolean mute;
 	// Default function settings
-	private final boolean func_html;
-	private final boolean func_lastfm;
-	private final boolean func_weather;
-	private final boolean func_quote;
-	private final boolean func_tell;
-	private final boolean func_translate;
-	private final boolean func_romaji;
+	public final boolean func_html;
+	public final boolean func_lastfm;
+	public final boolean func_weather;
+	public final boolean func_quote;
+	public final boolean func_tell;
+	public final boolean func_translate;
+	public final boolean func_romaji;
 
 	public Chan(String name, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji, ArrayList<Bot> bots) {
 		this.name = name;
@@ -47,38 +47,6 @@ public class Chan {
 
 	public boolean getMute() {
 		return mute;
-	}
-
-	public boolean getFunc_html() {
-		return func_html;
-	}
-
-	public boolean getFunc_lastfm() {
-		return func_lastfm;
-	}
-
-	public boolean getFunc_weather() {
-		return func_weather;
-	}
-
-	public boolean getFunc_quote() {
-		return func_quote;
-	}
-
-	public boolean getFunc_tell() {
-		return func_tell;
-	}
-
-	public boolean getFunc_translate() {
-		return func_translate;
-	}
-
-	public boolean getFunc_romaji() {
-		return func_romaji;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public boolean getHtml() {
@@ -109,16 +77,8 @@ public class Chan {
 		return romaji;
 	}
 
-	public ArrayList<Bot> getBots() {
-		return bots;
-	}
-
 	public void setMute(boolean mute) {
 		this.mute = mute;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public void setHtml(boolean html) {

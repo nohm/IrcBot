@@ -22,8 +22,6 @@ public class HtmlHandler implements Runnable {
 	/**
 	 * Parses an event's text for http(s) links, cleans them and makes
 	 * HtmlGetter return their titles.
-	 * 
-	 * @param event
 	 */
 	private void getHTMLTitle() {
 		String[] split = event.getMessage().split(" ");

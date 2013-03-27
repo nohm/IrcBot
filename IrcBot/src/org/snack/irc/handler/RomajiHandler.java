@@ -24,8 +24,6 @@ public class RomajiHandler implements Runnable {
 
 	/**
 	 * Change romaji to katakana
-	 * 
-	 * @param event
 	 */
 	private void romaji() {
 		String romaji = event.getMessage().substring(9);
@@ -250,8 +248,6 @@ public class RomajiHandler implements Runnable {
 
 	/**
 	 * Change katakana to romaji
-	 * 
-	 * @param event
 	 */
 	private void katakana() {
 		String katakana = event.getMessage().substring(11);

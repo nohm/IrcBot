@@ -1,7 +1,6 @@
 package org.snack.irc.settings;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -12,16 +11,22 @@ import java.util.Scanner;
  */
 public class TxtReader {
 
-	// TODO: docs
-	public static String[] parseTxt(String path) throws Exception {
-		ArrayList<String> parsed = new ArrayList<String>();
-		// Parsed de data uit het txt-bestand
+	/**
+	 * Reads a file from path and returns the contents
+	 * 
+	 * @param path
+	 *            Where the file is
+	 * @return The file's contents
+	 * @throws Exception
+	 *             Generic exception
+	 */
+	public static String parseTxt(String path) throws Exception {
+		String contents = "";
 		Scanner in = new Scanner(new File(path));
 		while (in.hasNextLine()) {
-			parsed.add(in.nextLine());
+			contents += in.nextLine();
 		}
 		in.close();
-
-		return parsed.toArray(new String[parsed.size()]);
+		return contents;
 	}
 }

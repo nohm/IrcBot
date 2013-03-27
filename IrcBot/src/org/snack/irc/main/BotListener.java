@@ -128,8 +128,8 @@ public class BotListener extends ListenerAdapter implements Listener {
 
 		} else {
 			boolean add = true;
-			for (Bot b : chan.getBots()) {
-				if (b.getName().equalsIgnoreCase(nick)) {
+			for (Bot b : chan.bots) {
+				if (b.name.equalsIgnoreCase(nick)) {
 					add = false;
 				}
 			}
@@ -139,8 +139,8 @@ public class BotListener extends ListenerAdapter implements Listener {
 			// Add random quotes
 			if (new Random().nextInt(100) > 95 && add && message.length() <= Config.sett_int.get("QUOTE_MAX") && message.length() >= Config.sett_int.get("QUOTE_MIN")) {
 				try {
-					System.out.println("Added quote: " + chan.getName() + " <" + user.getNick() + "> " + message);
-					DatabaseManager.getInstance().putQuote(new Quote(chan.getName(), user.getNick(), message));
+					System.out.println("Added quote: " + chan.name + " <" + user.getNick() + "> " + message);
+					DatabaseManager.getInstance().putQuote(new Quote(chan.name, user.getNick(), message));
 				} catch (Exception e) {
 					// e.printStackTrace();
 				}
@@ -193,7 +193,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 				event.getBot().sendRawLine("NICKSERV IDENTIFY " + Config.sett_str.get("BOT_PASS"));
 			}
 			for (Chan channel : Config.channels.values()) {
-				event.getBot().sendRawLine("JOIN " + channel.getName());
+				event.getBot().sendRawLine("JOIN " + channel.name);
 			}
 		} catch (Exception e) {
 			Thread.sleep(5000);
