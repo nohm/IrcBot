@@ -78,9 +78,9 @@ public class Monitor {
 				new Prompt(getFrame(), PromptType.MESSAGE);
 			}
 		});
-		menuBroadcast = new JMenuItem("Send broadcast", KeyEvent.VK_S);
-		menuBroadcast.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
-		menuBroadcast.getAccessibleContext().setAccessibleDescription("Send a message");
+		menuBroadcast = new JMenuItem("Send broadcast", KeyEvent.VK_B);
+		menuBroadcast.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
+		menuBroadcast.getAccessibleContext().setAccessibleDescription("Send a broadcast");
 		menuBroadcast.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -97,6 +97,7 @@ public class Monitor {
 			}
 		});
 		mainMenu.add(menuSend);
+		mainMenu.add(menuBroadcast);
 		mainMenu.add(menuQuit);
 		monitorFrame.setJMenuBar(menuBar);
 		// set up the frame

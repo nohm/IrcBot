@@ -58,6 +58,7 @@ public class Config {
 		JSONObject joResultChannels = jo.getJSONObject("channels");
 		for (int i = 1; i <= joResultChannels.size(); i++) {
 			JSONObject obj = joResultChannels.getJSONObject("channel" + i);
+			JSONObject greet = obj.getJSONObject("greet");
 			JSONObject joResultBots = obj.getJSONObject("disable");
 			ArrayList<Bot> bots = new ArrayList<Bot>();
 			for (int j = 1; j <= joResultBots.size(); j++) {
@@ -65,8 +66,8 @@ public class Config {
 				bots.add(new Bot(bot.getString("name"), bot.getBoolean("greet"), bot.getBoolean("html"), bot.getBoolean("lastfm"), bot.getBoolean("weather"), bot
 						.getBoolean("quote"), bot.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji")));
 			}
-			Chan chan = new Chan(obj.getString("name"), obj.getBoolean("greet"), obj.getBoolean("html"), obj.getBoolean("lastfm"), obj.getBoolean("weather"),
-					obj.getBoolean("quote"), obj.getBoolean("tell"), obj.getBoolean("translate"), obj.getBoolean("romaji"), bots);
+			Chan chan = new Chan(obj.getString("name"), greet.getBoolean("enabled"), greet.getString("visible"), obj.getBoolean("html"), obj.getBoolean("lastfm"),
+					obj.getBoolean("weather"), obj.getBoolean("quote"), obj.getBoolean("tell"), obj.getBoolean("translate"), obj.getBoolean("romaji"), bots);
 			channels.put(chan.name, chan);
 		}
 

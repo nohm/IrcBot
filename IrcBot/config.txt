@@ -17,7 +17,10 @@
 	"channels": {
 		"channel1": {
 			"name": "#pantsumen",
-			"greet": "false",
+			"greet": {
+				"false",
+				"public"
+			},
             "html": "true",
             "lastfm": "true",
             "weather": "true",
@@ -50,7 +53,7 @@
 				},
 				"bot3": {
 					"name": "rinpantsu",
-					"greet": "false",
+					"greet": "true",
 					"html": "false",
 					"lastfm": "false",
 					"weather": "false",
@@ -74,7 +77,10 @@
 		},
 		"channel2": {
 			"name": "#rice",
-			"greet": "false",
+			"greet": {
+				"enabled": "false",
+				"visible": "public"
+			},
 	        "html": "true",
 	        "lastfm": "true",
 	        "weather": "true",
@@ -96,7 +102,7 @@
 				},
 				"bot2": {
 					"name": "Moelicious",
-					"greet": "false",
+					"greet": "true",
 					"html": "false",
 					"lastfm": "false",
 					"weather": "false",
