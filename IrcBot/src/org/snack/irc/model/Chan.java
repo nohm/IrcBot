@@ -12,6 +12,7 @@ public class Chan {
 	// Name
 	public final String name;
 	// Functions that can be switched
+	private final boolean greet;
 	private boolean html;
 	private boolean lastfm;
 	private boolean weather;
@@ -24,6 +25,7 @@ public class Chan {
 	// Mute
 	private boolean mute;
 	// Default function settings
+	public final boolean func_greet;
 	public final boolean func_html;
 	public final boolean func_lastfm;
 	public final boolean func_weather;
@@ -32,8 +34,9 @@ public class Chan {
 	public final boolean func_translate;
 	public final boolean func_romaji;
 
-	public Chan(String name, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji, ArrayList<Bot> bots) {
+	public Chan(String name, boolean greet, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji, ArrayList<Bot> bots) {
 		this.name = name;
+		this.greet = this.func_greet = greet;
 		this.html = this.func_html = html;
 		this.lastfm = this.func_lastfm = lastfm;
 		this.weather = this.func_weather = weather;
@@ -47,6 +50,10 @@ public class Chan {
 
 	public boolean getMute() {
 		return mute;
+	}
+
+	public boolean getGreet() {
+		return greet;
 	}
 
 	public boolean getHtml() {

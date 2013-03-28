@@ -8,6 +8,7 @@ package org.snack.irc.model;
  */
 public class Bot {
 	public final String name;
+	public final boolean greet;
 	public final boolean html;
 	public final boolean lastfm;
 	public final boolean weather;
@@ -16,7 +17,8 @@ public class Bot {
 	public final boolean translate;
 	public final boolean romaji;
 
-	public Bot(String name, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji) {
+	public Bot(String name, boolean greet, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji) {
+		this.greet = greet;
 		this.name = name;
 		this.html = html;
 		this.lastfm = lastfm;

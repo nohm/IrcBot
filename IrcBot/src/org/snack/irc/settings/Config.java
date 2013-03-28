@@ -62,11 +62,11 @@ public class Config {
 			ArrayList<Bot> bots = new ArrayList<Bot>();
 			for (int j = 1; j <= joResultBots.size(); j++) {
 				JSONObject bot = joResultBots.getJSONObject("bot" + j);
-				bots.add(new Bot(bot.getString("name"), bot.getBoolean("html"), bot.getBoolean("lastfm"), bot.getBoolean("weather"), bot.getBoolean("quote"), bot
-						.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji")));
+				bots.add(new Bot(bot.getString("name"), bot.getBoolean("greet"), bot.getBoolean("html"), bot.getBoolean("lastfm"), bot.getBoolean("weather"), bot
+						.getBoolean("quote"), bot.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji")));
 			}
-			Chan chan = new Chan(obj.getString("name"), obj.getBoolean("html"), obj.getBoolean("lastfm"), obj.getBoolean("weather"), obj.getBoolean("quote"),
-					obj.getBoolean("tell"), obj.getBoolean("translate"), obj.getBoolean("romaji"), bots);
+			Chan chan = new Chan(obj.getString("name"), obj.getBoolean("greet"), obj.getBoolean("html"), obj.getBoolean("lastfm"), obj.getBoolean("weather"),
+					obj.getBoolean("quote"), obj.getBoolean("tell"), obj.getBoolean("translate"), obj.getBoolean("romaji"), bots);
 			channels.put(chan.name, chan);
 		}
 
@@ -92,6 +92,8 @@ public class Config {
 		JSONObject joMute = joSpeech.getJSONObject("mute");
 		speech.put("MUTE", joMute.getString("mute"));
 		speech.put("UNMUTE", joMute.getString("unmute"));
+
+		speech.put("GREET", joSpeech.getString("greet"));
 
 		JSONObject joWeather = joSpeech.getJSONObject("weather");
 		speech.put("WE_SUC", joWeather.getString("success"));

@@ -17,6 +17,7 @@
 	"channels": {
 		"channel1": {
 			"name": "#pantsumen",
+			"greet": "false",
             "html": "true",
             "lastfm": "true",
             "weather": "true",
@@ -27,6 +28,7 @@
 			"disable": {
 				"bot1": {
 					"name": "uguubot",
+					"greet": "false",
 					"html": "false",
 					"lastfm": "true",
 					"weather": "true",
@@ -37,6 +39,7 @@
 				},
 				"bot2": {
 					"name": "MikuBot",
+					"greet": "false",
 					"html": "true",
 					"lastfm": "false",
 					"weather": "false",
@@ -47,6 +50,7 @@
 				},
 				"bot3": {
 					"name": "rinpantsu",
+					"greet": "false",
 					"html": "false",
 					"lastfm": "false",
 					"weather": "false",
@@ -57,6 +61,7 @@
 				},
 				"bot4": {
 					"name": "Moelicious",
+					"greet": "false",
 					"html": "false",
 					"lastfm": "false",
 					"weather": "false",
@@ -69,6 +74,7 @@
 		},
 		"channel2": {
 			"name": "#rice",
+			"greet": "false",
 	        "html": "true",
 	        "lastfm": "true",
 	        "weather": "true",
@@ -79,6 +85,7 @@
 			"disable": {
 				"bot1": {
 					"name": "uguubot",
+					"greet": "false",
 					"html": "true",
 					"lastfm": "true",
 					"weather": "true",
@@ -89,6 +96,7 @@
 				},
 				"bot2": {
 					"name": "Moelicious",
+					"greet": "false",
 					"html": "false",
 					"lastfm": "false",
 					"weather": "false",
@@ -129,6 +137,7 @@
 			},
 			"error": "No data found for the given name."
 		},
+		"greet": "Ohayou <name>",
 		"html": {
 			"success": {
 				"title": "[URI] <title>",
