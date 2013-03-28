@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
+import org.snack.irc.enums.PromptType;
 import org.snack.irc.settings.Config;
 
 public class Monitor {
@@ -29,7 +30,7 @@ public class Monitor {
 	private static JTextArea monitorTextArea;
 	private static JMenuBar menuBar;
 	private static JMenu mainMenu;
-	private static JMenuItem menuSend, menuQuit;
+	private static JMenuItem menuSend, menuBroadcast, menuQuit;
 
 	private static Monitor m;
 
@@ -74,7 +75,16 @@ public class Monitor {
 		menuSend.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				new Prompt(getFrame());
+				new Prompt(getFrame(), PromptType.MESSAGE);
+			}
+		});
+		menuBroadcast = new JMenuItem("Send broadcast", KeyEvent.VK_S);
+		menuBroadcast.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		menuBroadcast.getAccessibleContext().setAccessibleDescription("Send a message");
+		menuBroadcast.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new Prompt(getFrame(), PromptType.BROADCAST);
 			}
 		});
 		menuQuit = new JMenuItem("Shutdown", KeyEvent.VK_Q);

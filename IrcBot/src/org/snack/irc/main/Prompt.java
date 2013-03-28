@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import org.snack.irc.enums.PromptType;
+
 public class Prompt extends JFrame {
 
 	private static final long serialVersionUID = -9000069368916422378L;
@@ -19,14 +21,14 @@ public class Prompt extends JFrame {
 	/*
 	 * Prompt to send messages through the bot manually
 	 */
-	public Prompt(JFrame frame) {
-		super("Send message");
+	public Prompt(JFrame frame, PromptType promptType) {
+		super("Send " + ((promptType == PromptType.BROADCAST) ? "broadcast" : "message"));
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		this.getContentPane().setLayout(null);
 
 		// set up labels
-		instructionLabel = new JLabel("Make the bot send a message.");
+		instructionLabel = new JLabel("Make the bot send a " + ((promptType == PromptType.BROADCAST) ? "broadcast" : "message") + ".");
 		instructionLabel.setBounds(10, 10, 250, 15);
 		typeLabel = new JLabel("Type:");
 		typeLabel.setBounds(10, 40, 100, 15);
@@ -88,6 +90,11 @@ public class Prompt extends JFrame {
 		typeBox.setText("PRIVMSG");
 		targetBox.setText("#");
 		messageBox.setText("");
+
+		// disable for broadcast
+		if (promptType == PromptType.BROADCAST) {
+			targetBox.setEnabled(false);
+		}
 
 		// finish the frame
 		this.pack();

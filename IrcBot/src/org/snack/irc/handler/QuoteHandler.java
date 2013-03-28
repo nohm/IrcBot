@@ -2,6 +2,7 @@ package org.snack.irc.handler;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.database.DatabaseManager;
+import org.snack.irc.enums.QuoteType;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.model.Quote;
 import org.snack.irc.settings.Config;
@@ -9,16 +10,16 @@ import org.snack.irc.settings.Config;
 public class QuoteHandler implements Runnable {
 
 	private final MessageEvent<?> event;
-	private final boolean add;
+	private final QuoteType quoteType;
 
-	public QuoteHandler(MessageEvent<?> event, boolean add) {
+	public QuoteHandler(MessageEvent<?> event, QuoteType quoteType) {
 		this.event = event;
-		this.add = add;
+		this.quoteType = quoteType;
 	}
 
 	@Override
 	public void run() {
-		if (add) {
+		if (quoteType == QuoteType.ADD) {
 			addQuote();
 		} else {
 			getQuote();

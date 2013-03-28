@@ -1,22 +1,23 @@
 package org.snack.irc.handler;
 
 import org.pircbotx.hooks.events.MessageEvent;
+import org.snack.irc.enums.RomajiType;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.settings.Config;
 
 public class RomajiHandler implements Runnable {
 
 	private final MessageEvent<?> event;
-	private final boolean romaji;
+	private final RomajiType type;
 
-	public RomajiHandler(MessageEvent<?> event, boolean romaji) {
+	public RomajiHandler(MessageEvent<?> event, RomajiType type) {
 		this.event = event;
-		this.romaji = romaji;
+		this.type = type;
 	}
 
 	@Override
 	public void run() {
-		if (romaji) {
+		if (type == RomajiType.ROMAJI) {
 			romaji();
 		} else {
 			katakana();

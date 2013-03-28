@@ -98,38 +98,6 @@
 					"romaji": "false"
 				}
 			}
-		},
-		"channel3": {
-			"name": "#/fit/",
-	        "html": "true",
-	        "lastfm": "true",
-	        "weather": "true",
-	        "quote": "false",
-	        "tell": "true",
-			"translate": "false",
-			"romaji": "false",
-			"disable": {
-				"bot1": {
-					"name": "NBA",
-					"html": "false",
-					"lastfm": "false",
-					"weather": "false",
-					"quote": "false",
-					"tell": "false",
-					"translate": "false",
-					"romaji": "false"
-				},
-				"bot2": {
-					"name": "godzilla",
-					"html": "true",
-					"lastfm": "false",
-					"weather": "false",
-					"quote": "false",
-					"tell": "false",
-					"translate": "false",
-					"romaji": "false"
-				}
-			}
 		}
 	},
 	

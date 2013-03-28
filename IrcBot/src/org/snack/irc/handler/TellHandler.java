@@ -6,6 +6,7 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.database.DatabaseManager;
+import org.snack.irc.enums.TellType;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.model.Tell;
 import org.snack.irc.settings.Config;
@@ -14,17 +15,17 @@ public class TellHandler implements Runnable {
 
 	private final MessageEvent<?> mEvent;
 	private final JoinEvent<?> jEvent;
-	private final boolean add;
+	private final TellType tellType;
 
-	public TellHandler(MessageEvent<?> mEvent, JoinEvent<?> jEvent, boolean add) {
+	public TellHandler(MessageEvent<?> mEvent, JoinEvent<?> jEvent, TellType tellType) {
 		this.mEvent = mEvent;
 		this.jEvent = jEvent;
-		this.add = add;
+		this.tellType = tellType;
 	}
 
 	@Override
 	public void run() {
-		if (add) {
+		if (tellType == TellType.ADD) {
 			add();
 		} else {
 			tell();

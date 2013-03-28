@@ -12,18 +12,20 @@ public class FunctionTester implements Runnable {
 
 	private final Event<?> event;
 	private final Channel channel;
+	private final User user;
 	private final EventType eventType;
 
-	public FunctionTester(Event<?> event, Channel channel, EventType eventType) {
+	public FunctionTester(Event<?> event, Channel channel, User user, EventType eventType) {
 		this.event = event;
 		this.channel = channel;
+		this.user = user;
 		this.eventType = eventType;
 	}
 
 	@Override
 	public void run() {
 		if (channel != null) {
-			prepareTestOne(this.channel);
+			prepareTestOne(channel);
 		} else {
 			prepareTestAll();
 		}
@@ -48,23 +50,31 @@ public class FunctionTester implements Runnable {
 	 */
 	private void prepareTestOne(Channel channel) {
 		Chan chan = Config.channels.get(channel.getName());
-		for (User user : event.getBot().getUsers(channel)) {
-			for (Bot b : chan.bots) {
-				if (b.name.equalsIgnoreCase(user.getNick())) {
-					testFunctions(Config.channels.get(channel.getName()), b.name);
+		if (eventType == EventType.USERLIST) {
+			for (User user : event.getBot().getUsers(channel)) {
+				for (Bot b : chan.bots) {
+					if (b.name.equalsIgnoreCase(user.getNick())) {
+						testFunctions(chan, user.getNick());
+					}
 				}
 			}
+		} else {
+			testFunctions(chan, user.getNick());
 		}
 		String type;
 		switch (eventType) {
 		case JOIN:
 			type = "Join: ";
+			break;
 		case PART:
 			type = "Part: ";
+			break;
 		case QUIT:
 			type = "Quit: ";
+			break;
 		case USERLIST:
 			type = "Userlist: ";
+			break;
 		default:
 			type = "Join: ";
 		}
@@ -79,32 +89,30 @@ public class FunctionTester implements Runnable {
 	 *            The channel in question
 	 * @param nick
 	 *            The nick of the user that joined/parted/left
-	 * @param event
-	 *            Is it a join(0) or a part/leave(0)?
 	 */
 	private void testFunctions(Chan chan, String nick) {
 		for (Bot bot : chan.bots) {
 			if (bot.name.equals(nick)) {
 				if (bot.html && chan.func_html) {
-					chan.setHtml((eventType == EventType.JOIN) ? false : true);
+					chan.setHtml((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
 				}
 				if (bot.lastfm && chan.func_lastfm) {
-					chan.setLastfm((eventType == EventType.JOIN) ? false : true);
+					chan.setLastfm((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
 				}
 				if (bot.weather && chan.func_weather) {
-					chan.setWeather((eventType == EventType.JOIN) ? false : true);
+					chan.setWeather((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
 				}
 				if (bot.quote && chan.func_quote) {
-					chan.setQuote((eventType == EventType.JOIN) ? false : true);
+					chan.setQuote((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
 				}
 				if (bot.tell && chan.func_tell) {
-					chan.setTell((eventType == EventType.JOIN) ? false : true);
+					chan.setTell((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
 				}
 				if (bot.translate && chan.func_translate) {
-					chan.setTranslate((eventType == EventType.JOIN) ? false : true);
+					chan.setTranslate((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
 				}
 				if (bot.romaji && chan.func_romaji) {
-					chan.setRomaji((eventType == EventType.JOIN) ? false : true);
+					chan.setRomaji((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
 				}
 			}
 		}

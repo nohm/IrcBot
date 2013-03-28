@@ -16,6 +16,9 @@ import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.enums.EventType;
+import org.snack.irc.enums.QuoteType;
+import org.snack.irc.enums.RomajiType;
+import org.snack.irc.enums.TellType;
 import org.snack.irc.handler.HelpHandler;
 import org.snack.irc.handler.HtmlHandler;
 import org.snack.irc.handler.LastfmHandler;
@@ -85,28 +88,28 @@ public class BotListener extends ListenerAdapter implements Listener {
 			} else if (message.substring(1, 6).equals("quote")) {
 				if (chan.getQuote() && !chan.getMute()) {
 					Monitor.print("~COMMAND Quote: " + nick);
-					new QuoteHandler(event, message.split(" ")[1].equals("add") && message.split(" ").length >= 4).run();
+					new QuoteHandler(event, (message.split(" ")[1].equals("add") && message.split(" ").length >= 4) ? QuoteType.ADD : QuoteType.QUOTE).run();
 				}
 
 				// Call for tell
 			} else if (message.substring(1, 6).equals("tell ")) {
 				if (chan.getTell() && !chan.getMute()) {
 					Monitor.print("~COMMAND Tell: " + nick);
-					new TellHandler(event, null, true).run();
+					new TellHandler(event, null, TellType.ADD).run();
 				}
 
 				// Call for romaji
 			} else if (message.substring(1, 8).equals("romaji ")) {
 				if (chan.getRomaji() && !chan.getMute()) {
 					Monitor.print("~COMMAND Romaji: " + nick);
-					new RomajiHandler(event, true).run();
+					new RomajiHandler(event, RomajiType.ROMAJI).run();
 				}
 
 				// Call for katakana
 			} else if (message.substring(1, 10).equals("katakana ")) {
 				if (chan.getRomaji() && !chan.getMute()) {
 					Monitor.print("~COMMAND Katakana: " + nick);
-					new RomajiHandler(event, false).run();
+					new RomajiHandler(event, RomajiType.KATAKANA).run();
 				}
 
 				// Call for translate
@@ -171,9 +174,9 @@ public class BotListener extends ListenerAdapter implements Listener {
 	public void onJoin(JoinEvent event) throws Exception {
 		if (!event.getUser().getNick().equals(Config.sett_str.get("BOT_NAME"))) {
 			Monitor.print("<<JOIN " + event.getChannel().getName() + " " + event.getUser().getNick());
-			new FunctionTester(event, event.getChannel(), EventType.JOIN).run();
+			new FunctionTester(event, event.getChannel(), event.getUser(), EventType.JOIN).run();
 		}
-		new TellHandler(null, event, false).run();
+		new TellHandler(null, event, TellType.TELL).run();
 		Monitor.print("~INFO Cleaned tells: " + event.getChannel().getName());
 	}
 
@@ -183,7 +186,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onPart(PartEvent event) {
 		Monitor.print("<<PART " + event.getChannel().getName() + " " + event.getUser().getNick());
-		new FunctionTester(event, event.getChannel(), EventType.PART).run();
+		new FunctionTester(event, event.getChannel(), event.getUser(), EventType.PART).run();
 	}
 
 	/**
@@ -193,7 +196,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onQuit(QuitEvent event) {
 		Monitor.print("<<QUIT " + event.getUser().getNick());
-		new FunctionTester(event, null, EventType.QUIT).run();
+		new FunctionTester(event, null, event.getUser(), EventType.QUIT).run();
 	}
 
 	/**
@@ -202,7 +205,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onUserList(UserListEvent event) {
 		Monitor.print("<<USERLIST");
-		new FunctionTester(event, event.getChannel(), EventType.USERLIST).run();
+		new FunctionTester(event, event.getChannel(), null, EventType.USERLIST).run();
 	}
 
 	/**
@@ -228,8 +231,15 @@ public class BotListener extends ListenerAdapter implements Listener {
 
 	public static void sendCustomMessage(String type, String target, String message) {
 		if (type.equalsIgnoreCase("PRIVMSG") && (!target.equals("") || target == null)) {
-			Monitor.print(">>MSG " + target + ": " + message);
-			bot.sendMessage(target, message);
+			if (target.equals("#")) {
+				Monitor.print(">>BROADCAST " + message);
+				for (Channel channel : bot.getChannels()) {
+					bot.sendMessage(channel, "Broadcast: " + message);
+				}
+			} else {
+				Monitor.print(">>MSG " + target + ": " + message);
+				bot.sendMessage(target, message);
+			}
 		} else if (type.equalsIgnoreCase("ACTION")) {
 			Monitor.print(">>ACTION " + target + ": " + message);
 			bot.sendAction(target, message);
