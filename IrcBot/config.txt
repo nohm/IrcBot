@@ -2,7 +2,7 @@
 	"admin": "snack",
 	"debug": "false",
 	"interface": "true",
-	"scrollback": "250",
+	"scrollback": "50",
 	
 	"bot": {
 		"name": "snackbot",
@@ -17,18 +17,20 @@
 	"channels": {
 		"channel1": {
 			"name": "#pantsumen",
-			"greet": {
-				"false",
-				"public"
+			"functions": {
+				"greet": {
+					"enabled": "false",
+					"visible": "public"
+				},
+	            "html": "true",
+	            "lastfm": "true",
+	            "weather": "true",
+	            "quote": "true",
+	            "tell": "true",
+				"translate": "false",
+				"romaji": "false"
 			},
-            "html": "true",
-            "lastfm": "true",
-            "weather": "true",
-            "quote": "true",
-            "tell": "true",
-			"translate": "false",
-			"romaji": "false",
-			"disable": {
+			"bots": {
 				"bot1": {
 					"name": "uguubot",
 					"greet": "false",
@@ -77,18 +79,20 @@
 		},
 		"channel2": {
 			"name": "#rice",
-			"greet": {
-				"enabled": "false",
-				"visible": "public"
+			"functions": {
+				"greet": {
+					"enabled": "true",
+					"visible": "public"
+				},
+		        "html": "true",
+		        "lastfm": "true",
+		        "weather": "true",
+		        "quote": "false",
+		        "tell": "true",
+				"translate": "false",
+				"romaji": "false"
 			},
-	        "html": "true",
-	        "lastfm": "true",
-	        "weather": "true",
-	        "quote": "false",
-	        "tell": "true",
-			"translate": "false",
-			"romaji": "false",
-			"disable": {
+			"bots": {
 				"bot1": {
 					"name": "uguubot",
 					"greet": "false",
@@ -102,6 +106,46 @@
 				},
 				"bot2": {
 					"name": "Moelicious",
+					"greet": "true",
+					"html": "false",
+					"lastfm": "false",
+					"weather": "false",
+					"quote": "false",
+					"tell": "false",
+					"translate": "false",
+					"romaji": "false"
+				}
+			}
+		},
+		"channel3": {
+			"name": "#/fit/",
+			"functions": {
+				"greet": {
+					"enabled": "false",
+					"visible": "public"
+				},
+		        "html": "true",
+		        "lastfm": "true",
+		        "weather": "true",
+		        "quote": "false",
+		        "tell": "true",
+				"translate": "false",
+				"romaji": "false"
+			},
+			"bots": {
+				"bot1": {
+					"name": "NBA",
+					"greet": "false",
+					"html": "false",
+					"lastfm": "false",
+					"weather": "false",
+					"quote": "false",
+					"tell": "false",
+					"translate": "false",
+					"romaji": "false"
+				},
+				"bot2": {
+					"name": "godzilla",
 					"greet": "true",
 					"html": "false",
 					"lastfm": "false",

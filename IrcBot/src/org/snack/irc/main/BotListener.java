@@ -176,7 +176,10 @@ public class BotListener extends ListenerAdapter implements Listener {
 		if (!event.getUser().getNick().equals(Config.sett_str.get("BOT_NAME"))) {
 			Monitor.print("<<JOIN " + event.getChannel().getName() + " " + event.getUser().getNick());
 			new FunctionTester(event, event.getChannel(), event.getUser(), EventType.JOIN).run();
-			new GreetHandler(event).run();
+			Chan chan = Config.channels.get(event.getChannel().getName());
+			if (chan.getGreet() && !chan.getMute()) {
+				new GreetHandler(event).run();
+			}
 		}
 		new TellHandler(null, event, TellType.TELL).run();
 		Monitor.print("~INFO Cleaned tells: " + event.getChannel().getName());

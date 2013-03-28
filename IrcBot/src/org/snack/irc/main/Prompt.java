@@ -2,6 +2,8 @@ package org.snack.irc.main;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -86,10 +88,18 @@ public class Prompt extends JFrame {
 			}
 		});
 
+		// Add enter listener
+
 		// adds default info
 		typeBox.setText("PRIVMSG");
 		targetBox.setText("#");
 		messageBox.setText("");
+
+		// add keylisteners for commands
+		CommandListener cl = new CommandListener();
+		typeBox.addKeyListener(cl);
+		targetBox.addKeyListener(cl);
+		messageBox.addKeyListener(cl);
 
 		// disable for broadcast
 		if (promptType == PromptType.BROADCAST) {
@@ -106,5 +116,26 @@ public class Prompt extends JFrame {
 	// used to dispose this box
 	private Prompt getFrame() {
 		return this;
+	}
+
+	// used to detect enter/esc for fields
+	private class CommandListener implements KeyListener {
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				saveButton.doClick();
+			} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				cancelButton.doClick();
+			}
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+		}
 	}
 }

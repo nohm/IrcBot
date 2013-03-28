@@ -30,7 +30,7 @@ public class Monitor {
 	private static JTextArea monitorTextArea;
 	private static JMenuBar menuBar;
 	private static JMenu mainMenu;
-	private static JMenuItem menuSend, menuBroadcast, menuQuit;
+	private static JMenuItem menuSend, menuBroadcast, menuClear, menuQuit;
 
 	private static Monitor m;
 
@@ -78,6 +78,15 @@ public class Monitor {
 				new Prompt(getFrame(), PromptType.MESSAGE);
 			}
 		});
+		menuClear = new JMenuItem("Clear monitor", KeyEvent.VK_C);
+		menuClear.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+		menuClear.getAccessibleContext().setAccessibleDescription("Clear the monitor");
+		menuClear.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				monitorTextArea.removeAll();
+			}
+		});
 		menuBroadcast = new JMenuItem("Send broadcast", KeyEvent.VK_B);
 		menuBroadcast.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
 		menuBroadcast.getAccessibleContext().setAccessibleDescription("Send a broadcast");
@@ -98,6 +107,7 @@ public class Monitor {
 		});
 		mainMenu.add(menuSend);
 		mainMenu.add(menuBroadcast);
+		mainMenu.add(menuClear);
 		mainMenu.add(menuQuit);
 		monitorFrame.setJMenuBar(menuBar);
 		// set up the frame
@@ -110,6 +120,7 @@ public class Monitor {
 		// set up the text area
 		monitorTextArea.setToolTipText("");
 		monitorTextArea.setEditable(false);
+		monitorTextArea.getDocument().addDocumentListener(new MonitorLimiter(50));
 		// set up the frame to hold the text area
 		monitorScrollPane.getViewport().add(monitorTextArea);
 		monitorScrollPane.setPreferredSize(new Dimension(monitorFrame.getWidth() - 25, monitorFrame.getHeight() - 60));
