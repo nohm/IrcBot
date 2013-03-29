@@ -61,6 +61,10 @@ public class FunctionTester implements Runnable {
 		} else {
 			testFunctions(chan, user.getNick());
 		}
+		printFunctions(chan);
+	}
+
+	private void printFunctions(Chan chan) {
 		String type;
 		switch (eventType) {
 		case JOIN:

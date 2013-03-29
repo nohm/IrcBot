@@ -214,8 +214,8 @@
 				"file": {
 					"size_zero": "Unknown size",
 					"size_not_zero": "<size> <format>",
-					"encoding": "[<content-type>, <content-encoding>]",
-					"no_encoding": "[<content-type>]",
+					"encoding": "'<content-type>, <content-encoding>'",
+					"no_encoding": "'<content-type>'",
 					"file_full": "<encoding> <size>"
 				}
 			},
