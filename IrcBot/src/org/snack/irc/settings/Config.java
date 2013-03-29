@@ -60,15 +60,17 @@ public class Config {
 			JSONObject obj = joResultChannels.getJSONObject("channel" + i);
 			JSONObject func = obj.getJSONObject("functions");
 			JSONObject greet = func.getJSONObject("greet");
+			JSONObject search = func.getJSONObject("search");
 			JSONObject joResultBots = obj.getJSONObject("bots");
 			ArrayList<Bot> bots = new ArrayList<Bot>();
 			for (int j = 1; j <= joResultBots.size(); j++) {
 				JSONObject bot = joResultBots.getJSONObject("bot" + j);
 				bots.add(new Bot(bot.getString("name"), bot.getBoolean("greet"), bot.getBoolean("html"), bot.getBoolean("lastfm"), bot.getBoolean("weather"), bot
-						.getBoolean("quote"), bot.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji")));
+						.getBoolean("quote"), bot.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji"), bot.getBoolean("search")));
 			}
 			Chan chan = new Chan(obj.getString("name"), greet.getBoolean("enabled"), greet.getString("visible"), func.getBoolean("html"), func.getBoolean("lastfm"),
-					func.getBoolean("weather"), func.getBoolean("quote"), func.getBoolean("tell"), func.getBoolean("translate"), func.getBoolean("romaji"), bots);
+					func.getBoolean("weather"), func.getBoolean("quote"), func.getBoolean("tell"), func.getBoolean("translate"), func.getBoolean("romaji"),
+					search.getBoolean("enabled"), search.getString("default"), bots);
 			channels.put(chan.name, chan);
 		}
 
@@ -141,5 +143,9 @@ public class Config {
 		JSONObject joRomaji = joSpeech.getJSONObject("romaji");
 		speech.put("RK_ROM", joRomaji.getString("romaji"));
 		speech.put("RK_KAT", joRomaji.getString("katakana"));
+
+		JSONObject joSearch = joSpeech.getJSONObject("search");
+		speech.put("SE_SUC", joSearch.getString("success"));
+		speech.put("SE_ERR", joSearch.getString("error"));
 	}
 }

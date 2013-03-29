@@ -79,7 +79,7 @@ public class FunctionTester implements Runnable {
 			type = "Join: ";
 		}
 		Monitor.print("~INFO " + type + chan.name + " Functions: html:" + chan.getHtml() + " lastfm:" + chan.getLastfm() + " weather:" + chan.getWeather() + " quote:"
-				+ chan.getQuote() + " tell:" + chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji());
+				+ chan.getQuote() + " tell:" + chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji() + " search:" + chan.getSearch());
 	}
 
 	/**
@@ -93,26 +93,30 @@ public class FunctionTester implements Runnable {
 	private void testFunctions(Chan chan, String nick) {
 		for (Bot bot : chan.bots) {
 			if (bot.name.equals(nick)) {
+				boolean event = (eventType == EventType.JOIN || eventType == EventType.USERLIST);
 				if (bot.html && chan.func_html) {
-					chan.setHtml((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
+					chan.setHtml((event) ? false : true);
 				}
 				if (bot.lastfm && chan.func_lastfm) {
-					chan.setLastfm((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
+					chan.setLastfm((event) ? false : true);
 				}
 				if (bot.weather && chan.func_weather) {
-					chan.setWeather((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
+					chan.setWeather((event) ? false : true);
 				}
 				if (bot.quote && chan.func_quote) {
-					chan.setQuote((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
+					chan.setQuote((event) ? false : true);
 				}
 				if (bot.tell && chan.func_tell) {
-					chan.setTell((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
+					chan.setTell((event) ? false : true);
 				}
 				if (bot.translate && chan.func_translate) {
-					chan.setTranslate((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
+					chan.setTranslate((event) ? false : true);
 				}
 				if (bot.romaji && chan.func_romaji) {
-					chan.setRomaji((eventType == EventType.JOIN || eventType == EventType.USERLIST) ? false : true);
+					chan.setRomaji((event) ? false : true);
+				}
+				if (bot.search && chan.func_search) {
+					chan.setSearch((event) ? false : true);
 				}
 			}
 		}

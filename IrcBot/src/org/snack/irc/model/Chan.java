@@ -21,6 +21,8 @@ public class Chan {
 	private boolean tell;
 	private boolean translate;
 	private boolean romaji;
+	private boolean search;
+	public final String search_default;
 	// Associated bots
 	public final ArrayList<Bot> bots;
 	// Mute
@@ -34,9 +36,10 @@ public class Chan {
 	public final boolean func_tell;
 	public final boolean func_translate;
 	public final boolean func_romaji;
+	public final boolean func_search;
 
 	public Chan(String name, boolean greet, String greet_visible, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji,
-			ArrayList<Bot> bots) {
+			boolean search, String search_default, ArrayList<Bot> bots) {
 		this.name = name;
 		this.greet = this.func_greet = greet;
 		this.greet_visible = (greet_visible.equals("public")) ? true : false;
@@ -47,6 +50,8 @@ public class Chan {
 		this.tell = this.func_tell = tell;
 		this.translate = this.func_translate = translate;
 		this.romaji = this.func_romaji = romaji;
+		this.search = this.func_search = search;
+		this.search_default = search_default;
 		this.mute = false;
 		this.bots = bots;
 	}
@@ -87,6 +92,10 @@ public class Chan {
 		return romaji;
 	}
 
+	public boolean getSearch() {
+		return search;
+	}
+
 	public void setMute(boolean mute) {
 		this.mute = mute;
 	}
@@ -121,5 +130,9 @@ public class Chan {
 
 	public void setRomaji(boolean romaji) {
 		this.romaji = romaji;
+	}
+
+	public void setSearch(boolean search) {
+		this.search = search;
 	}
 }

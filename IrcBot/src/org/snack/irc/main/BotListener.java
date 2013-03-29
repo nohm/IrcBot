@@ -25,6 +25,7 @@ import org.snack.irc.handler.HtmlHandler;
 import org.snack.irc.handler.LastfmHandler;
 import org.snack.irc.handler.QuoteHandler;
 import org.snack.irc.handler.RomajiHandler;
+import org.snack.irc.handler.SearchHandler;
 import org.snack.irc.handler.TellHandler;
 import org.snack.irc.handler.TranslateHandler;
 import org.snack.irc.handler.WeatherHandler;
@@ -97,6 +98,13 @@ public class BotListener extends ListenerAdapter implements Listener {
 				if (chan.getTell() && !chan.getMute()) {
 					Monitor.print("~COMMAND Tell: " + nick);
 					new TellHandler(event, null, TellType.ADD).run();
+				}
+
+				// Call for search
+			} else if (message.substring(1, 7).equals("search")) {
+				if (chan.getSearch() && !chan.getMute()) {
+					Monitor.print("~COMMAND Search: " + nick);
+					new SearchHandler(event).run();
 				}
 
 				// Call for romaji
@@ -172,7 +180,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 * Called whenever someone (or the bot) joins, updates the functions.
 	 */
 	@Override
-	public void onJoin(JoinEvent event) throws Exception {
+	public void onJoin(JoinEvent event) {
 		if (!event.getUser().getNick().equals(Config.sett_str.get("BOT_NAME"))) {
 			Monitor.print("<<JOIN " + event.getChannel().getName() + " " + event.getUser().getNick());
 			new FunctionTester(event, event.getChannel(), event.getUser(), EventType.JOIN).run();

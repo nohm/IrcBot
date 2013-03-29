@@ -28,7 +28,11 @@
 	            "quote": "true",
 	            "tell": "true",
 				"translate": "false",
-				"romaji": "false"
+				"romaji": "false",
+				"search": {
+					"enabled": "true",
+					"default": "g"
+				}
 			},
 			"bots": {
 				"bot1": {
@@ -40,7 +44,8 @@
 					"quote": "false",
 					"tell": "true",
 					"translate": "false",
-					"romaji": "false"
+					"romaji": "false",
+					"search": "false"
 				},
 				"bot2": {
 					"name": "MikuBot",
@@ -51,7 +56,8 @@
 					"quote": "false",
 					"tell": "false",
 					"translate": "false",
-					"romaji": "false"
+					"romaji": "false",
+					"search": "false"
 				},
 				"bot3": {
 					"name": "rinpantsu",
@@ -62,7 +68,8 @@
 					"quote": "false",
 					"tell": "false",
 					"translate": "false",
-					"romaji": "true"
+					"romaji": "true",
+					"search": "false"
 				},
 				"bot4": {
 					"name": "Moelicious",
@@ -73,7 +80,8 @@
 					"quote": "false",
 					"tell": "false",
 					"translate": "false",
-					"romaji": "false"
+					"romaji": "false",
+					"search": "false"
 				}
 			}
 		},
@@ -90,7 +98,11 @@
 		        "quote": "false",
 		        "tell": "true",
 				"translate": "false",
-				"romaji": "false"
+				"romaji": "false",
+				"search": {
+					"enabled": "true",
+					"default": "g"
+				}
 			},
 			"bots": {
 				"bot1": {
@@ -102,7 +114,8 @@
 					"quote": "false",
 					"tell": "true",
 					"translate": "false",
-					"romaji": "false"
+					"romaji": "false",
+					"search": "false"
 				},
 				"bot2": {
 					"name": "Moelicious",
@@ -113,7 +126,8 @@
 					"quote": "false",
 					"tell": "false",
 					"translate": "false",
-					"romaji": "false"
+					"romaji": "false",
+					"search": "false"
 				}
 			}
 		},
@@ -130,7 +144,11 @@
 		        "quote": "false",
 		        "tell": "true",
 				"translate": "false",
-				"romaji": "false"
+				"romaji": "false",
+				"search": {
+					"enabled": "false",
+					"default": "fit"
+				}
 			},
 			"bots": {
 				"bot1": {
@@ -142,7 +160,8 @@
 					"quote": "false",
 					"tell": "false",
 					"translate": "false",
-					"romaji": "false"
+					"romaji": "false",
+					"search": "false"
 				},
 				"bot2": {
 					"name": "godzilla",
@@ -153,7 +172,8 @@
 					"quote": "false",
 					"tell": "false",
 					"translate": "false",
-					"romaji": "false"
+					"romaji": "false",
+					"search": "false"
 				}
 			}
 		}
@@ -222,6 +242,10 @@
 		"romaji": {
 			"romaji": "Romaji: <response>",
 			"katakana": "Katakana: <response>"
+		},
+		"search": {
+			"success": "Thread: <subject> > <url>",
+			"error": "Nothing found."
 		}
 	}
 }
