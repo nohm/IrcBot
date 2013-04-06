@@ -40,9 +40,8 @@ public class HtmlGetter {
 				conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 				conn.setReadTimeout(10000);
 				int size = conn.getContentLength();
-				String sizeString = "B";
-				double chosen = 0;
-				String output = "";
+				String sizeString, output;
+				double filesize;
 				if (size <= 0) {
 					output = Config.speech.get("HT_SUC_SIZE0");
 				} else {
@@ -53,20 +52,20 @@ public class HtmlGetter {
 
 					if (kilobytes < 1) {
 						sizeString = "B";
-						chosen = bytes;
+						filesize = bytes;
 					} else if (megabytes < 1) {
 						sizeString = "KiB";
-						chosen = kilobytes;
+						filesize = kilobytes;
 					} else if (gigabytes < 1) {
 						sizeString = "MiB";
-						chosen = megabytes;
+						filesize = megabytes;
 					} else {
 						sizeString = "GiB";
-						chosen = gigabytes;
+						filesize = gigabytes;
 					}
 
-					String choStr = new BigDecimal(chosen).setScale(2, BigDecimal.ROUND_HALF_UP).toString();
-					output = Config.speech.get("HT_SUC_!SIZE0").replace("<size>", choStr).replace("<format>", sizeString);
+					filesize = new BigDecimal(filesize).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+					output = Config.speech.get("HT_SUC_!SIZE0").replace("<size>", Double.toString(filesize)).replace("<format>", sizeString);
 				}
 
 				String encoding = "";

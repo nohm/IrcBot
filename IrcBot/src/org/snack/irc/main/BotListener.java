@@ -1,6 +1,8 @@
 package org.snack.irc.main;
 
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -44,16 +46,18 @@ import org.snack.irc.settings.Config;
 public class BotListener extends ListenerAdapter implements Listener {
 
 	private static PircBotX bot;
+	private final ExecutorService executor;
 
 	public BotListener(PircBotX bot) {
 		BotListener.bot = bot;
+		executor = Executors.newFixedThreadPool(5);
 	}
 
 	/**
 	 * Called on every message, determines what to do with it.
 	 */
 	@Override
-	public void onMessage(MessageEvent event) throws Exception {
+	public void onMessage(MessageEvent event) {
 		PircBotX bot = event.getBot();
 		Channel channel = event.getChannel();
 		Chan chan = Config.channels.get(channel.getName());
@@ -66,66 +70,66 @@ public class BotListener extends ListenerAdapter implements Listener {
 		if (Config.sett_str.get("IDENTIFIERS").contains(message.substring(0, 1))) {
 
 			// Call for weather
-			if (message.substring(1, 3).equals("we")) {
+			if (message.length() >= 3 && message.substring(1, 3).equals("we")) {
 				if (chan.getWeather() && !chan.getMute()) {
 					Monitor.print("~COMMAND Weather: " + nick);
-					new WeatherHandler(event).run();
+					executor.execute(new WeatherHandler(event));
 				}
 
 				// Call for now playing
-			} else if (message.substring(1, 3).equals("np")) {
+			} else if (message.length() >= 3 && message.substring(1, 3).equals("np")) {
 				if (chan.getLastfm() && !chan.getMute()) {
 					Monitor.print("~COMMAND Lastfm: " + nick);
-					new LastfmHandler(event).run();
+					executor.execute(new LastfmHandler(event));
 				}
 
 				// Cal for help
-			} else if (message.substring(1, 5).equals("help")) {
+			} else if (message.length() >= 5 && message.substring(1, 5).equals("help")) {
 				if (!chan.getMute()) {
 					Monitor.print("~COMMAND Help: " + nick);
-					new HelpHandler(event).run();
+					executor.execute(new HelpHandler(event));
 				}
 
 				// Call for quotes
-			} else if (message.substring(1, 6).equals("quote")) {
+			} else if (message.length() >= 6 && message.substring(1, 6).equals("quote")) {
 				if (chan.getQuote() && !chan.getMute()) {
 					Monitor.print("~COMMAND Quote: " + nick);
-					new QuoteHandler(event, (message.split(" ")[1].equals("add") && message.split(" ").length >= 4) ? QuoteType.ADD : QuoteType.QUOTE).run();
+					executor.execute(new QuoteHandler(event, (message.split(" ").length >= 4 && message.split(" ")[1].equals("add")) ? QuoteType.ADD : QuoteType.QUOTE));
 				}
 
 				// Call for tell
-			} else if (message.substring(1, 6).equals("tell ")) {
+			} else if (message.length() >= 6 && message.substring(1, 6).equals("tell ")) {
 				if (chan.getTell() && !chan.getMute()) {
 					Monitor.print("~COMMAND Tell: " + nick);
-					new TellHandler(event, null, TellType.ADD).run();
+					executor.execute(new TellHandler(event, null, TellType.ADD));
 				}
 
 				// Call for search
-			} else if (message.substring(1, 7).equals("search")) {
+			} else if (message.length() >= 7 && message.substring(1, 7).equals("search")) {
 				if (chan.getSearch() && !chan.getMute()) {
 					Monitor.print("~COMMAND Search: " + nick);
-					new SearchHandler(event).run();
+					executor.execute(new SearchHandler(event));
 				}
 
 				// Call for romaji
-			} else if (message.substring(1, 8).equals("romaji ")) {
+			} else if (message.length() >= 8 && message.substring(1, 8).equals("romaji ")) {
 				if (chan.getRomaji() && !chan.getMute()) {
 					Monitor.print("~COMMAND Romaji: " + nick);
-					new RomajiHandler(event, RomajiType.ROMAJI).run();
+					executor.execute(new RomajiHandler(event, RomajiType.ROMAJI));
 				}
 
 				// Call for katakana
-			} else if (message.substring(1, 10).equals("katakana ")) {
+			} else if (message.length() >= 10 && message.substring(1, 10).equals("katakana ")) {
 				if (chan.getRomaji() && !chan.getMute()) {
 					Monitor.print("~COMMAND Katakana: " + nick);
-					new RomajiHandler(event, RomajiType.KATAKANA).run();
+					executor.execute(new RomajiHandler(event, RomajiType.KATAKANA));
 				}
 
 				// Call for translate
-			} else if (message.substring(1, 11).equals("translate ")) {
+			} else if (message.length() >= 11 && message.substring(1, 11).equals("translate ")) {
 				if (chan.getTranslate() && !chan.getMute()) {
 					Monitor.print("~COMMAND Translate: " + nick);
-					new TranslateHandler(event).run();
+					executor.execute(new TranslateHandler(event));
 				}
 			}
 
@@ -133,7 +137,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 		} else if (message.contains("http://") || message.contains("https://")) {
 			if (chan.getHtml() && !chan.getMute()) {
 				Monitor.print("~COMMAND Html: " + nick);
-				new HtmlHandler(event).run();
+				executor.execute(new HtmlHandler(event));
 			}
 
 			// Admin commands
@@ -183,13 +187,13 @@ public class BotListener extends ListenerAdapter implements Listener {
 	public void onJoin(JoinEvent event) {
 		if (!event.getUser().getNick().equals(Config.sett_str.get("BOT_NAME"))) {
 			Monitor.print("<<JOIN " + event.getChannel().getName() + " " + event.getUser().getNick());
-			new FunctionTester(event, event.getChannel(), event.getUser(), EventType.JOIN).run();
+			executor.execute(new FunctionTester(event, event.getChannel(), event.getUser(), EventType.JOIN));
 			Chan chan = Config.channels.get(event.getChannel().getName());
 			if (chan.getGreet() && !chan.getMute()) {
-				new GreetHandler(event).run();
+				executor.execute(new GreetHandler(event));
 			}
 		}
-		new TellHandler(null, event, TellType.TELL).run();
+		executor.execute(new TellHandler(null, event, TellType.TELL));
 		Monitor.print("~INFO Cleaned tells: " + event.getChannel().getName());
 	}
 
@@ -199,7 +203,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onPart(PartEvent event) {
 		Monitor.print("<<PART " + event.getChannel().getName() + " " + event.getUser().getNick());
-		new FunctionTester(event, event.getChannel(), event.getUser(), EventType.PART).run();
+		executor.execute(new FunctionTester(event, event.getChannel(), event.getUser(), EventType.PART));
 	}
 
 	/**
@@ -209,7 +213,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onQuit(QuitEvent event) {
 		Monitor.print("<<QUIT " + event.getUser().getNick());
-		new FunctionTester(event, null, event.getUser(), EventType.QUIT).run();
+		executor.execute(new FunctionTester(event, null, event.getUser(), EventType.QUIT));
 	}
 
 	/**
@@ -218,14 +222,14 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onUserList(UserListEvent event) {
 		Monitor.print("<<USERLIST");
-		new FunctionTester(event, event.getChannel(), null, EventType.USERLIST).run();
+		executor.execute(new FunctionTester(event, event.getChannel(), null, EventType.USERLIST));
 	}
 
 	/**
 	 * Called when the connection gets lost, will retry to join every 5000ms
 	 */
 	@Override
-	public void onDisconnect(DisconnectEvent event) throws Exception {
+	public void onDisconnect(DisconnectEvent event) {
 		Monitor.print("<<DISCONNECT");
 		try {
 			event.getBot().connect(Config.sett_str.get("SERVER"));
@@ -237,7 +241,10 @@ public class BotListener extends ListenerAdapter implements Listener {
 			}
 			Monitor.print("~INFO Reconnected");
 		} catch (Exception e) {
-			Thread.sleep(5000);
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e1) {
+			}
 			onDisconnect(event);
 		}
 	}

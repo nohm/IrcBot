@@ -3,6 +3,11 @@ package org.snack.irc.handler;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.snack.irc.settings.Config;
 
+/**
+ * TODO:
+ * 
+ * Custom channel greeting
+ */
 public class GreetHandler implements Runnable {
 
 	private final JoinEvent<?> event;

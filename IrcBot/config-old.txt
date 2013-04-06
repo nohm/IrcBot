@@ -1,14 +1,14 @@
 {
 	"admin": "snack",
 	"debug": "false",
-	"interface": "false",
+	"interface": "true",
 	"scrollback": "50",
 	
 	"bot": {
-		"name": "ricebot",
-		"alt_name": "snackbot",
-		"login": "r",
-		"version": "b",
+		"name": "snackbot",
+		"alt_name": "Snack-Bot",
+		"login": "itsabot",
+		"version": "maybeitllcrashless",
 		"password": "1.pieps"
 	},
 	
@@ -16,6 +16,76 @@
 	
 	"channels": {
 		"channel1": {
+			"name": "#pantsumen",
+			"functions": {
+				"greet": {
+					"enabled": "false",
+					"visible": "public"
+				},
+	            "html": "true",
+	            "lastfm": "true",
+	            "weather": "true",
+	            "quote": "true",
+	            "tell": "true",
+				"translate": "false",
+				"romaji": "false",
+				"search": {
+					"enabled": "true",
+					"default": "g"
+				}
+			},
+			"bots": {
+				"bot1": {
+					"name": "uguubot",
+					"greet": "false",
+					"html": "false",
+					"lastfm": "true",
+					"weather": "true",
+					"quote": "false",
+					"tell": "true",
+					"translate": "false",
+					"romaji": "false",
+					"search": "false"
+				},
+				"bot2": {
+					"name": "MikuBot",
+					"greet": "false",
+					"html": "true",
+					"lastfm": "false",
+					"weather": "false",
+					"quote": "false",
+					"tell": "false",
+					"translate": "false",
+					"romaji": "false",
+					"search": "false"
+				},
+				"bot3": {
+					"name": "rinpantsu",
+					"greet": "true",
+					"html": "false",
+					"lastfm": "false",
+					"weather": "false",
+					"quote": "false",
+					"tell": "false",
+					"translate": "false",
+					"romaji": "true",
+					"search": "false"
+				},
+				"bot4": {
+					"name": "Moelicious",
+					"greet": "false",
+					"html": "false",
+					"lastfm": "false",
+					"weather": "false",
+					"quote": "false",
+					"tell": "false",
+					"translate": "false",
+					"romaji": "false",
+					"search": "false"
+				}
+			}
+		},
+		"channel2": {
 			"name": "#rice",
 			"functions": {
 				"greet": {
@@ -27,8 +97,8 @@
 		        "weather": "true",
 		        "quote": "true",
 		        "tell": "true",
-				"translate": "true",
-				"romaji": "true",
+				"translate": "false",
+				"romaji": "false",
 				"search": {
 					"enabled": "true",
 					"default": "g"
