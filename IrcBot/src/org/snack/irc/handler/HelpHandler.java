@@ -46,8 +46,11 @@ public class HelpHandler implements Runnable {
 			event.getBot().sendNotice(event.getUser(), "Change romaji to katakana: .romaji [message]");
 			event.getBot().sendNotice(event.getUser(), "Change katakana to romaji: .katakana [message]");
 		}
+		if (chan.getWiki()) {
+			event.getBot().sendNotice(event.getUser(), "Search wikipedia: .wiki[-language] (Language is optional) [term]");
+		}
 		if (chan.getSearch()) {
-			event.getBot().sendNotice(event.getUser(), "Search for threads: .search[board] (Board is optional) [term]");
+			event.getBot().sendNotice(event.getUser(), "Search for threads: .search[-board] (Board is optional) [term]");
 		}
 	}
 }

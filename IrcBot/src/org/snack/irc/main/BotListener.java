@@ -9,12 +9,12 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.ReconnectEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.enums.EventType;
@@ -31,6 +31,7 @@ import org.snack.irc.handler.SearchHandler;
 import org.snack.irc.handler.TellHandler;
 import org.snack.irc.handler.TranslateHandler;
 import org.snack.irc.handler.WeatherHandler;
+import org.snack.irc.handler.WikiHandler;
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
 import org.snack.irc.model.Quote;
@@ -83,11 +84,18 @@ public class BotListener extends ListenerAdapter implements Listener {
 					executor.execute(new LastfmHandler(event));
 				}
 
-				// Cal for help
+				// Call for help
 			} else if (message.length() >= 5 && message.substring(1, 5).equals("help")) {
 				if (!chan.getMute()) {
 					Monitor.print("~COMMAND Help: " + nick);
 					executor.execute(new HelpHandler(event));
+				}
+
+				// Call for wiki
+			} else if (message.length() >= 5 && message.substring(1, 5).equals("wiki")) {
+				if (chan.getWiki() && !chan.getMute()) {
+					Monitor.print("~COMMAND Wiki: " + nick);
+					executor.execute(new WikiHandler(event));
 				}
 
 				// Call for quotes
@@ -163,7 +171,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 				add = false;
 			}
 			// Add random quotes
-			if (new Random().nextInt(100) > 95 && add && message.length() <= Config.sett_int.get("QUOTE_MAX") && message.length() >= Config.sett_int.get("QUOTE_MIN")) {
+			if (new Random().nextInt(100) > 90 && add && message.length() <= Config.sett_int.get("QUOTE_MAX") && message.length() >= Config.sett_int.get("QUOTE_MIN")) {
 				Monitor.print("~INFO Added quote: " + chan.name + " <" + user.getNick() + "> " + message);
 				DatabaseManager.getInstance().putQuote(new Quote(chan.name, user.getNick(), message));
 			}
@@ -213,6 +221,9 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onQuit(QuitEvent event) {
 		Monitor.print("<<QUIT " + event.getUser().getNick());
+		if (event.getUser().getNick().equals(Config.sett_str.get("BOT_NAME"))) {
+			bot.setName(Config.sett_str.get("BOT_NAME"));
+		}
 		executor.execute(new FunctionTester(event, null, event.getUser(), EventType.QUIT));
 	}
 
@@ -225,27 +236,28 @@ public class BotListener extends ListenerAdapter implements Listener {
 		executor.execute(new FunctionTester(event, event.getChannel(), null, EventType.USERLIST));
 	}
 
-	/**
-	 * Called when the connection gets lost, will retry to join every 5000ms
-	 */
 	@Override
-	public void onDisconnect(DisconnectEvent event) {
-		Monitor.print("<<DISCONNECT");
-		try {
-			event.getBot().connect(Config.sett_str.get("SERVER"));
-			if (!Config.sett_str.get("BOT_PASS").equals("") && Config.sett_str.get("BOT_PASS") != null) {
-				event.getBot().sendRawLine("NICKSERV IDENTIFY " + Config.sett_str.get("BOT_PASS"));
+	public void onReconnect(ReconnectEvent event) {
+		if (!event.isSuccess()) {
+			try {
+				if (bot.getName().equals(Config.sett_str.get("BOT_NAME"))) {
+					bot.setName(Config.sett_str.get("BOT_ALT_NAME"));
+				} else {
+					bot.setName(Config.sett_str.get("BOT_NAME"));
+				}
+				event.getBot().reconnect();
+			} catch (Exception e) {
+				try {
+					Thread.sleep(15000);
+					event.getBot().reconnect();
+				} catch (Exception e1) {
+				}
 			}
+		} else {
 			for (Chan channel : Config.channels.values()) {
 				event.getBot().sendRawLine("JOIN " + channel.name);
 			}
 			Monitor.print("~INFO Reconnected");
-		} catch (Exception e) {
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e1) {
-			}
-			onDisconnect(event);
 		}
 	}
 

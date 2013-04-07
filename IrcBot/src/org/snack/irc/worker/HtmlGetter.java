@@ -18,7 +18,7 @@ public class HtmlGetter {
 	public static String getTitle(String urlString) {
 		try {
 			// Try to get the title
-			String title = Jsoup.connect(urlString).timeout(5000).userAgent("Mozilla").get().title();
+			String title = Jsoup.connect(urlString).timeout(5000).userAgent("Mozilla").followRedirects(true).get().title();
 			title = title.replaceAll("\n", "");
 			title = title.replaceAll("  ", " ");
 			title = title.replaceAll("  ", " ");

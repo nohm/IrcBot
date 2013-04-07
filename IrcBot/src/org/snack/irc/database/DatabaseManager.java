@@ -1,6 +1,5 @@
 package org.snack.irc.database;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,7 +19,6 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
-import com.mongodb.MongoException;
 
 /**
  * Main database class which can initialize the database and allow access with
@@ -63,10 +61,9 @@ public class DatabaseManager {
 			lastfm_collection = db.getCollection(LASTFM_COLLECTION_NAME);
 			quote_collection = db.getCollection(QUOTE_COLLECTION_NAME);
 			tell_collection = db.getCollection(TELL_COLLECTION_NAME);
-		} catch (UnknownHostException e1) {
-			e1.printStackTrace();
-		} catch (MongoException e1) {
-			e1.printStackTrace();
+		} catch (Exception e) {
+			Monitor.print("~ERROR Database error");
+			System.exit(-1);
 		}
 	}
 

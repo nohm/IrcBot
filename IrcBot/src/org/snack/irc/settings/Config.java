@@ -6,6 +6,7 @@ import java.util.HashMap;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
+import org.snack.irc.main.Startup;
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
 
@@ -20,7 +21,7 @@ public class Config {
 		if (c == null) {
 			c = new Config();
 		}
-		jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config.txt"));
+		jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt(Startup.configLocation));
 
 		initSettings();
 		initSpeech();
@@ -66,16 +67,16 @@ public class Config {
 			for (int j = 1; j <= joResultBots.size(); j++) {
 				JSONObject bot = joResultBots.getJSONObject("bot" + j);
 				bots.add(new Bot(bot.getString("name"), bot.getBoolean("greet"), bot.getBoolean("html"), bot.getBoolean("lastfm"), bot.getBoolean("weather"), bot
-						.getBoolean("quote"), bot.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji"), bot.getBoolean("search")));
+						.getBoolean("quote"), bot.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji"), bot.getBoolean("wiki"), bot.getBoolean("search")));
 			}
 			Chan chan = new Chan(obj.getString("name"), greet.getBoolean("enabled"), greet.getString("visible"), func.getBoolean("html"), func.getBoolean("lastfm"),
 					func.getBoolean("weather"), func.getBoolean("quote"), func.getBoolean("tell"), func.getBoolean("translate"), func.getBoolean("romaji"),
-					search.getBoolean("enabled"), search.getString("default"), bots);
+					func.getBoolean("wiki"), search.getBoolean("enabled"), search.getString("default"), bots);
 			channels.put(chan.name, chan);
 		}
 
 		JSONObject joResultSettings = jo.getJSONObject("settings");
-		sett_str.put("SAVE_LOC", joResultSettings.getString("config"));
+		sett_str.put("LOG_LOC", joResultSettings.getString("log"));
 		sett_str.put("IDENTIFIERS", joResultSettings.getString("identifiers"));
 		JSONObject joQuoteSettings = joResultSettings.getJSONObject("quote");
 		sett_int.put("QUOTE_MIN", joQuoteSettings.getInt("min"));
@@ -143,6 +144,11 @@ public class Config {
 		JSONObject joRomaji = joSpeech.getJSONObject("romaji");
 		speech.put("RK_ROM", joRomaji.getString("romaji"));
 		speech.put("RK_KAT", joRomaji.getString("katakana"));
+
+		JSONObject joWiki = joSpeech.getJSONObject("wiki");
+		speech.put("WI_SUC", joWiki.getString("success"));
+		speech.put("WI_NO", joWiki.getString("nothing"));
+		speech.put("WI_ERR", joWiki.getString("error"));
 
 		JSONObject joSearch = joSpeech.getJSONObject("search");
 		speech.put("SE_SUC", joSearch.getString("success"));

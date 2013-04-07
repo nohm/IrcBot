@@ -22,10 +22,15 @@ public class Startup {
 	private final static boolean niceLookingMonitor = true;
 	private static PircBotX bot;
 	private static Semaphore restart;
+	public static String configLocation = "config.txt";
 
 	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		if (niceLookingMonitor) {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+
+		if (args != null && args.length > 0) {
+			configLocation = args[0];
 		}
 
 		try {
@@ -70,6 +75,9 @@ public class Startup {
 		bot.setVersion(Config.sett_str.get("BOT_VERSION"));
 		// Toggle debugging
 		bot.setVerbose(Config.sett_bool.get("DEBUG"));
+		// Auto reconnect
+		bot.setAutoReconnect(true);
+		bot.setAutoReconnectChannels(true);
 		// Give the bot a listener
 		bot.getListenerManager().addListener(new BotListener(bot));
 		Monitor.print("~INFO Initialized bot");
@@ -101,11 +109,7 @@ public class Startup {
 		Monitor.print("~INFO Joined channels");
 
 		// Start DB
-		try {
-			DatabaseManager.getInstance().initializeConnection();
-		} catch (Exception e) {
-			Monitor.print("~ERROR Start the database first, bot won't function correctly without.");
-		}
+		DatabaseManager.getInstance().initializeConnection();
 		Monitor.print("~INFO Started");
 	}
 }

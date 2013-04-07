@@ -16,9 +16,11 @@ public class Bot {
 	public final boolean tell;
 	public final boolean translate;
 	public final boolean romaji;
+	public final boolean wiki;
 	public final boolean search;
 
-	public Bot(String name, boolean greet, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji, boolean search) {
+	public Bot(String name, boolean greet, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji, boolean wiki,
+			boolean search) {
 		this.greet = greet;
 		this.name = name;
 		this.html = html;
@@ -28,6 +30,7 @@ public class Bot {
 		this.tell = tell;
 		this.translate = translate;
 		this.romaji = romaji;
+		this.wiki = wiki;
 		this.search = search;
 	}
 }

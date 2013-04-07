@@ -83,7 +83,8 @@ public class FunctionTester implements Runnable {
 			type = "Join: ";
 		}
 		Monitor.print("~INFO " + type + chan.name + " Functions: html:" + chan.getHtml() + " lastfm:" + chan.getLastfm() + " weather:" + chan.getWeather() + " quote:"
-				+ chan.getQuote() + " tell:" + chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji() + " search:" + chan.getSearch());
+				+ chan.getQuote() + " tell:" + chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji() + " wiki:" + chan.getWiki() + " search:"
+				+ chan.getSearch());
 	}
 
 	/**
@@ -118,6 +119,9 @@ public class FunctionTester implements Runnable {
 				}
 				if (bot.romaji && chan.func_romaji) {
 					chan.setRomaji((event) ? false : true);
+				}
+				if (bot.wiki && chan.func_wiki) {
+					chan.setWiki((event) ? false : true);
 				}
 				if (bot.search && chan.func_search) {
 					chan.setSearch((event) ? false : true);

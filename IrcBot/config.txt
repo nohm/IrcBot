@@ -29,6 +29,7 @@
 		        "tell": "true",
 				"translate": "true",
 				"romaji": "true",
+				"wiki": "true",
 				"search": {
 					"enabled": "true",
 					"default": "g"
@@ -45,6 +46,7 @@
 					"tell": "true",
 					"translate": "false",
 					"romaji": "false",
+					"wiki": "false",
 					"search": "false"
 				},
 				"bot2": {
@@ -57,6 +59,7 @@
 					"tell": "false",
 					"translate": "false",
 					"romaji": "false",
+					"wiki": "false",
 					"search": "false"
 				}
 			}
@@ -64,7 +67,7 @@
 	},
 	
 	"settings": {
-		"config": "E:\\ircbot\\",
+		"log": "E:\\ircbot\\log.txt",
 		"identifiers": ".,!",
 		"quote": {
 			"min": "10",
@@ -79,7 +82,7 @@
 		},
 		"weather": {
 			"success": "<city>: <condition> <degrees_c>°C/ <degrees_f>°F Wind: <wind_dir> at <wind_speed> <wind_type> gusting to <wind_speed_gust> <wind_type> Humidity: <humidity>",
-			"error": "No data found for the given location, or too many request made to the API."
+			"error": "No data found for the given location."
 		},
 		"lastfm": {
 			"success": {
@@ -126,6 +129,11 @@
 		"romaji": {
 			"romaji": "Romaji: <response>",
 			"katakana": "Katakana: <response>"
+		},
+		"wiki": {
+			"success": "Wiki: <url>",
+			"nothing": "Nothing found.",
+			"error": "Something went wrong searching."
 		},
 		"search": {
 			"success": "Thread: <subject> > <url>",

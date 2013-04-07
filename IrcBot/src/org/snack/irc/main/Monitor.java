@@ -7,6 +7,10 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -33,6 +37,7 @@ public class Monitor {
 	private static JMenuItem menuSend, menuBroadcast, menuClear, menuQuit;
 
 	private static Monitor m;
+	private static Logger logger;
 
 	public static Monitor getInstance() {
 		if (m == null) {
@@ -46,6 +51,15 @@ public class Monitor {
 		if (showInterface) {
 			redirectSystemStreams();
 			createAndShowGUI();
+		}
+		try {
+			logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+			logger.setLevel(Level.INFO);
+			FileHandler handler = new FileHandler(Config.sett_str.get("LOG_LOC"));
+			handler.setFormatter(new SimpleFormatter());
+			logger.addHandler(handler);
+		} catch (Exception e) {
+			Monitor.print("~ERROR Couldn't create log file");
 		}
 		Monitor.print("~INFO Initialized interface");
 	}
@@ -157,9 +171,8 @@ public class Monitor {
 			while (!(sb.getMaximum() == (sb.getValue() + sb.getVisibleAmount()))) {
 				sb.setValue(sb.getMaximum());
 			}
-		} else {
-			System.out.println(message);
 		}
+		Monitor.logger.info(message);
 	}
 
 	/**
