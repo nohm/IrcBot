@@ -75,6 +75,8 @@ public class Startup {
 		bot.setVersion(Config.sett_str.get("BOT_VERSION"));
 		// Toggle debugging
 		bot.setVerbose(Config.sett_bool.get("DEBUG"));
+		// Message delay
+		bot.setMessageDelay(0);
 		// Auto reconnect
 		bot.setAutoReconnect(true);
 		bot.setAutoReconnectChannels(true);

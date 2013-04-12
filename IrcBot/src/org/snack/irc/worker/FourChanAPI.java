@@ -43,6 +43,8 @@ public class FourChanAPI {
 				String post;
 				String number;
 				String name;
+				String comment;
+				String replies;
 				boolean ignore = false; // Ignore sticky/closed threads
 				try {
 					subject = Jsoup.clean(thread.getString("sub"), Whitelist.simpleText()).toString();
@@ -65,6 +67,19 @@ public class FourChanAPI {
 					name = "n/a";
 				}
 				try {
+					comment = Jsoup.clean(thread.getString("com"), Whitelist.simpleText()).toString();
+					if (comment.length() > 100) {
+						comment = comment.substring(0, 96) + "...";
+					}
+				} catch (JSONException e) {
+					comment = "n/a";
+				}
+				try {
+					replies = thread.getString("replies");
+				} catch (JSONException e) {
+					replies = "n/a";
+				}
+				try {
 					ignore = thread.getInt("sticky") == 1;
 				} catch (JSONException e) {
 				}
@@ -75,7 +90,7 @@ public class FourChanAPI {
 				if (!ignore
 						&& (subject.toLowerCase().contains(cleanedTerm) || subject.toLowerCase().equals(cleanedTerm) || post.toLowerCase().contains(cleanedTerm)
 								|| post.toLowerCase().equals(cleanedTerm) || name.toLowerCase().contains(cleanedTerm) || name.toLowerCase().equals(cleanedTerm))) {
-					threadList.add(new FThread(name, subject, post, new URI("https://boards.4chan.org/" + board.toLowerCase() + "/res/" + number).toString()));
+					threadList.add(new FThread(name, subject, post, new URI("https://boards.4chan.org/" + board.toLowerCase() + "/res/" + number).toString(), comment, replies));
 				}
 			}
 		}

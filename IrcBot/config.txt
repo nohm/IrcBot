@@ -136,7 +136,7 @@
 			"error": "Something went wrong searching."
 		},
 		"search": {
-			"success": "Thread: <subject> > <url>",
+			"success": "Thread /<board>/ | Subject: <subject> | Replies: <replies> | URL: <url> | Comment: <comment>",
 			"error": "Nothing found."
 		}
 	}

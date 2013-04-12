@@ -8,6 +8,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.snack.irc.main.Monitor;
+import org.snack.irc.model.LastMsg;
 import org.snack.irc.model.LastfmUser;
 import org.snack.irc.model.Quote;
 import org.snack.irc.model.Tell;
@@ -33,12 +34,13 @@ public class DatabaseManager {
 	private static final String LASTFM_COLLECTION_NAME = "lastfmcollection";
 	private static final String QUOTE_COLLECTION_NAME = "quotecollection";
 	private static final String TELL_COLLECTION_NAME = "tellcollection";
+	private static final String MSG_COLLECTION_NAME = "msgcollection";
 
 	private static final String MONGO_IP = "localhost";
 
 	private Mongo mongo;
 	private DB db;
-	private DBCollection weather_collection, lastfm_collection, quote_collection, tell_collection;
+	private DBCollection weather_collection, lastfm_collection, quote_collection, tell_collection, msg_collection;
 
 	private static DatabaseManager instance = null;
 
@@ -61,6 +63,7 @@ public class DatabaseManager {
 			lastfm_collection = db.getCollection(LASTFM_COLLECTION_NAME);
 			quote_collection = db.getCollection(QUOTE_COLLECTION_NAME);
 			tell_collection = db.getCollection(TELL_COLLECTION_NAME);
+			msg_collection = db.getCollection(MSG_COLLECTION_NAME);
 		} catch (Exception e) {
 			Monitor.print("~ERROR Database error");
 			System.exit(-1);
@@ -273,5 +276,48 @@ public class DatabaseManager {
 		DBCursor cursor = tell_collection.find(query);
 		DBObject existing = cursor.next();
 		tell_collection.remove(existing);
+	}
+
+	public void putLastMsg(LastMsg msg) {
+		if (containsUser(msg)) {
+			updateLastMsg(msg);
+		} else {
+			msg_collection.insert(msg);
+		}
+	}
+
+	public void updateLastMsg(LastMsg user) {
+		BasicDBObject query = new BasicDBObject();
+		query.put(LastMsg.NAME_KEY, user.getName());
+		DBCursor cursor = msg_collection.find(query);
+		DBObject existing = cursor.next();
+		msg_collection.remove(existing);
+		existing.put(LastMsg.TIME_KEY, user.getTime());
+		msg_collection.insert(existing);
+	}
+
+	public LastMsg getLastMsg(String name) {
+		BasicDBObject query = new BasicDBObject();
+		query.put(LastMsg.NAME_KEY, name);
+		DBCursor cursor = msg_collection.find(query);
+
+		if (cursor.count() == 0) {
+			return new LastMsg("", 0);
+		}
+
+		try {
+			JSONObject jsonObject = (JSONObject) JSONSerializer.toJSON(cursor.next().toString());
+			return new LastMsg(jsonObject.getString(LastMsg.NAME_KEY), jsonObject.getLong(LastMsg.TIME_KEY));
+		} catch (JSONException e) {
+			return new LastMsg("", 0);
+		} finally {
+			cursor.close();
+		}
+	}
+
+	public boolean containsUser(LastMsg msg) {
+		BasicDBObject query = new BasicDBObject();
+		query.put(LastMsg.NAME_KEY, msg.getName());
+		return msg_collection.count(query) > 0;
 	}
 }

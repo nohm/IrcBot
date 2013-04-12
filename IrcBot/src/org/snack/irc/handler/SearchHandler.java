@@ -34,7 +34,8 @@ public class SearchHandler implements Runnable {
 				throw new Exception();
 			}
 			// Return all?
-			response = Config.speech.get("SE_SUC").replace("<board>", board).replace("<subject>", threads[0].subject).replace("<url>", threads[0].url);
+			response = Config.speech.get("SE_SUC").replace("<board>", board).replace("<subject>", threads[0].subject).replace("<url>", threads[0].url)
+					.replace("<replies>", threads[0].replies).replace("<comment>", threads[0].comment);
 		} catch (Exception e) {
 			response = Config.speech.get("SE_ERR");
 		}

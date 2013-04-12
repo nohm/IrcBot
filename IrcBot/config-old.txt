@@ -1,6 +1,6 @@
 {
 	"admin": "snack",
-	"debug": "false",
+	"debug": "true",
 	"interface": "false",
 	"scrollback": "50",
 	
@@ -16,10 +16,10 @@
 	
 	"channels": {
 		"channel1": {
-			"name": "#pantsumen",
+			"name": "#RijnIJssel",
 			"functions": {
 				"greet": {
-					"enabled": "false",
+					"enabled": "true",
 					"visible": "public"
 				},
 	            "html": "true",
@@ -27,8 +27,8 @@
 	            "weather": "true",
 	            "quote": "true",
 	            "tell": "true",
-				"translate": "false",
-				"romaji": "false",
+				"translate": "true",
+				"romaji": "true",
 				"wiki": "true",
 				"search": {
 					"enabled": "true",

@@ -9,12 +9,14 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.ActionEvent;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
-import org.pircbotx.hooks.events.ReconnectEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.enums.EventType;
@@ -34,6 +36,7 @@ import org.snack.irc.handler.WeatherHandler;
 import org.snack.irc.handler.WikiHandler;
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
+import org.snack.irc.model.LastMsg;
 import org.snack.irc.model.Quote;
 import org.snack.irc.settings.Config;
 
@@ -48,10 +51,12 @@ public class BotListener extends ListenerAdapter implements Listener {
 
 	private static PircBotX bot;
 	private final ExecutorService executor;
+	DatabaseManager db;
 
 	public BotListener(PircBotX bot) {
 		BotListener.bot = bot;
 		executor = Executors.newFixedThreadPool(5);
+		db = DatabaseManager.getInstance();
 	}
 
 	/**
@@ -66,6 +71,12 @@ public class BotListener extends ListenerAdapter implements Listener {
 		User user = event.getUser();
 		String nick = user.getNick();
 		Monitor.print("<<MSG " + chan.name + " " + nick + ": " + message);
+
+		// Store last occurence of username
+		if ((System.currentTimeMillis() - db.getLastMsg(nick).getTime()) > (10 * 60 * 1000)) { // 10m
+			executor.execute(new TellHandler(event, null, null, TellType.TELL));
+		}
+		db.putLastMsg(new LastMsg(nick, System.currentTimeMillis()));
 
 		// Command handler
 		if (Config.sett_str.get("IDENTIFIERS").contains(message.substring(0, 1))) {
@@ -109,7 +120,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 			} else if (message.length() >= 6 && message.substring(1, 6).equals("tell ")) {
 				if (chan.getTell() && !chan.getMute()) {
 					Monitor.print("~COMMAND Tell: " + nick);
-					executor.execute(new TellHandler(event, null, TellType.ADD));
+					executor.execute(new TellHandler(event, null, null, TellType.ADD));
 				}
 
 				// Call for search
@@ -201,7 +212,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 				executor.execute(new GreetHandler(event));
 			}
 		}
-		executor.execute(new TellHandler(null, event, TellType.TELL));
+		executor.execute(new TellHandler(null, event, null, TellType.TELL));
 		Monitor.print("~INFO Cleaned tells: " + event.getChannel().getName());
 	}
 
@@ -237,28 +248,35 @@ public class BotListener extends ListenerAdapter implements Listener {
 	}
 
 	@Override
-	public void onReconnect(ReconnectEvent event) {
-		if (!event.isSuccess()) {
+	public void onDisconnect(DisconnectEvent event) {
+		Monitor.print("<<<Disconnected");
+		while (!event.getBot().isConnected()) {
 			try {
+				Thread.sleep(15000);
 				if (bot.getName().equals(Config.sett_str.get("BOT_NAME"))) {
 					bot.setName(Config.sett_str.get("BOT_ALT_NAME"));
 				} else {
 					bot.setName(Config.sett_str.get("BOT_NAME"));
 				}
 				event.getBot().reconnect();
-			} catch (Exception e) {
-				try {
-					Thread.sleep(15000);
-					event.getBot().reconnect();
-				} catch (Exception e1) {
+				for (Chan channel : Config.channels.values()) {
+					event.getBot().sendRawLine("JOIN " + channel.name);
 				}
+			} catch (Exception e) {
+				onDisconnect(event);
 			}
-		} else {
-			for (Chan channel : Config.channels.values()) {
-				event.getBot().sendRawLine("JOIN " + channel.name);
-			}
-			Monitor.print("~INFO Reconnected");
 		}
+	}
+
+	@Override
+	public void onAction(ActionEvent event) {
+		Monitor.print("<<ACTION " + event.getChannel().getName() + " " + event.getUser().getNick() + ": " + event.getMessage());
+	}
+
+	@Override
+	public void onNickChange(NickChangeEvent event) {
+		Monitor.print("<<NICKCHANGE");
+		executor.execute(new TellHandler(null, null, event, TellType.TELL));
 	}
 
 	public static void sendCustomMessage(String type, String target, String message) {
