@@ -23,6 +23,8 @@ import org.snack.irc.enums.EventType;
 import org.snack.irc.enums.QuoteType;
 import org.snack.irc.enums.RomajiType;
 import org.snack.irc.enums.TellType;
+import org.snack.irc.handler.BooruHandler;
+import org.snack.irc.handler.DefineHandler;
 import org.snack.irc.handler.GreetHandler;
 import org.snack.irc.handler.HelpHandler;
 import org.snack.irc.handler.HtmlHandler;
@@ -110,6 +112,13 @@ public class BotListener extends ListenerAdapter implements Listener {
 				}
 
 				// Call for quotes
+			} else if (message.length() >= 6 && message.substring(1, 6).equals("booru")) {
+				if (chan.getBooru() && !chan.getMute()) {
+					Monitor.print("~COMMAND Booru: " + nick);
+					executor.execute(new BooruHandler(event));
+				}
+
+				// Call for quotes
 			} else if (message.length() >= 6 && message.substring(1, 6).equals("quote")) {
 				if (chan.getQuote() && !chan.getMute()) {
 					Monitor.print("~COMMAND Quote: " + nick);
@@ -128,6 +137,13 @@ public class BotListener extends ListenerAdapter implements Listener {
 				if (chan.getSearch() && !chan.getMute()) {
 					Monitor.print("~COMMAND Search: " + nick);
 					executor.execute(new SearchHandler(event));
+				}
+
+				// Call for define
+			} else if (message.length() >= 7 && message.substring(1, 7).equals("define")) {
+				if (chan.getDefine() && !chan.getMute()) {
+					Monitor.print("~COMMAND Define: " + nick);
+					executor.execute(new DefineHandler(event));
 				}
 
 				// Call for romaji

@@ -84,7 +84,7 @@ public class FunctionTester implements Runnable {
 		}
 		Monitor.print("~INFO " + type + chan.name + " Functions: html:" + chan.getHtml() + " lastfm:" + chan.getLastfm() + " weather:" + chan.getWeather() + " quote:"
 				+ chan.getQuote() + " tell:" + chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji() + " wiki:" + chan.getWiki() + " search:"
-				+ chan.getSearch());
+				+ chan.getSearch() + " define:" + chan.getDefine() + " booru:" + chan.getBooru());
 	}
 
 	/**
@@ -125,6 +125,12 @@ public class FunctionTester implements Runnable {
 				}
 				if (bot.search && chan.func_search) {
 					chan.setSearch((event) ? false : true);
+				}
+				if (bot.define && chan.func_define) {
+					chan.setDefine((event) ? false : true);
+				}
+				if (bot.booru && chan.func_booru) {
+					chan.setBooru((event) ? false : true);
 				}
 			}
 		}

@@ -23,6 +23,8 @@ public class Chan {
 	private boolean romaji;
 	private boolean wiki;
 	private boolean search;
+	private boolean define;
+	private boolean booru;
 	public final String search_default;
 	// Associated bots
 	public final ArrayList<Bot> bots;
@@ -39,9 +41,11 @@ public class Chan {
 	public final boolean func_romaji;
 	public final boolean func_wiki;
 	public final boolean func_search;
+	public final boolean func_define;
+	public final boolean func_booru;
 
 	public Chan(String name, boolean greet, String greet_visible, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji,
-			boolean wiki, boolean search, String search_default, ArrayList<Bot> bots) {
+			boolean wiki, boolean search, String search_default, boolean define, boolean booru, ArrayList<Bot> bots) {
 		this.name = name;
 		this.greet = this.func_greet = greet;
 		this.greet_visible = (greet_visible.equals("public")) ? true : false;
@@ -55,6 +59,8 @@ public class Chan {
 		this.wiki = this.func_wiki = wiki;
 		this.search = this.func_search = search;
 		this.search_default = search_default;
+		this.define = this.func_define = define;
+		this.booru = this.func_booru = booru;
 		this.mute = false;
 		this.bots = bots;
 	}
@@ -103,6 +109,14 @@ public class Chan {
 		return search;
 	}
 
+	public boolean getDefine() {
+		return define;
+	}
+
+	public boolean getBooru() {
+		return booru;
+	}
+
 	public void setMute(boolean mute) {
 		this.mute = mute;
 	}
@@ -145,5 +159,13 @@ public class Chan {
 
 	public void setSearch(boolean search) {
 		this.search = search;
+	}
+
+	public void setDefine(boolean define) {
+		this.define = define;
+	}
+
+	public void setBooru(boolean booru) {
+		this.booru = booru;
 	}
 }

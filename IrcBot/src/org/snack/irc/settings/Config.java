@@ -67,11 +67,12 @@ public class Config {
 			for (int j = 1; j <= joResultBots.size(); j++) {
 				JSONObject bot = joResultBots.getJSONObject("bot" + j);
 				bots.add(new Bot(bot.getString("name"), bot.getBoolean("greet"), bot.getBoolean("html"), bot.getBoolean("lastfm"), bot.getBoolean("weather"), bot
-						.getBoolean("quote"), bot.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji"), bot.getBoolean("wiki"), bot.getBoolean("search")));
+						.getBoolean("quote"), bot.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji"), bot.getBoolean("wiki"), bot.getBoolean("search"), bot
+						.getBoolean("define"), bot.getBoolean("booru")));
 			}
 			Chan chan = new Chan(obj.getString("name"), greet.getBoolean("enabled"), greet.getString("visible"), func.getBoolean("html"), func.getBoolean("lastfm"),
 					func.getBoolean("weather"), func.getBoolean("quote"), func.getBoolean("tell"), func.getBoolean("translate"), func.getBoolean("romaji"),
-					func.getBoolean("wiki"), search.getBoolean("enabled"), search.getString("default"), bots);
+					func.getBoolean("wiki"), search.getBoolean("enabled"), search.getString("default"), func.getBoolean("define"), func.getBoolean("booru"), bots);
 			channels.put(chan.name, chan);
 		}
 
@@ -153,5 +154,13 @@ public class Config {
 		JSONObject joSearch = joSpeech.getJSONObject("search");
 		speech.put("SE_SUC", joSearch.getString("success"));
 		speech.put("SE_ERR", joSearch.getString("error"));
+
+		JSONObject joDefine = joSpeech.getJSONObject("define");
+		speech.put("DE_SUC", joDefine.getString("success"));
+		speech.put("DE_ERR", joDefine.getString("error"));
+
+		JSONObject joBooru = joSpeech.getJSONObject("booru");
+		speech.put("BO_SUC", joBooru.getString("success"));
+		speech.put("BO_ERR", joBooru.getString("error"));
 	}
 }

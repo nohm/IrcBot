@@ -5,11 +5,11 @@
 	"scrollback": "50",
 	
 	"bot": {
-		"name": "ricebot",
+		"name": "",
 		"alt_name": "snackbot",
 		"login": "r",
 		"version": "b",
-		"password": "1.pieps"
+		"password": "---"
 	},
 	
 	"server": "irc.rizon.net",
@@ -28,12 +28,14 @@
 		        "quote": "true",
 		        "tell": "true",
 				"translate": "true",
-				"romaji": "true",
+				"romaji": "false",
 				"wiki": "true",
 				"search": {
 					"enabled": "true",
 					"default": "g"
-				}
+				},
+				"define": "true",
+				"booru": "true"
 			},
 			"bots": {
 				"bot1": {
@@ -47,7 +49,9 @@
 					"translate": "false",
 					"romaji": "false",
 					"wiki": "false",
-					"search": "false"
+					"search": "false",
+					"define": "false",
+					"booru": "false"
 				},
 				"bot2": {
 					"name": "Moelicious",
@@ -60,7 +64,9 @@
 					"translate": "false",
 					"romaji": "false",
 					"wiki": "false",
-					"search": "false"
+					"search": "false",
+					"define": "false",
+					"booru": "false"
 				}
 			}
 		}
@@ -138,6 +144,14 @@
 		"search": {
 			"success": "Thread /<board>/ | Subject: <subject> | Replies: <replies> | URL: <url> | Comment: <comment>",
 			"error": "Nothing found."
+		},
+		"define": {
+			"success": "<query>(<type>): <definition>",
+			"error": "Nothing found."
+		},
+		"booru": {
+			"success": "<booru>: <url>",
+			"error": "Unknown booru; <booru>"
 		}
 	}
 }

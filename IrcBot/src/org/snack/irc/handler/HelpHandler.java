@@ -52,5 +52,12 @@ public class HelpHandler implements Runnable {
 		if (chan.getSearch()) {
 			event.getBot().sendNotice(event.getUser(), "Search for threads: .search[-board] (Board is optional) [term]");
 		}
+		if (chan.getDefine()) {
+			event.getBot().sendNotice(event.getUser(), "Define words: .define [term]");
+		}
+		if (chan.getBooru()) {
+			event.getBot().sendNotice(event.getUser(), "Search booru: .booru-[name abbr.] [term]");
+			event.getBot().sendNotice(event.getUser(), "Valid booru's: safe(booru), dan(booru), kona(chan), gel(booru), loli(booru)");
+		}
 	}
 }
