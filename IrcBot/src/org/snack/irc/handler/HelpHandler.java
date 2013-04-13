@@ -22,6 +22,8 @@ public class HelpHandler implements Runnable {
 	 */
 	private void sendHelp() {
 		Chan chan = Config.channels.get(event.getChannel().getName());
+		// TODO: Make help modular
+		/*
 		event.getBot().sendNotice(event.getUser(), "My commands:");
 		event.getBot().sendNotice(event.getUser(), "I respond to commands starting with: " + Config.sett_str.get("IDENTIFIERS"));
 		if (chan.getWeather()) {
@@ -58,6 +60,6 @@ public class HelpHandler implements Runnable {
 		if (chan.getBooru()) {
 			event.getBot().sendNotice(event.getUser(), "Search booru: .booru-[name abbr.] [term]");
 			event.getBot().sendNotice(event.getUser(), "Valid booru's: safe(booru), dan(booru), kona(chan), gel(booru), loli(booru)");
-		}
+		}*/
 	}
 }

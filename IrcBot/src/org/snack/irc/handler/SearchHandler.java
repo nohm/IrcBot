@@ -24,7 +24,7 @@ public class SearchHandler implements Runnable {
 		try {
 			board = event.getMessage().split(" ")[0].split("-")[1];
 		} catch (Exception e) {
-			board = Config.channels.get(event.getChannel().getName()).search_default;
+			board = Config.channels.get(event.getChannel().getName()).defaults.get("search_default");
 		}
 
 		String response;

@@ -1,0 +1,40 @@
+{
+	"bot": {
+		"functions": [
+			{ "define": "false" },
+			{ "lastfm": "false" },
+			{ "search": "false" },
+			{ "eightball": "false" },
+			{ "quote": "false" },
+			{ "weather": "false" },
+			{ "romaji": "false" },
+			{ "html": "false" },
+			{ "tell": "false" },
+			{ "translate": "false" },
+			{ "greet": "false" },
+			{ "wiki": "false" },
+			{ "booru": "false" }
+		]
+	},
+	"channel": {
+		"functions": [
+			{ "define": "false" },
+			{ "lastfm": "false" },
+			{ "search": "false" },
+			{ "eightball": "false" },
+			{ "quote": "false" },
+			{ "weather": "false" },
+			{ "romaji": "false" },
+			{ "html": "false" },
+			{ "tell": "false" },
+			{ "translate": "false" },
+			{ "greet": "false" },
+			{ "wiki": "false" },
+			{ "booru": "false" }
+		],
+		"defaults": [
+			{ "greet_visible": "private" },
+			{ "search_default": "g" }
+		]
+	}
+}

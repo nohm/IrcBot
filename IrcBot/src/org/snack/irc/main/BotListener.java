@@ -1,5 +1,6 @@
 package org.snack.irc.main;
 
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,8 +24,10 @@ import org.snack.irc.enums.EventType;
 import org.snack.irc.enums.QuoteType;
 import org.snack.irc.enums.RomajiType;
 import org.snack.irc.enums.TellType;
+import org.snack.irc.handler.AdminHandler;
 import org.snack.irc.handler.BooruHandler;
 import org.snack.irc.handler.DefineHandler;
+import org.snack.irc.handler.EightBallHandler;
 import org.snack.irc.handler.GreetHandler;
 import org.snack.irc.handler.HelpHandler;
 import org.snack.irc.handler.HtmlHandler;
@@ -66,7 +69,6 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onMessage(MessageEvent event) {
-		PircBotX bot = event.getBot();
 		Channel channel = event.getChannel();
 		Chan chan = Config.channels.get(channel.getName());
 		String message = event.getMessage();
@@ -80,111 +82,110 @@ public class BotListener extends ListenerAdapter implements Listener {
 		}
 		db.putLastMsg(new LastMsg(nick, System.currentTimeMillis()));
 
+		HashMap<String, Boolean> functions = chan.functions;
+
 		// Command handler
-		if (Config.sett_str.get("IDENTIFIERS").contains(message.substring(0, 1))) {
+		if (!chan.mute && Config.sett_str.get("IDENTIFIERS").contains(message.substring(0, 1))) {
 
 			// Call for weather
 			if (message.length() >= 3 && message.substring(1, 3).equals("we")) {
-				if (chan.getWeather() && !chan.getMute()) {
+				if (functions.get("weather")) {
 					Monitor.print("~COMMAND Weather: " + nick);
 					executor.execute(new WeatherHandler(event));
 				}
 
 				// Call for now playing
 			} else if (message.length() >= 3 && message.substring(1, 3).equals("np")) {
-				if (chan.getLastfm() && !chan.getMute()) {
+				if (functions.get("lastfm")) {
 					Monitor.print("~COMMAND Lastfm: " + nick);
 					executor.execute(new LastfmHandler(event));
 				}
 
 				// Call for help
 			} else if (message.length() >= 5 && message.substring(1, 5).equals("help")) {
-				if (!chan.getMute()) {
-					Monitor.print("~COMMAND Help: " + nick);
-					executor.execute(new HelpHandler(event));
-				}
+				Monitor.print("~COMMAND Help: " + nick);
+				executor.execute(new HelpHandler(event));
 
 				// Call for wiki
 			} else if (message.length() >= 5 && message.substring(1, 5).equals("wiki")) {
-				if (chan.getWiki() && !chan.getMute()) {
+				if (functions.get("wiki")) {
 					Monitor.print("~COMMAND Wiki: " + nick);
 					executor.execute(new WikiHandler(event));
 				}
 
 				// Call for quotes
 			} else if (message.length() >= 6 && message.substring(1, 6).equals("booru")) {
-				if (chan.getBooru() && !chan.getMute()) {
+				if (functions.get("booru")) {
 					Monitor.print("~COMMAND Booru: " + nick);
 					executor.execute(new BooruHandler(event));
 				}
 
 				// Call for quotes
 			} else if (message.length() >= 6 && message.substring(1, 6).equals("quote")) {
-				if (chan.getQuote() && !chan.getMute()) {
+				if (functions.get("quote")) {
 					Monitor.print("~COMMAND Quote: " + nick);
 					executor.execute(new QuoteHandler(event, (message.split(" ").length >= 4 && message.split(" ")[1].equals("add")) ? QuoteType.ADD : QuoteType.QUOTE));
 				}
 
 				// Call for tell
 			} else if (message.length() >= 6 && message.substring(1, 6).equals("tell ")) {
-				if (chan.getTell() && !chan.getMute()) {
+				if (functions.get("tell")) {
 					Monitor.print("~COMMAND Tell: " + nick);
 					executor.execute(new TellHandler(event, null, null, TellType.ADD));
 				}
 
+				// Call for 8ball
+			} else if (message.length() >= 7 && message.substring(1, 7).equals("8ball ")) {
+				if (functions.get("eightball")) {
+					Monitor.print("~COMMAND 8-Ball: " + nick);
+					executor.execute(new EightBallHandler(event));
+				}
+
 				// Call for search
 			} else if (message.length() >= 7 && message.substring(1, 7).equals("search")) {
-				if (chan.getSearch() && !chan.getMute()) {
+				if (functions.get("search")) {
 					Monitor.print("~COMMAND Search: " + nick);
 					executor.execute(new SearchHandler(event));
 				}
 
 				// Call for define
 			} else if (message.length() >= 7 && message.substring(1, 7).equals("define")) {
-				if (chan.getDefine() && !chan.getMute()) {
+				if (functions.get("define")) {
 					Monitor.print("~COMMAND Define: " + nick);
 					executor.execute(new DefineHandler(event));
 				}
 
 				// Call for romaji
 			} else if (message.length() >= 8 && message.substring(1, 8).equals("romaji ")) {
-				if (chan.getRomaji() && !chan.getMute()) {
+				if (functions.get("romaji")) {
 					Monitor.print("~COMMAND Romaji: " + nick);
 					executor.execute(new RomajiHandler(event, RomajiType.ROMAJI));
 				}
 
 				// Call for katakana
 			} else if (message.length() >= 10 && message.substring(1, 10).equals("katakana ")) {
-				if (chan.getRomaji() && !chan.getMute()) {
+				if (functions.get("romaji")) {
 					Monitor.print("~COMMAND Katakana: " + nick);
 					executor.execute(new RomajiHandler(event, RomajiType.KATAKANA));
 				}
 
 				// Call for translate
 			} else if (message.length() >= 11 && message.substring(1, 11).equals("translate ")) {
-				if (chan.getTranslate() && !chan.getMute()) {
+				if (functions.get("translate")) {
 					Monitor.print("~COMMAND Translate: " + nick);
 					executor.execute(new TranslateHandler(event));
 				}
+
+				// Admins
+			} else if (message.substring(0, 1).equals(".") && Config.admins.containsKey(user.getHostmask())) {
+				executor.execute(new AdminHandler(event));
 			}
 
 			// Call for HTML Title
 		} else if (message.contains("http://") || message.contains("https://")) {
-			if (chan.getHtml() && !chan.getMute()) {
+			if (functions.get("html")) {
 				Monitor.print("~COMMAND Html: " + nick);
 				executor.execute(new HtmlHandler(event));
-			}
-
-			// Admin commands
-		} else if (message.startsWith(bot.getNick() + ":")) {
-			if (user.getNick().equals(Config.sett_str.get("ADMIN"))) {
-				if (message.equals(nick + ":mute") || message.equals(nick + ":unmute")) {
-					chan.setMute((message.equals(nick + ":mute")) ? true : false);
-					bot.sendMessage(channel, chan.getMute() ? Config.speech.get("MUTE") : Config.speech.get("UNMUTE"));
-					Monitor.print("~INFO Muted: " + chan.getMute());
-				} else if (message.equals(nick + ":restart")) {
-					Startup.restart();
-				}
 			}
 
 		} else {
@@ -224,7 +225,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 			Monitor.print("<<JOIN " + event.getChannel().getName() + " " + event.getUser().getNick());
 			executor.execute(new FunctionTester(event, event.getChannel(), event.getUser(), EventType.JOIN));
 			Chan chan = Config.channels.get(event.getChannel().getName());
-			if (chan.getGreet() && !chan.getMute()) {
+			if (chan.functions.get("greet")) {
 				executor.execute(new GreetHandler(event));
 			}
 		}

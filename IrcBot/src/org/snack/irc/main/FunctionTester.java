@@ -1,5 +1,8 @@
 package org.snack.irc.main;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
@@ -82,9 +85,11 @@ public class FunctionTester implements Runnable {
 		default:
 			type = "Join: ";
 		}
-		Monitor.print("~INFO " + type + chan.name + " Functions: html:" + chan.getHtml() + " lastfm:" + chan.getLastfm() + " weather:" + chan.getWeather() + " quote:"
-				+ chan.getQuote() + " tell:" + chan.getTell() + " translate:" + chan.getTranslate() + " romaji:" + chan.getRomaji() + " wiki:" + chan.getWiki() + " search:"
-				+ chan.getSearch() + " define:" + chan.getDefine() + " booru:" + chan.getBooru());
+		String toPrint = "~INFO " + type + chan.name + " Functions: ";
+		for (Entry<String, Boolean> entry : chan.functions.entrySet()) {
+			toPrint += entry.getKey() + ":" + entry.getValue() + " ";
+		}
+		Monitor.print(toPrint);
 	}
 
 	/**
@@ -96,41 +101,16 @@ public class FunctionTester implements Runnable {
 	 *            The nick of the user that joined/parted/left
 	 */
 	private void testFunctions(Chan chan, String nick) {
+		HashMap<String, Boolean> chan_func = chan.functions;
+		HashMap<String, Boolean> chan_def_func = chan.def_func;
 		for (Bot bot : chan.bots) {
 			if (bot.name.equals(nick)) {
 				boolean event = (eventType == EventType.JOIN || eventType == EventType.USERLIST);
-				if (bot.html && chan.func_html) {
-					chan.setHtml((event) ? false : true);
-				}
-				if (bot.lastfm && chan.func_lastfm) {
-					chan.setLastfm((event) ? false : true);
-				}
-				if (bot.weather && chan.func_weather) {
-					chan.setWeather((event) ? false : true);
-				}
-				if (bot.quote && chan.func_quote) {
-					chan.setQuote((event) ? false : true);
-				}
-				if (bot.tell && chan.func_tell) {
-					chan.setTell((event) ? false : true);
-				}
-				if (bot.translate && chan.func_translate) {
-					chan.setTranslate((event) ? false : true);
-				}
-				if (bot.romaji && chan.func_romaji) {
-					chan.setRomaji((event) ? false : true);
-				}
-				if (bot.wiki && chan.func_wiki) {
-					chan.setWiki((event) ? false : true);
-				}
-				if (bot.search && chan.func_search) {
-					chan.setSearch((event) ? false : true);
-				}
-				if (bot.define && chan.func_define) {
-					chan.setDefine((event) ? false : true);
-				}
-				if (bot.booru && chan.func_booru) {
-					chan.setBooru((event) ? false : true);
+				HashMap<String, Boolean> bot_func = bot.functions;
+				for (String key : bot_func.keySet()) {
+					if (bot_func.get(key) && chan_def_func.get(key)) {
+						chan_func.put(key, (event) ? false : true);
+					}
 				}
 			}
 		}

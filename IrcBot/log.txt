@@ -1,0 +1,44 @@
+Apr 14, 2013 12:44:57 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Initialized interface
+Apr 14, 2013 12:44:57 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Starting
+Apr 14, 2013 12:44:57 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Initializing database
+Apr 14, 2013 12:44:57 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Initialized database
+Apr 14, 2013 12:44:57 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Initialized bot
+Apr 14, 2013 12:44:58 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Joined server
+Apr 14, 2013 12:44:58 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Authenticated
+Apr 14, 2013 12:44:58 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Joined channels
+Apr 14, 2013 12:44:59 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Cleaned tells: #snacktest
+Apr 14, 2013 12:44:59 AM org.snack.irc.main.Monitor print
+INFO: <<USERLIST
+Apr 14, 2013 12:44:59 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Userlist: #snacktest Functions: define:true lastfm:true search:false quote:true eightball:false romaji:false weather:true translate:true tell:true html:true wiki:true greet:true booru:true 
+Apr 14, 2013 12:44:59 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Started
+Apr 14, 2013 12:45:01 AM org.snack.irc.main.Monitor print
+INFO: <<MSG #snacktest snack: .np
+Apr 14, 2013 12:45:01 AM org.snack.irc.main.Monitor print
+INFO: ~COMMAND Lastfm: snack
+Apr 14, 2013 12:45:01 AM org.snack.irc.main.Monitor print
+INFO: ~RESPONSE  Snack93 last played: The Wolf Is Loose by Mastodon on Blood Mountain
+Apr 14, 2013 12:45:10 AM org.snack.irc.main.Monitor print
+INFO: <<MSG #snacktest snack: .search test
+Apr 14, 2013 12:45:15 AM org.snack.irc.main.Monitor print
+INFO: <<MSG #snacktest snack: .we
+Apr 14, 2013 12:45:15 AM org.snack.irc.main.Monitor print
+INFO: ~COMMAND Weather: snack
+Apr 14, 2013 12:45:16 AM org.snack.irc.main.Monitor print
+INFO: Wilsum, Germany: Mostly Cloudy 11.1°C/ 52.0°F Wind: SSW at 3.2 KPH gusting to 19.3 KPH Humidity: 77%
+Apr 14, 2013 12:45:25 AM org.snack.irc.main.Monitor print
+INFO: <<MSG #snacktest snack: .8ball amI ugly?
+Apr 14, 2013 12:48:28 AM org.snack.irc.main.Monitor print
+INFO: <<PART #snacktest snack
+Apr 14, 2013 12:48:28 AM org.snack.irc.main.Monitor print
+INFO: ~INFO Part: #snacktest Functions: define:true lastfm:true search:true quote:true eightball:true romaji:false weather:true translate:true tell:true html:true wiki:true greet:true booru:true 

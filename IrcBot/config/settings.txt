@@ -1,0 +1,24 @@
+{
+	"debug": "false",
+	"interface": "false",
+	"scrollback": "50",
+
+	"bot": {
+		"name": "cappuccino",
+		"alt_name": "snackbot",
+		"login": "c",
+		"version": "c",
+		"password": "piepsie93"
+	},
+	
+	"server": "irc.rizon.net",
+
+	"settings": {
+		"log": "log.txt",
+		"identifiers": ".,!",
+		"quote": {
+			"min": "10",
+			"max": "150"
+		}
+	}
+}

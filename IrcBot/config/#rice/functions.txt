@@ -1,0 +1,23 @@
+{
+	"join": "true",
+	"mute": "false",
+	"functions": [
+		{ "define": "true" },
+		{ "lastfm": "true" },
+		{ "search": "true" },
+		{ "eightball": "false" },
+		{ "quote": "true" },
+		{ "weather": "true" },
+		{ "romaji": "false" },
+		{ "html": "true" },
+		{ "tell": "true" },
+		{ "translate": "true" },
+		{ "greet": "false" },
+		{ "wiki": "true" },
+		{ "booru": "true" }
+	],
+	"defaults": [
+		{ "greet_visible": "public" },
+		{ "search_default": "g" }
+	]
+}

@@ -1,6 +1,9 @@
 package org.snack.irc.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.snack.irc.settings.Config;
 
 /**
  * Stores all the channel settings, also keeps defaults
@@ -11,161 +14,38 @@ import java.util.ArrayList;
 public class Chan {
 	// Name
 	public final String name;
-	// Functions that can be switched
-	private boolean greet;
-	public final boolean greet_visible;
-	private boolean html;
-	private boolean lastfm;
-	private boolean weather;
-	private boolean quote;
-	private boolean tell;
-	private boolean translate;
-	private boolean romaji;
-	private boolean wiki;
-	private boolean search;
-	private boolean define;
-	private boolean booru;
-	public final String search_default;
-	// Associated bots
+	public boolean join;
+	public boolean mute;
+	public final HashMap<String, Boolean> functions;
+	public final HashMap<String, Boolean> def_func;
+	public final HashMap<String, String> defaults;
 	public final ArrayList<Bot> bots;
-	// Mute
-	private boolean mute;
-	// Default function settings
-	public final boolean func_greet;
-	public final boolean func_html;
-	public final boolean func_lastfm;
-	public final boolean func_weather;
-	public final boolean func_quote;
-	public final boolean func_tell;
-	public final boolean func_translate;
-	public final boolean func_romaji;
-	public final boolean func_wiki;
-	public final boolean func_search;
-	public final boolean func_define;
-	public final boolean func_booru;
 
-	public Chan(String name, boolean greet, String greet_visible, boolean html, boolean lastfm, boolean weather, boolean quote, boolean tell, boolean translate, boolean romaji,
-			boolean wiki, boolean search, String search_default, boolean define, boolean booru, ArrayList<Bot> bots) {
+	public Chan(String name, boolean join, boolean mute, ArrayList<Bot> bots) {
 		this.name = name;
-		this.greet = this.func_greet = greet;
-		this.greet_visible = (greet_visible.equals("public")) ? true : false;
-		this.html = this.func_html = html;
-		this.lastfm = this.func_lastfm = lastfm;
-		this.weather = this.func_weather = weather;
-		this.quote = this.func_quote = quote;
-		this.tell = this.func_tell = tell;
-		this.translate = this.func_translate = translate;
-		this.romaji = this.func_romaji = romaji;
-		this.wiki = this.func_wiki = wiki;
-		this.search = this.func_search = search;
-		this.search_default = search_default;
-		this.define = this.func_define = define;
-		this.booru = this.func_booru = booru;
-		this.mute = false;
-		this.bots = bots;
-	}
-
-	public boolean getMute() {
-		return mute;
-	}
-
-	public boolean getGreet() {
-		return greet;
-	}
-
-	public boolean getHtml() {
-		return html;
-	}
-
-	public boolean getLastfm() {
-		return lastfm;
-	}
-
-	public boolean getWeather() {
-		return weather;
-	}
-
-	public boolean getQuote() {
-		return quote;
-	}
-
-	public boolean getTell() {
-		return tell;
-	}
-
-	public boolean getTranslate() {
-		return translate;
-	}
-
-	public boolean getRomaji() {
-		return romaji;
-	}
-
-	public boolean getWiki() {
-		return wiki;
-	}
-
-	public boolean getSearch() {
-		return search;
-	}
-
-	public boolean getDefine() {
-		return define;
-	}
-
-	public boolean getBooru() {
-		return booru;
-	}
-
-	public void setMute(boolean mute) {
+		this.join = join;
 		this.mute = mute;
+		this.bots = bots;
+		functions = new HashMap<String, Boolean>();
+		def_func = new HashMap<String, Boolean>();
+		defaults = new HashMap<String, String>();
 	}
 
-	public void setGreet(boolean greet) {
-		this.greet = greet;
+	public void putFunction(String key, Boolean value) {
+		functions.put(key, value);
+		def_func.put(key, value);
 	}
 
-	public void setHtml(boolean html) {
-		this.html = html;
+	public void putDefault(String key, String value) {
+		defaults.put(key, value);
 	}
 
-	public void setLastfm(boolean lastfm) {
-		this.lastfm = lastfm;
-	}
-
-	public void setWeather(boolean weather) {
-		this.weather = weather;
-	}
-
-	public void setQuote(boolean quote) {
-		this.quote = quote;
-	}
-
-	public void setTell(boolean tell) {
-		this.tell = tell;
-	}
-
-	public void setTranslate(boolean translate) {
-		this.translate = translate;
-	}
-
-	public void setRomaji(boolean romaji) {
-		this.romaji = romaji;
-	}
-
-	public void setWiki(boolean wiki) {
-		this.wiki = wiki;
-	}
-
-	public void setSearch(boolean search) {
-		this.search = search;
-	}
-
-	public void setDefine(boolean define) {
-		this.define = define;
-	}
-
-	public void setBooru(boolean booru) {
-		this.booru = booru;
+	public void initDefault() {
+		try {
+			functions.putAll(Config.getDefaultChannelBooleans());
+			def_func.putAll(functions);
+			defaults.putAll(Config.getDefaultChannelStrings());
+		} catch (Exception e) {
+		}
 	}
 }

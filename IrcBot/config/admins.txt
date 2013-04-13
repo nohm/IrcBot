@@ -1,0 +1,8 @@
+{
+	"admins": [
+		{
+			"name": "im.not.edible",
+			"type": "global"
+		}
+	]
+}

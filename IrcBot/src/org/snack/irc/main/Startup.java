@@ -22,15 +22,10 @@ public class Startup {
 	private final static boolean niceLookingMonitor = true;
 	private static PircBotX bot;
 	private static Semaphore restart;
-	public static String configLocation = "config.txt";
 
 	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		if (niceLookingMonitor) {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		}
-
-		if (args != null && args.length > 0) {
-			configLocation = args[0];
 		}
 
 		try {

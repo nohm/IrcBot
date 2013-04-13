@@ -1,18 +1,18 @@
 package org.snack.irc.settings;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import org.snack.irc.main.Startup;
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
 
 public class Config {
 	private static Config c;
-	private static JSONObject jo;
 
 	/**
 	 * Make sure it only gets read once, reads a config file and stores the data
@@ -21,28 +21,38 @@ public class Config {
 		if (c == null) {
 			c = new Config();
 		}
-		jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt(Startup.configLocation));
 
-		initSettings();
-		initSpeech();
-	}
-
-	// All the settings
-	public static HashMap<String, String> sett_str;
-	public static HashMap<String, Boolean> sett_bool;
-	public static HashMap<String, Integer> sett_int;
-	public static HashMap<String, Chan> channels;
-
-	/**
-	 * Initialize the settings
-	 */
-	private static void initSettings() {
+		admins = new HashMap<String, String>();
 		sett_str = new HashMap<String, String>();
 		sett_bool = new HashMap<String, Boolean>();
 		sett_int = new HashMap<String, Integer>();
 		channels = new HashMap<String, Chan>();
+		speech = new HashMap<String, String>();
 
-		sett_str.put("ADMIN", jo.getString("admin"));
+		initAdmins();
+		initMainSettings();
+		initChannels();
+		initSpeech();
+	}
+
+	// All the settings
+	public static HashMap<String, String> admins;
+	public static HashMap<String, String> sett_str;
+	public static HashMap<String, Boolean> sett_bool;
+	public static HashMap<String, Integer> sett_int;
+	public static HashMap<String, Chan> channels;
+	public static HashMap<String, String> speech;
+
+	private static void initAdmins() throws Exception {
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/admins.txt"));
+		JSONArray admin = jo.getJSONArray("admins");
+		for (int i = 0; i < admin.size(); i++) {
+			admins.put(admin.getJSONObject(i).getString("name"), admin.getJSONObject(i).getString("type"));
+		}
+	}
+
+	private static void initMainSettings() throws Exception {
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/settings.txt"));
 		sett_bool.put("DEBUG", jo.getBoolean("debug"));
 		sett_bool.put("INTERFACE", jo.getBoolean("interface"));
 		sett_int.put("SCROLLBACK", jo.getInt("scrollback"));
@@ -56,26 +66,6 @@ public class Config {
 
 		sett_str.put("SERVER", jo.getString("server"));
 
-		JSONObject joResultChannels = jo.getJSONObject("channels");
-		for (int i = 1; i <= joResultChannels.size(); i++) {
-			JSONObject obj = joResultChannels.getJSONObject("channel" + i);
-			JSONObject func = obj.getJSONObject("functions");
-			JSONObject greet = func.getJSONObject("greet");
-			JSONObject search = func.getJSONObject("search");
-			JSONObject joResultBots = obj.getJSONObject("bots");
-			ArrayList<Bot> bots = new ArrayList<Bot>();
-			for (int j = 1; j <= joResultBots.size(); j++) {
-				JSONObject bot = joResultBots.getJSONObject("bot" + j);
-				bots.add(new Bot(bot.getString("name"), bot.getBoolean("greet"), bot.getBoolean("html"), bot.getBoolean("lastfm"), bot.getBoolean("weather"), bot
-						.getBoolean("quote"), bot.getBoolean("tell"), bot.getBoolean("translate"), bot.getBoolean("romaji"), bot.getBoolean("wiki"), bot.getBoolean("search"), bot
-						.getBoolean("define"), bot.getBoolean("booru")));
-			}
-			Chan chan = new Chan(obj.getString("name"), greet.getBoolean("enabled"), greet.getString("visible"), func.getBoolean("html"), func.getBoolean("lastfm"),
-					func.getBoolean("weather"), func.getBoolean("quote"), func.getBoolean("tell"), func.getBoolean("translate"), func.getBoolean("romaji"),
-					func.getBoolean("wiki"), search.getBoolean("enabled"), search.getString("default"), func.getBoolean("define"), func.getBoolean("booru"), bots);
-			channels.put(chan.name, chan);
-		}
-
 		JSONObject joResultSettings = jo.getJSONObject("settings");
 		sett_str.put("LOG_LOC", joResultSettings.getString("log"));
 		sett_str.put("IDENTIFIERS", joResultSettings.getString("identifiers"));
@@ -84,14 +74,48 @@ public class Config {
 		sett_int.put("QUOTE_MAX", joQuoteSettings.getInt("max"));
 	}
 
-	// All the speech lines
-	public static HashMap<String, String> speech;
+	private static void initChannels() throws Exception {
+		for (File folder : new File("config").listFiles()) {
+			if (folder.isDirectory() && folder.getName().startsWith("#")) {
+				initChannel(folder.getAbsolutePath(), folder.getName());
+			}
+		}
+	}
 
-	/**
-	 * Initialize the speech lines
-	 */
-	private static void initSpeech() {
-		speech = new HashMap<String, String>();
+	private static void initChannel(String path, String name) throws Exception {
+		ArrayList<Bot> bots = new ArrayList<Bot>();
+		for (File bot : new File(path).listFiles()) {
+			if (!bot.isDirectory() && bot.getName().startsWith("bot-")) {
+				JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt(bot.getAbsolutePath()));
+				JSONArray func = jo.getJSONArray("functions");
+				Bot b = new Bot(jo.getString("name"));
+				for (int i = 0; i < func.size(); i++) {
+					JSONObject function = func.getJSONObject(i);
+					String cleaned = function.toString().replaceAll("[{}\"]", "");
+					b.functions.put(cleaned.split(":")[0], Boolean.valueOf(cleaned.split(":")[1]));
+				}
+				bots.add(b);
+			}
+		}
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt(path + "/functions.txt"));
+		JSONArray func = jo.getJSONArray("functions");
+		Chan chan = new Chan(name, jo.getBoolean("join"), jo.getBoolean("mute"), bots);
+		for (int i = 0; i < func.size(); i++) {
+			JSONObject function = func.getJSONObject(i);
+			String cleaned = function.toString().replaceAll("[{}\"]", "");
+			chan.putFunction(cleaned.split(":")[0], Boolean.valueOf(cleaned.split(":")[1]));
+		}
+		JSONArray def = jo.getJSONArray("defaults");
+		for (int i = 0; i < def.size(); i++) {
+			JSONObject function = def.getJSONObject(i);
+			String cleaned = function.toString().replaceAll("[{}\"]", "");
+			chan.putDefault(cleaned.split(":")[0], cleaned.split(":")[1]);
+		}
+		channels.put(chan.name, chan);
+	}
+
+	private static void initSpeech() throws Exception {
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/speech.txt"));
 
 		JSONObject joSpeech = jo.getJSONObject("speech");
 
@@ -162,5 +186,53 @@ public class Config {
 		JSONObject joBooru = joSpeech.getJSONObject("booru");
 		speech.put("BO_SUC", joBooru.getString("success"));
 		speech.put("BO_ERR", joBooru.getString("error"));
+	}
+
+	public static HashMap<String, String> getDefaultChannelStrings() throws Exception {
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/default_config.txt"));
+
+		HashMap<String, String> defaults = new HashMap<String, String>();
+
+		JSONObject channel = jo.getJSONObject("channel");
+		JSONArray def = channel.getJSONArray("defaults");
+		for (int i = 0; i < def.size(); i++) {
+			JSONObject function = def.getJSONObject(i);
+			String cleaned = function.toString().replaceAll("[{}\"]", "");
+			defaults.put(cleaned.split(":")[0], cleaned.split(":")[1]);
+		}
+
+		return defaults;
+	}
+
+	public static HashMap<String, Boolean> getDefaultChannelBooleans() throws Exception {
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/default_config.txt"));
+
+		HashMap<String, Boolean> defaults = new HashMap<String, Boolean>();
+
+		JSONObject channel = jo.getJSONObject("channel");
+		JSONArray def = channel.getJSONArray("functions");
+		for (int i = 0; i < def.size(); i++) {
+			JSONObject function = def.getJSONObject(i);
+			String cleaned = function.toString().replaceAll("[{}\"]", "");
+			defaults.put(cleaned.split(":")[0], Boolean.valueOf(cleaned.split(":")[1]));
+		}
+
+		return defaults;
+	}
+
+	public static HashMap<String, Boolean> getDefaultBotBooleans() throws Exception {
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/default_config.txt"));
+
+		HashMap<String, Boolean> defaults = new HashMap<String, Boolean>();
+
+		JSONObject channel = jo.getJSONObject("bot");
+		JSONArray def = channel.getJSONArray("functions");
+		for (int i = 0; i < def.size(); i++) {
+			JSONObject function = def.getJSONObject(i);
+			String cleaned = function.toString().replaceAll("[{}\"]", "");
+			defaults.put(cleaned.split(":")[0], Boolean.valueOf(cleaned.split(":")[1]));
+		}
+
+		return defaults;
 	}
 }
