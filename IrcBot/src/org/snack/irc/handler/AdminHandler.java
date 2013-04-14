@@ -255,6 +255,16 @@ public class AdminHandler implements Runnable {
 			}
 		}
 
+		// .reload
+		if (message.equals(".reload")) {
+			try {
+				Config.initialize();
+				response = "Reloaded config";
+			} catch (Exception e) {
+				response =  "[Error] Couldn't update config";
+			}
+		}
+
 		if (!response.equals("")) {
 			Monitor.print("~INFO Response: " + response);
 			event.getBot().sendNotice(event.getUser(), response);

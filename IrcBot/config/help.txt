@@ -1,0 +1,54 @@
+{
+	"modules": "Available modules for you: Usage: .commands [module]",
+	"unknown_module": "Unknown module(s): ",
+	
+	"groups": [
+		{
+			"name": "functions",
+			"permission": "all",
+			"modules": [
+				{ "define": "Define a word: .define [word]" },
+				{ "lastfm": "Get Last.FM music status: .np [name] (name gets stored)" },
+				{ "search": "Search 4chan for a thread: .search[-board] [query] (board is optional)" },
+				{ "eightball": "Ask the 8-ball: .8ball [query]?" },
+				{ "quote": "Ask for a quote: .quote [name] (name is optional)" },
+				{ "weather": "Get weather status: .we [location] (location gets stored)" },
+				{ "romaji": "Translate moonrunes: .romaji/.katakana [query]" },
+				{ "tell": "Tel something to a user: .tell [user] [message]" },
+				{ "translate": "Translate something: .translate [message]" },
+				{ "wiki": "Search wikipedia: .wiki[-language] [query] (language is optional)" },
+				{ "booru": "Search booru: .booru[-booru] [query]" }
+			]
+		},
+		{
+			"name": "admin commands",
+			"permission": "main",
+			"modules": [
+				{ "admins": "List all the admins and their permissions: .admins" },
+				{ "enable": "Enable modules: .enable [module(s)]" },
+				{ "disable": "Disable modules: .disable [module(s)]" },
+				{ "enabled": "List enabled modules: .enabled" },
+				{ "disabled": "List disabled modules: .disabled" },
+				{ "mute": "Mute/unmute the bot: .mute" },
+				{ "muted": "Get mute status: .muted" },
+				{ "join": "Join a channel: .join [#channel]" },
+				{ "leave": "Leave a channel: .leave [#channel]" },
+				{ "restart": "Restart the bot: .restart" },
+				{ "bot": "List the known bots: .bots" },
+				{ "bot": "Add/remove a bot: .bot [add/remove] [nick]" },
+				{ "bot-enable": "Enable bot module(s): .bot [nick] enable [module(s)]" },
+				{ "bot-disable": "Disable bot module(s): .bot [nick] disable [module(s)]" },
+				{ "bot-enabled": "Get bot enabled module(s): .bot [nick] enabled" },
+				{ "bot-disabled": "Get bot disabled module(s): .bot [nick] disabled" },
+				{ "reload": "Reload the config: .reload"}
+			]
+		},
+		{
+			"name": "global admin commands",
+			"permission": "global",
+			"modules": [
+				{ "admin": "Add/remove admins: .admin [add/remove] [hostmask]" }
+			]
+		}
+	]
+}

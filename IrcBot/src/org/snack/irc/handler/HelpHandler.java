@@ -1,7 +1,11 @@
 package org.snack.irc.handler;
 
+import java.util.ArrayList;
+import java.util.Map.Entry;
+
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.model.Chan;
+import org.snack.irc.model.HelpModule;
 import org.snack.irc.settings.Config;
 
 public class HelpHandler implements Runnable {
@@ -22,44 +26,43 @@ public class HelpHandler implements Runnable {
 	 */
 	private void sendHelp() {
 		Chan chan = Config.channels.get(event.getChannel().getName());
-		// TODO: Make help modular
-		/*
-		event.getBot().sendNotice(event.getUser(), "My commands:");
-		event.getBot().sendNotice(event.getUser(), "I respond to commands starting with: " + Config.sett_str.get("IDENTIFIERS"));
-		if (chan.getWeather()) {
-			event.getBot().sendNotice(event.getUser(), "Get weather: .we [name] (Name gets stored)");
+		String hostmask = event.getUser().getHostmask();
+		String permission = Config.admins.containsKey(hostmask) ? Config.admins.get(hostmask) : "all";
+		String message = event.getMessage();
+		ArrayList<String> response = new ArrayList<String>();
+
+		if (message.substring(1).equals("help")) {
+			response.add(Config.speech.get("modules"));
+			for (Entry<String, HelpModule> module : Config.help.entrySet()) {
+				if (module.getValue().hasPermission(permission)) {
+					response.add(module.getValue().toString(chan));
+				}
+			}
+		} else if (message.split(" ").length >= 2) {
+			String unknown_module = Config.speech.get("unknown_module");
+			String[] modules = message.split(" ");
+			for (int i = 1; i < modules.length; i++) {
+				boolean handled = false;
+				for (Entry<String, HelpModule> module : Config.help.entrySet()) {
+					if (module.getValue().hasPermission(permission)) {
+						if (module.getValue().modules.get(modules[i]) != null) {
+							response.add(module.getValue().modules.get(modules[i]));
+							handled = true;
+						}
+					}
+				}
+				if (!handled) {
+					unknown_module += modules[i] + ", ";
+				}
+			}
+			if (!unknown_module.equals(Config.speech.get("unknown_module"))) {
+				unknown_module = unknown_module.substring(0, unknown_module.length() - 2);
+				response.add(unknown_module);
+			}
 		}
-		if (chan.getLastfm()) {
-			event.getBot().sendNotice(event.getUser(), "Get lastfm: .np [name] (Name gets stored)");
+
+		for (String s : response) {
+			event.getBot().sendNotice(event.getUser(), s);
 		}
-		if (chan.getHtml()) {
-			event.getBot().sendNotice(event.getUser(), "Auto respond to http(s):// links");
-		}
-		if (chan.getQuote()) {
-			event.getBot().sendNotice(event.getUser(), "Quotes: .quote [add] (To add) [name] (Name is optional) [quote] (If adding)");
-		}
-		if (chan.getTell()) {
-			event.getBot().sendNotice(event.getUser(), "Tell someone on join: .tell [message]");
-		}
-		if (chan.getTranslate()) {
-			event.getBot().sendNotice(event.getUser(), "Translate to english: .translate [message]");
-		}
-		if (chan.getRomaji()) {
-			event.getBot().sendNotice(event.getUser(), "Change romaji to katakana: .romaji [message]");
-			event.getBot().sendNotice(event.getUser(), "Change katakana to romaji: .katakana [message]");
-		}
-		if (chan.getWiki()) {
-			event.getBot().sendNotice(event.getUser(), "Search wikipedia: .wiki[-language] (Language is optional) [term]");
-		}
-		if (chan.getSearch()) {
-			event.getBot().sendNotice(event.getUser(), "Search for threads: .search[-board] (Board is optional) [term]");
-		}
-		if (chan.getDefine()) {
-			event.getBot().sendNotice(event.getUser(), "Define words: .define [term]");
-		}
-		if (chan.getBooru()) {
-			event.getBot().sendNotice(event.getUser(), "Search booru: .booru-[name abbr.] [term]");
-			event.getBot().sendNotice(event.getUser(), "Valid booru's: safe(booru), dan(booru), kona(chan), gel(booru), loli(booru)");
-		}*/
 	}
 }

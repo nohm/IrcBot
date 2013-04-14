@@ -1,0 +1,18 @@
+{
+	"name": "Moelicious",
+	"functions": [
+		{ "define": "false" },
+		{ "eightball": "true" },
+		{ "greet": "false" },
+		{ "lastfm": "false" },
+		{ "search": "true" },
+		{ "quote": "false" },
+		{ "weather": "false" },
+		{ "romaji": "false" },
+		{ "html": "false" },
+		{ "tell": "false" },
+		{ "translate": "false" },
+		{ "wiki": "false" },
+		{ "booru": "false" }
+	]
+}

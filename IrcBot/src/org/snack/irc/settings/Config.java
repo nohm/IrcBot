@@ -10,6 +10,7 @@ import net.sf.json.JSONSerializer;
 
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
+import org.snack.irc.model.HelpModule;
 
 public class Config {
 	private static Config c;
@@ -28,11 +29,13 @@ public class Config {
 		sett_int = new HashMap<String, Integer>();
 		channels = new HashMap<String, Chan>();
 		speech = new HashMap<String, String>();
+		help = new HashMap<String, HelpModule>();
 
 		initAdmins();
 		initMainSettings();
 		initChannels();
 		initSpeech();
+		initHelp();
 	}
 
 	// All the settings
@@ -42,6 +45,7 @@ public class Config {
 	public static HashMap<String, Integer> sett_int;
 	public static HashMap<String, Chan> channels;
 	public static HashMap<String, String> speech;
+	public static HashMap<String, HelpModule> help;
 
 	private static void initAdmins() throws Exception {
 		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/admins.txt"));
@@ -89,10 +93,11 @@ public class Config {
 				JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt(bot.getAbsolutePath()));
 				JSONArray func = jo.getJSONArray("functions");
 				Bot b = new Bot(jo.getString("name"));
+				b.initDefault();
 				for (int i = 0; i < func.size(); i++) {
 					JSONObject function = func.getJSONObject(i);
 					String cleaned = function.toString().replaceAll("[{}\"]", "");
-					b.functions.put(cleaned.split(":")[0], Boolean.valueOf(cleaned.split(":")[1]));
+					b.functions.put(cleaned.substring(0, cleaned.indexOf(":")), Boolean.valueOf(cleaned.substring(cleaned.indexOf(":") + 1)));
 				}
 				bots.add(b);
 			}
@@ -100,16 +105,17 @@ public class Config {
 		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt(path + "/functions.txt"));
 		JSONArray func = jo.getJSONArray("functions");
 		Chan chan = new Chan(name, jo.getBoolean("join"), jo.getBoolean("mute"), bots);
+		chan.initDefault();
 		for (int i = 0; i < func.size(); i++) {
 			JSONObject function = func.getJSONObject(i);
 			String cleaned = function.toString().replaceAll("[{}\"]", "");
-			chan.putFunction(cleaned.split(":")[0], Boolean.valueOf(cleaned.split(":")[1]));
+			chan.putFunction(cleaned.substring(0, cleaned.indexOf(":")), Boolean.valueOf(cleaned.substring(cleaned.indexOf(":") + 1)));
 		}
 		JSONArray def = jo.getJSONArray("defaults");
 		for (int i = 0; i < def.size(); i++) {
 			JSONObject function = def.getJSONObject(i);
 			String cleaned = function.toString().replaceAll("[{}\"]", "");
-			chan.putDefault(cleaned.split(":")[0], cleaned.split(":")[1]);
+			chan.putDefault(cleaned.substring(0, cleaned.indexOf(":")), cleaned.substring(cleaned.indexOf(":") + 1));
 		}
 		channels.put(chan.name, chan);
 	}
@@ -188,6 +194,26 @@ public class Config {
 		speech.put("BO_ERR", joBooru.getString("error"));
 	}
 
+	private static void initHelp() throws Exception {
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/help.txt"));
+
+		speech.put("modules", jo.getString("modules"));
+		speech.put("unknown_module", jo.getString("unknown_module"));
+
+		JSONArray groups = jo.getJSONArray("groups");
+		for (int i = 0; i < groups.size(); i++) {
+			JSONObject group = groups.getJSONObject(i);
+			HelpModule module = new HelpModule(group.getString("name"), group.getString("permission"));
+			JSONArray modules = group.getJSONArray("modules");
+			for (int j = 0; j < modules.size(); j++) {
+				JSONObject item = modules.getJSONObject(j);
+				String cleaned = item.toString().replaceAll("[{}\"]", "");
+				module.putModule(cleaned.substring(0, cleaned.indexOf(":")), cleaned.substring(cleaned.indexOf(":") + 1));
+			}
+			help.put(module.name, module);
+		}
+	}
+
 	public static HashMap<String, String> getDefaultChannelStrings() throws Exception {
 		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/default_config.txt"));
 
@@ -198,7 +224,7 @@ public class Config {
 		for (int i = 0; i < def.size(); i++) {
 			JSONObject function = def.getJSONObject(i);
 			String cleaned = function.toString().replaceAll("[{}\"]", "");
-			defaults.put(cleaned.split(":")[0], cleaned.split(":")[1]);
+			defaults.put(cleaned.substring(0, cleaned.indexOf(":")), cleaned.substring(cleaned.indexOf(":") + 1));
 		}
 
 		return defaults;
@@ -214,7 +240,7 @@ public class Config {
 		for (int i = 0; i < def.size(); i++) {
 			JSONObject function = def.getJSONObject(i);
 			String cleaned = function.toString().replaceAll("[{}\"]", "");
-			defaults.put(cleaned.split(":")[0], Boolean.valueOf(cleaned.split(":")[1]));
+			defaults.put(cleaned.substring(0, cleaned.indexOf(":")), Boolean.valueOf(cleaned.substring(cleaned.indexOf(":") + 1)));
 		}
 
 		return defaults;
@@ -230,7 +256,7 @@ public class Config {
 		for (int i = 0; i < def.size(); i++) {
 			JSONObject function = def.getJSONObject(i);
 			String cleaned = function.toString().replaceAll("[{}\"]", "");
-			defaults.put(cleaned.split(":")[0], Boolean.valueOf(cleaned.split(":")[1]));
+			defaults.put(cleaned.substring(0, cleaned.indexOf(":")), Boolean.valueOf(cleaned.substring(0, cleaned.indexOf(":") + 1)));
 		}
 
 		return defaults;
