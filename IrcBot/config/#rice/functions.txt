@@ -3,18 +3,21 @@
 	"mute": "false",
 	"functions": [
 		{ "define": "true" },
+		{ "google": "true" },
 		{ "eightball": "false" },
+		{ "image": "true" },
+		{ "tetete": "false" },
 		{ "greet": "false" },
 		{ "lastfm": "true" },
+		{ "whisper": "false" },
 		{ "search": "true" },
 		{ "quote": "true" },
 		{ "weather": "false" },
-		{ "translate": "true" },
-		{ "tell": "true" },
 		{ "html": "true" },
+		{ "tell": "true" },
+		{ "translate": "true" },
 		{ "wiki": "true" },
-		{ "booru": "true" },
-		{ "tetete": "false" }
+		{ "booru": "true" }
 	],
 	"defaults": [
 		{ "greet_visible": "public" },

@@ -47,7 +47,7 @@
 			"error": "<name> is online, do it yourself."
 		},
 		"translate": {
-			"success": "Translated: <response>",
+			"success": "[<from> to <to>]: <response>",
 			"error": "Something went wrong translating."
 		},
 		"romaji": {

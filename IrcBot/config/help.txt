@@ -13,12 +13,14 @@
 				{ "eightball": "Ask the 8-ball: .8ball [query]?" },
 				{ "quote": "Ask for a quote: .quote [name] (name is optional)" },
 				{ "weather": "Get weather status: .we [location] (location gets stored)" },
-				{ "tell": "Tel something to a user: .tell [user] [message]" },
-				{ "translate": "Translate something: .translate [message]" },
+				{ "tell": "Tell something to a user: .tell [user] [message]" },
+				{ "translate": "Translate something: .translate [from <lang>] [to <lang>] [message] (from/to is optional)" },
 				{ "wiki": "Search wikipedia: .wiki[-language] [query] (language is optional)" },
 				{ "booru": "Search booru: .booru[-booru] [query]" },
 				{ "tetete": "tetete: tetete <nick><nick><nick>" },
-				{ "whisper": "Whisper to someone: .whisper [nick] [message]" }
+				{ "whisper": "Whisper to someone: .whisper [nick] [message]" },
+				{ "image": "Get a random image: >[name].[format] or .image [query]" },
+				{ "google": "Get the first result: .google [query]" }
 			]
 		},
 		{

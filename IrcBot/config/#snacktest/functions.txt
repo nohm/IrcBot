@@ -1,12 +1,15 @@
 {
-	"join": "true",
+	"join": "false",
 	"mute": "false",
 	"functions": [
 		{ "define": "true" },
+		{ "google": "true" },
 		{ "eightball": "false" },
+		{ "image": "true" },
 		{ "tetete": "false" },
 		{ "greet": "false" },
 		{ "lastfm": "true" },
+		{ "whisper": "false" },
 		{ "search": "true" },
 		{ "quote": "true" },
 		{ "weather": "true" },

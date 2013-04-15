@@ -13,7 +13,9 @@
 		{ "wiki": "false" },
 		{ "booru": "false" },
 		{ "tetete": "false" },
-		{ "whisper": "false" }
+		{ "whisper": "false" },
+		{ "image": "false" },
+		{ "google": "false" }
 	],
 	"defaults": [
 		{ "greet_visible": "private" },

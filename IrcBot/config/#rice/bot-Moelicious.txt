@@ -2,17 +2,20 @@
 	"name": "Moelicious",
 	"functions": [
 		{ "define": "false" },
+		{ "google": "false" },
 		{ "eightball": "true" },
+		{ "image": "false" },
 		{ "greet": "false" },
+		{ "tetete": "false" },
 		{ "lastfm": "false" },
+		{ "whisper": "false" },
 		{ "search": "true" },
 		{ "quote": "false" },
 		{ "weather": "false" },
-		{ "html": "false" },
-		{ "tell": "false" },
 		{ "translate": "false" },
+		{ "tell": "false" },
+		{ "html": "false" },
 		{ "wiki": "false" },
-		{ "booru": "false" },
-		{ "tetete": "false" }
+		{ "booru": "false" }
 	]
 }

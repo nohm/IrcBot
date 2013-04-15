@@ -62,10 +62,10 @@ public class AddTell extends TriggerHandler implements Runnable {
 			Tell tell = new Tell(event.getUser().getNick(), nick, event.getMessage().split("tell " + nick)[1]);
 			db.putTell(tell);
 			Monitor.print("~RESPONSE  Added tell: " + tell.getSender() + " > " + tell.getName() + " : " + tell.getMessage());
-			event.getBot().sendMessage(event.getChannel(), Config.speech.get("TE_ADD").replace("<name>", nick));
+			event.getBot().sendNotice(event.getUser(), Config.speech.get("TE_ADD").replace("<name>", nick));
 		} else {
 			Monitor.print("~RESPONSE  Error adding tell.");
-			event.getBot().sendMessage(event.getChannel(), Config.speech.get("TE_ERR").replace("<name>", nick));
+			event.getBot().sendNotice(event.getUser(), Config.speech.get("TE_ERR").replace("<name>", nick));
 		}
 	}
 }

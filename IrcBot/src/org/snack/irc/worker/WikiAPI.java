@@ -16,7 +16,7 @@ public class WikiAPI {
 	public static String search(String language, String query) {
 		try {
 			String lang = language.toLowerCase();
-			String searchWord = query.replaceAll("[^\\p{L}| ]", "").toLowerCase();
+			String searchWord = query.replaceAll("[^\\p{L}]", "").toLowerCase();
 			String uriWord = URLEncoder.encode(searchWord, "utf-8");
 
 			URL url = new URL("https://" + lang + ".wikipedia.org/w/api.php?action=opensearch&limit=1&format=json&search=" + uriWord);
