@@ -148,6 +148,15 @@ public class Admin extends TriggerHandler {
 			response = "Muted on " + channel.getName() + ": " + chan.mute;
 		}
 
+		// .channels
+		if (message.equals(".channels")) {
+			response = "Channels I'm in: ";
+			for (Chan chan : Config.channels.values()) {
+				response += chan.name + ", ";
+			}
+			response = response.substring(0, response.length() - 2);
+		}
+
 		// .join channel
 		if (message.startsWith(".join ") && message.length() > 6 && message.split(" ").length == 2 && message.split(" ")[1].startsWith("#")
 				&& !channel.getBot().channelExists(message.split(" ")[1])) {

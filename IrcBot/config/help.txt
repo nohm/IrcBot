@@ -32,6 +32,7 @@
 				{ "disabled": "List disabled modules: .disabled" },
 				{ "mute": "Mute/unmute the bot: .mute" },
 				{ "muted": "Get mute status: .muted" },
+				{ "channels": "List all the channels: .channels" },
 				{ "join": "Join a channel: .join [#channel]" },
 				{ "leave": "Leave a channel: .leave [#channel]" },
 				{ "restart": "Restart the bot: .restart" },
