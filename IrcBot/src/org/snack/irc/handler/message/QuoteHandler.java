@@ -1,29 +1,35 @@
-package org.snack.irc.handler;
+package org.snack.irc.handler.message;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.database.DatabaseManager;
-import org.snack.irc.enums.QuoteType;
 import org.snack.irc.main.Monitor;
+import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.model.Quote;
 import org.snack.irc.settings.Config;
 
-public class QuoteHandler implements Runnable {
+public class QuoteHandler extends TriggerHandler {
 
-	private final MessageEvent<?> event;
-	private final QuoteType quoteType;
+	private MessageEvent<?> event;
 
-	public QuoteHandler(MessageEvent<?> event, QuoteType quoteType) {
+	public QuoteHandler() {}
+
+	public QuoteHandler(MessageEvent<?> event) {
 		this.event = event;
-		this.quoteType = quoteType;
 	}
 
 	@Override
 	public void run() {
-		if (quoteType == QuoteType.ADD) {
-			addQuote();
-		} else {
-			getQuote();
-		}
+		getQuote();
+	}
+
+	@Override
+	public boolean trigger(MessageEvent<?> event) {
+		return (event.getMessage().length() >= 6 && event.getMessage().substring(1, 6).equals("quote"));
+	}
+
+	@Override
+	public void attachEvent(MessageEvent<?> event) {
+		this.event = event;
 	}
 
 	/**
@@ -50,20 +56,5 @@ public class QuoteHandler implements Runnable {
 		}
 		Monitor.print("~RESPONSE  Quoted: " + quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
 		event.getBot().sendMessage(event.getChannel(), response);
-	}
-
-	/**
-	 * Add a new quote to the database
-	 */
-	private void addQuote() {
-		DatabaseManager db = DatabaseManager.getInstance();
-
-		String name = event.getMessage().split(" ")[2];
-		String message = event.getMessage().substring(event.getMessage().indexOf(name) + name.length() + 1);
-
-		Quote quote = new Quote(event.getChannel().getName(), name, message);
-		db.putQuote(quote);
-		Monitor.print("~RESPONSE  Added: " + quote.getChannel() + " <" + quote.getName() + "> " + quote.getMessage());
-		event.getBot().sendMessage(event.getChannel(), Config.speech.get("QU_ADD"));
 	}
 }

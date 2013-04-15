@@ -1,13 +1,16 @@
-package org.snack.irc.handler;
+package org.snack.irc.handler.message;
 
 import java.util.Random;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
+import org.snack.irc.main.TriggerHandler;
 
-public class EightBallHandler implements Runnable {
+public class EightBallHandler extends TriggerHandler {
 
-	private final MessageEvent<?> event;
+	private MessageEvent<?> event;
+
+	public EightBallHandler() {}
 
 	public EightBallHandler(MessageEvent<?> event) {
 		this.event = event;
@@ -50,5 +53,15 @@ public class EightBallHandler implements Runnable {
 
 		Monitor.print("~INFO Response: " + reply);
 		event.getBot().sendMessage(event.getChannel(), "8-Ball says: " + reply);
+	}
+
+	@Override
+	public boolean trigger(MessageEvent<?> event) {
+		return (event.getMessage().length() >= 7 && event.getMessage().substring(1, 7).equals("8ball "));
+	}
+
+	@Override
+	public void attachEvent(MessageEvent<?> event) {
+		this.event = event;
 	}
 }

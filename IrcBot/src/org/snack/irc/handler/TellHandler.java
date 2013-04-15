@@ -2,70 +2,38 @@ package org.snack.irc.handler;
 
 import java.util.ArrayList;
 
-import org.pircbotx.User;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.snack.irc.database.DatabaseManager;
-import org.snack.irc.enums.TellType;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.model.Tell;
 import org.snack.irc.settings.Config;
 
 public class TellHandler implements Runnable {
 
-	private final MessageEvent<?> mEvent;
-	private final JoinEvent<?> jEvent;
-	private final NickChangeEvent<?> nEvent;
-	private final TellType tellType;
+	private MessageEvent<?> mEvent;
+	private JoinEvent<?> jEvent;
+	private NickChangeEvent<?> nEvent;
 
-	public TellHandler(MessageEvent<?> mEvent, JoinEvent<?> jEvent, NickChangeEvent<?> nEvent, TellType tellType) {
+	public TellHandler() {}
+
+	public TellHandler(MessageEvent<?> mEvent, JoinEvent<?> jEvent, NickChangeEvent<?> nEvent) {
 		this.mEvent = mEvent;
 		this.jEvent = jEvent;
 		this.nEvent = nEvent;
-		this.tellType = tellType;
 	}
 
 	@Override
 	public void run() {
-		if (tellType == TellType.ADD) {
-			add();
-		} else {
-			if (jEvent == null) {
-				if (nEvent == null) {
-					tell(null, null, mEvent);
-				} else {
-					tell(null, nEvent, null);
-				}
+		if (jEvent == null) {
+			if (nEvent == null) {
+				tell(null, null, mEvent);
 			} else {
-				tell(jEvent, null, null);
+				tell(null, nEvent, null);
 			}
-		}
-	}
-
-	/**
-	 * Adds a new tell to the database
-	 */
-	private void add() {
-		DatabaseManager db = DatabaseManager.getInstance();
-		String nick = mEvent.getMessage().split(" ")[1];
-
-		boolean online = false;
-
-		for (User u : mEvent.getChannel().getUsers()) {
-			if (u.getNick().equalsIgnoreCase(nick) && (System.currentTimeMillis() - db.getLastMsg(nick).getTime()) < (10 * 60 * 1000)) {
-				online = true;
-			}
-		}
-
-		if (!online) {
-			Tell tell = new Tell(mEvent.getUser().getNick(), nick, mEvent.getMessage().split("tell " + nick)[1]);
-			db.putTell(tell);
-			Monitor.print("~RESPONSE  Added tell: " + tell.getSender() + " > " + tell.getName() + " : " + tell.getMessage());
-			mEvent.getBot().sendMessage(mEvent.getChannel(), Config.speech.get("TE_ADD").replace("<name>", nick));
 		} else {
-			Monitor.print("~RESPONSE  Error adding tell.");
-			mEvent.getBot().sendMessage(mEvent.getChannel(), Config.speech.get("TE_ERR").replace("<name>", nick));
+			tell(jEvent, null, null);
 		}
 	}
 

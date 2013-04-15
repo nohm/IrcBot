@@ -1,12 +1,15 @@
-package org.snack.irc.handler;
+package org.snack.irc.handler.message;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
+import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.worker.WikiAPI;
 
-public class WikiHandler implements Runnable {
+public class WikiHandler extends TriggerHandler {
 
-	private final MessageEvent<?> event;
+	private MessageEvent<?> event;
+
+	public WikiHandler() {}
 
 	public WikiHandler(MessageEvent<?> event) {
 		this.event = event;
@@ -15,6 +18,16 @@ public class WikiHandler implements Runnable {
 	@Override
 	public void run() {
 		searchWiki();
+	}
+
+	@Override
+	public boolean trigger(MessageEvent<?> event) {
+		return (event.getMessage().length() >= 5 && event.getMessage().substring(1, 5).equals("wiki"));
+	}
+
+	@Override
+	public void attachEvent(MessageEvent<?> event) {
+		this.event = event;
 	}
 
 	private void searchWiki() {

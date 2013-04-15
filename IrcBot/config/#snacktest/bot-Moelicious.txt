@@ -7,7 +7,6 @@
 		{ "eightball": "true" },
 		{ "quote": "false" },
 		{ "weather": "false" },
-		{ "romaji": "false" },
 		{ "html": "false" },
 		{ "tell": "false" },
 		{ "translate": "false" },

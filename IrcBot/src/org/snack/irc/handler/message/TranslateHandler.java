@@ -1,15 +1,18 @@
-package org.snack.irc.handler;
+package org.snack.irc.handler.message;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
+import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.settings.Config;
 
 import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 
-public class TranslateHandler implements Runnable {
+public class TranslateHandler extends TriggerHandler {
 
-	private final MessageEvent<?> event;
+	private MessageEvent<?> event;
+
+	public TranslateHandler() {}
 
 	public TranslateHandler(MessageEvent<?> event) {
 		this.event = event;
@@ -18,6 +21,16 @@ public class TranslateHandler implements Runnable {
 	@Override
 	public void run() {
 		translate();
+	}
+
+	@Override
+	public boolean trigger(MessageEvent<?> event) {
+		return (event.getMessage().length() >= 11 && event.getMessage().substring(1, 11).equals("translate "));
+	}
+
+	@Override
+	public void attachEvent(MessageEvent<?> event) {
+		this.event = event;
 	}
 
 	/**

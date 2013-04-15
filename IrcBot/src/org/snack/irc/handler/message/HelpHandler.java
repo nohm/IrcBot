@@ -1,16 +1,19 @@
-package org.snack.irc.handler;
+package org.snack.irc.handler.message;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import org.pircbotx.hooks.events.MessageEvent;
+import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.model.Chan;
 import org.snack.irc.model.HelpModule;
 import org.snack.irc.settings.Config;
 
-public class HelpHandler implements Runnable {
+public class HelpHandler extends TriggerHandler {
 
-	private final MessageEvent<?> event;
+	private MessageEvent<?> event;
+
+	public HelpHandler() {}
 
 	public HelpHandler(MessageEvent<?> event) {
 		this.event = event;
@@ -64,5 +67,15 @@ public class HelpHandler implements Runnable {
 		for (String s : response) {
 			event.getBot().sendNotice(event.getUser(), s);
 		}
+	}
+
+	@Override
+	public boolean trigger(MessageEvent<?> event) {
+		return (event.getMessage().length() >= 5 && event.getMessage().substring(1, 5).equals("help"));
+	}
+
+	@Override
+	public void attachEvent(MessageEvent<?> event) {
+		this.event = event;
 	}
 }

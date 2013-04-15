@@ -1,15 +1,18 @@
-package org.snack.irc.handler;
+package org.snack.irc.handler.message;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.main.Monitor;
+import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.model.LastfmUser;
 import org.snack.irc.settings.Config;
 import org.snack.irc.worker.LastfmAPI;
 
-public class LastfmHandler implements Runnable {
+public class LastfmHandler extends TriggerHandler {
 
-	private final MessageEvent<?> event;
+	private MessageEvent<?> event;
+
+	public LastfmHandler() {}
 
 	public LastfmHandler(MessageEvent<?> event) {
 		this.event = event;
@@ -18,6 +21,16 @@ public class LastfmHandler implements Runnable {
 	@Override
 	public void run() {
 		getLastfm();
+	}
+
+	@Override
+	public boolean trigger(MessageEvent<?> event) {
+		return (event.getMessage().length() >= 3 && event.getMessage().substring(1, 3).equals("np"));
+	}
+
+	@Override
+	public void attachEvent(MessageEvent<?> event) {
+		this.event = event;
 	}
 
 	/**

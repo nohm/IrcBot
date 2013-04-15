@@ -1,15 +1,18 @@
-package org.snack.irc.handler;
+package org.snack.irc.handler.message;
 
 import java.util.ArrayList;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
+import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.settings.Config;
 import org.snack.irc.worker.HtmlGetter;
 
-public class HtmlHandler implements Runnable {
+public class HtmlHandler extends TriggerHandler {
 
-	private final MessageEvent<?> event;
+	private MessageEvent<?> event;
+
+	public HtmlHandler() {}
 
 	public HtmlHandler(MessageEvent<?> event) {
 		this.event = event;
@@ -45,5 +48,15 @@ public class HtmlHandler implements Runnable {
 			Monitor.print("~RESPONSE " + response);
 			event.getBot().sendMessage(event.getChannel(), Config.speech.get("HT_TIT").replace("<title>", response));
 		}
+	}
+
+	@Override
+	public boolean trigger(MessageEvent<?> event) {
+		return (event.getMessage().contains("http://") || event.getMessage().contains("https://"));
+	}
+
+	@Override
+	public void attachEvent(MessageEvent<?> event) {
+		this.event = event;
 	}
 }

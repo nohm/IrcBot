@@ -1,120 +1,38 @@
-Apr 14, 2013 6:51:17 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:00 PM org.snack.irc.main.Monitor print
 INFO: ~INFO Initialized interface
-Apr 14, 2013 6:51:17 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:00 PM org.snack.irc.main.Monitor print
 INFO: ~INFO Starting
-Apr 14, 2013 6:51:17 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:00 PM org.snack.irc.main.Monitor print
 INFO: ~INFO Initializing database
-Apr 14, 2013 6:51:17 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:00 PM org.snack.irc.main.Monitor print
 INFO: ~INFO Initialized database
-Apr 14, 2013 6:51:17 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:00 PM org.snack.irc.main.Monitor print
 INFO: ~INFO Initialized bot
-Apr 14, 2013 6:51:18 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:07 PM org.snack.irc.main.Monitor print
 INFO: ~INFO Joined server
-Apr 14, 2013 6:51:18 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:07 PM org.snack.irc.main.Monitor print
 INFO: ~INFO Authenticated
-Apr 14, 2013 6:51:18 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:07 PM org.snack.irc.main.Monitor print
 INFO: ~INFO Joined channels
-Apr 14, 2013 6:51:19 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:07 PM org.snack.irc.main.Monitor print
 INFO: ~INFO Started
-Apr 14, 2013 6:51:19 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Cleaned tells: #rice
-Apr 14, 2013 6:51:19 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:07 PM org.snack.irc.main.Monitor print
+INFO: <<JOIN #snacktest snackbot
+Apr 15, 2013 1:07:07 PM org.snack.irc.main.Monitor print
+INFO: ~INFO Join: #snacktest Functions: define:true lastfm:true search:true eightball:false quote:true weather:true html:true tell:true translate:true greet:false wiki:true booru:true 
+Apr 15, 2013 1:07:07 PM org.snack.irc.main.Monitor print
 INFO: ~INFO Cleaned tells: #snacktest
-Apr 14, 2013 6:51:19 PM org.snack.irc.main.Monitor print
+Apr 15, 2013 1:07:08 PM org.snack.irc.main.Monitor print
 INFO: <<USERLIST
-Apr 14, 2013 6:51:19 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Userlist: #snacktest Functions: define:true eightball:false greet:false lastfm:true search:true quote:true weather:true romaji:false html:true tell:true translate:true wiki:true booru:true 
-Apr 14, 2013 6:51:19 PM org.snack.irc.main.Monitor print
-INFO: <<USERLIST
-Apr 14, 2013 6:51:19 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Userlist: #rice Functions: define:true eightball:false greet:false lastfm:true search:false quote:true weather:true romaji:false html:true tell:true translate:true wiki:true booru:true 
-Apr 14, 2013 6:51:30 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice snack: .help
-Apr 14, 2013 6:51:30 PM org.snack.irc.main.Monitor print
-INFO: ~COMMAND Help: snack
-Apr 14, 2013 6:51:34 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice Nuck: I wish my phone were scrobbling this song right now.  Capsule — Glider
-Apr 14, 2013 6:51:38 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice Nuck: <3 Capsule
-Apr 14, 2013 6:52:10 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice BananaCo: THANKS YOU BASED GOD
-Apr 14, 2013 6:52:15 PM org.snack.irc.main.Monitor print
-INFO: <<JOIN #rice shigeume
-Apr 14, 2013 6:52:15 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Cleaned tells: #rice
-Apr 14, 2013 6:52:15 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Join: #rice Functions: define:true eightball:false greet:false lastfm:true search:false quote:true weather:true romaji:false html:true tell:true translate:true wiki:true booru:true 
-Apr 14, 2013 6:52:17 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice BananaCo: FOR NOT MAKING ME A CUTE TRAP
-Apr 14, 2013 6:52:28 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice snack: .search pls work
-Apr 14, 2013 6:52:33 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice shigeume: 0.o
-Apr 14, 2013 6:52:36 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice Nuck: .search desktop
-Apr 14, 2013 6:52:39 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice Nuck: :(
-Apr 14, 2013 6:52:41 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice shigeume: >join room >CUTE TRAP >wutm8
-Apr 14, 2013 6:52:47 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice BananaCo: lel
-Apr 14, 2013 6:52:48 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice snack: .enable search
-Apr 14, 2013 6:52:48 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Response: Enabled: search
-Apr 14, 2013 6:52:51 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice snack: .search pls work
-Apr 14, 2013 6:52:51 PM org.snack.irc.main.Monitor print
-INFO: ~COMMAND Search: snack
-Apr 14, 2013 6:52:54 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Response: Nothing found.
-Apr 14, 2013 6:52:57 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice Nuck: Based God's Thank You video is amazing
-Apr 14, 2013 6:52:57 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice BananaCo: YAY
-Apr 14, 2013 6:52:58 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice snack: there we are
-Apr 14, 2013 6:53:01 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice BananaCo: .search for cute traps in my area
-Apr 14, 2013 6:53:01 PM org.snack.irc.main.Monitor print
-INFO: ~COMMAND Search: BananaCo
-Apr 14, 2013 6:53:04 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Response: Nothing found.
-Apr 14, 2013 6:53:19 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice Nuck: .search for a sex change operation for BananaCo 
-Apr 14, 2013 6:53:19 PM org.snack.irc.main.Monitor print
-INFO: ~COMMAND Search: Nuck
-Apr 14, 2013 6:53:21 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Response: Nothing found.
-Apr 14, 2013 6:53:33 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice BananaCo: .search Nuck for a willy XD
-Apr 14, 2013 6:53:33 PM org.snack.irc.main.Monitor print
-INFO: ~COMMAND Search: BananaCo
-Apr 14, 2013 6:53:34 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Response: Nothing found.
-Apr 14, 2013 6:53:38 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice BananaCo: TROLLED
-Apr 14, 2013 6:53:38 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice shigeume: .search poop
-Apr 14, 2013 6:53:38 PM org.snack.irc.main.Monitor print
-INFO: ~COMMAND Search: shigeume
-Apr 14, 2013 6:53:40 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Response: Nothing found.
-Apr 14, 2013 6:54:01 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice snack: .wiki idiot
-Apr 14, 2013 6:54:01 PM org.snack.irc.main.Monitor print
-INFO: ~COMMAND Wiki: snack
-Apr 14, 2013 6:54:01 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Response: Wiki: https://en.wikipedia.org/wiki/Idiot
-Apr 14, 2013 6:54:10 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice BananaCo: .wiki traps
-Apr 14, 2013 6:54:10 PM org.snack.irc.main.Monitor print
-INFO: ~COMMAND Wiki: BananaCo
-Apr 14, 2013 6:54:10 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Response: Wiki: https://en.wikipedia.org/wiki/Traps
-Apr 14, 2013 6:54:49 PM org.snack.irc.main.Monitor print
-INFO: <<MSG #rice pettan: .wiki ／人◕ ‿‿ ◕人＼ ＷＯＮ’Ｔ　ＹＯＵ　ＢＥＣＯＭＥ　Ａ　ＭＡＧＩＣＡＬ　ＧＩＲＬ？
-Apr 14, 2013 6:54:49 PM org.snack.irc.main.Monitor print
-INFO: ~COMMAND Wiki: pettan
-Apr 14, 2013 6:54:49 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Response: Nothing found.
+Apr 15, 2013 1:07:08 PM org.snack.irc.main.Monitor print
+INFO: ~INFO Userlist: #snacktest Functions: define:true lastfm:true search:true eightball:false quote:true weather:true html:true tell:true translate:true greet:false wiki:true booru:true 
+Apr 15, 2013 1:07:11 PM org.snack.irc.main.Monitor print
+INFO: <<MSG #snacktest snack: .we
+Apr 15, 2013 1:07:12 PM org.snack.irc.main.Monitor print
+INFO: Wilsum, Germany: Clear 15.8°C/ 60.4°F Wind: West at 8.0 KPH gusting to 19.3 KPH Humidity: 68%
+Apr 15, 2013 1:07:17 PM org.snack.irc.main.Monitor print
+INFO: <<MSG #snacktest cappuccino: Wilsum, Germany: Clear 15.8°C/ 60.4°F Wind: West at 8.0 KPH gusting to 19.3 KPH Humidity: 68%
+Apr 15, 2013 1:07:41 PM org.snack.irc.main.Monitor print
+INFO: <<MSG #snacktest snack: .enabled
+Apr 15, 2013 1:07:41 PM org.snack.irc.main.Monitor print
+INFO: ~INFO Response: Enabled on #snacktest: define, lastfm, search, quote, weather, translate, tell, html, wiki, booru

@@ -1,5 +1,5 @@
 {
-	"join": "false",
+	"join": "true",
 	"mute": "false",
 	"functions": [
 		{ "define": "true" },
@@ -8,8 +8,7 @@
 		{ "lastfm": "true" },
 		{ "search": "true" },
 		{ "quote": "true" },
-		{ "romaji": "false" },
-		{ "weather": "true" },
+		{ "weather": "false" },
 		{ "translate": "true" },
 		{ "tell": "true" },
 		{ "html": "true" },

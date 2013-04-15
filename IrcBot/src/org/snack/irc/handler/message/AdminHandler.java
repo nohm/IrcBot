@@ -1,4 +1,4 @@
-package org.snack.irc.handler;
+package org.snack.irc.handler.message;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,14 +10,17 @@ import org.snack.irc.enums.EventType;
 import org.snack.irc.main.FunctionTester;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.Startup;
+import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
 import org.snack.irc.settings.Config;
 import org.snack.irc.settings.ConfigStorer;
 
-public class AdminHandler implements Runnable {
+public class AdminHandler extends TriggerHandler {
 
-	private final MessageEvent<?> event;
+	private MessageEvent<?> event;
+
+	public AdminHandler() {}
 
 	public AdminHandler(MessageEvent<?> event) {
 		this.event = event;
@@ -27,6 +30,30 @@ public class AdminHandler implements Runnable {
 	public void run() {
 		handleCommand();
 	}
+
+	@Override
+	public boolean trigger(MessageEvent<?> event) {
+		String command;
+		try {
+			command = event.getMessage().split(" ")[0];
+		} catch(Exception e) {
+			command = event.getMessage();
+		}
+		boolean exists = false;
+		for (String s : commands){
+			if (command.equals(s)) {
+				exists = true;
+			}
+		}
+		return (event.getMessage().substring(0, 1).equals(".") && exists && Config.admins.containsKey(event.getUser().getHostmask()));
+	}
+
+	@Override
+	public void attachEvent(MessageEvent<?> event) {
+		this.event = event;
+	}
+
+	private final String[] commands = {".admins",".admin",".enable ",".disable",".enabled",".disabled",".bot",".bots",".mute",".muted",".join",".leave",".restart",".reload"};
 
 	private void handleCommand() {
 		String message = event.getMessage();

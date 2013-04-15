@@ -1,14 +1,17 @@
-package org.snack.irc.handler;
+package org.snack.irc.handler.message;
 
 import java.net.URLEncoder;
 
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
+import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.settings.Config;
 
-public class BooruHandler implements Runnable {
+public class BooruHandler extends TriggerHandler {
 
-	private final MessageEvent<?> event;
+	private MessageEvent<?> event;
+
+	public BooruHandler() {};
 
 	public BooruHandler(MessageEvent<?> event) {
 		this.event = event;
@@ -56,5 +59,15 @@ public class BooruHandler implements Runnable {
 
 		Monitor.print("~INFO Response: " + response);
 		event.getBot().sendMessage(event.getChannel(), response);
+	}
+
+	@Override
+	public boolean trigger(MessageEvent<?> event) {
+		return (event.getMessage().length() >= 6 && event.getMessage().substring(1, 6).equals("booru"));
+	}
+
+	@Override
+	public void attachEvent(MessageEvent<?> event) {
+		this.event = event;
 	}
 }

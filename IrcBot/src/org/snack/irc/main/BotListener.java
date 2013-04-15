@@ -1,7 +1,9 @@
 package org.snack.irc.main;
 
-import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,26 +21,16 @@ import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UserListEvent;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.enums.EventType;
-import org.snack.irc.enums.QuoteType;
-import org.snack.irc.enums.RomajiType;
-import org.snack.irc.enums.TellType;
-import org.snack.irc.handler.AdminHandler;
-import org.snack.irc.handler.BooruHandler;
-import org.snack.irc.handler.DefineHandler;
-import org.snack.irc.handler.EightBallHandler;
 import org.snack.irc.handler.GreetHandler;
-import org.snack.irc.handler.HelpHandler;
-import org.snack.irc.handler.HtmlHandler;
-import org.snack.irc.handler.LastfmHandler;
-import org.snack.irc.handler.QuoteHandler;
-import org.snack.irc.handler.RomajiHandler;
-import org.snack.irc.handler.SearchHandler;
 import org.snack.irc.handler.TellHandler;
-import org.snack.irc.handler.TranslateHandler;
-import org.snack.irc.handler.WeatherHandler;
-import org.snack.irc.handler.WikiHandler;
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
 import org.snack.irc.model.LastMsg;
@@ -57,11 +49,23 @@ public class BotListener extends ListenerAdapter implements Listener {
 	private static PircBotX bot;
 	private final ExecutorService executor;
 	DatabaseManager db;
+	Set<Class<? extends TriggerHandler>> handlers;
 
 	public BotListener(PircBotX bot) {
 		BotListener.bot = bot;
 		executor = Executors.newFixedThreadPool(5);
 		db = DatabaseManager.getInstance();
+
+		List<ClassLoader> classLoadersList = new LinkedList<ClassLoader>();
+		classLoadersList.add(ClasspathHelper.contextClassLoader());
+		classLoadersList.add(ClasspathHelper.staticClassLoader());
+
+		Reflections reflections = new Reflections(new ConfigurationBuilder()
+		.setScanners(new SubTypesScanner(false /* don't exclude Object.class */), new ResourcesScanner())
+		.setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
+		.filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("org.snack.irc.handler.message"))));
+
+		handlers = reflections.getSubTypesOf(TriggerHandler.class);
 	}
 
 	/**
@@ -78,116 +82,30 @@ public class BotListener extends ListenerAdapter implements Listener {
 
 		// Store last occurence of username
 		if ((System.currentTimeMillis() - db.getLastMsg(nick).getTime()) > (10 * 60 * 1000)) { // 10m
-			executor.execute(new TellHandler(event, null, null, TellType.TELL));
+			executor.execute(new TellHandler(event, null, null));
 		}
 		db.putLastMsg(new LastMsg(nick, System.currentTimeMillis()));
 
-		HashMap<String, Boolean> functions = chan.functions;
-
 		// Command handler
 		if (!chan.mute && Config.sett_str.get("IDENTIFIERS").contains(message.substring(0, 1))) {
-
-			// Call for weather
-			if (message.length() >= 3 && message.substring(1, 3).equals("we")) {
-				if (functions.get("weather")) {
-					Monitor.print("~COMMAND Weather: " + nick);
-					executor.execute(new WeatherHandler(event));
+			boolean handled = false;
+			for (Class<? extends TriggerHandler> c : handlers) {
+				try {
+					Class<?> loadedClass = Class.forName(c.getName());
+					Class cl = null;
+					if(TriggerHandler.class.isAssignableFrom(loadedClass)) {
+						cl = loadedClass.asSubclass(TriggerHandler.class);
+					}
+					TriggerHandler tHandler = (TriggerHandler) cl.newInstance();
+					if (tHandler.trigger(event) && !handled) {
+						tHandler.attachEvent(event);
+						executor.execute(tHandler);
+						handled = true;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-
-				// Call for now playing
-			} else if (message.length() >= 3 && message.substring(1, 3).equals("np")) {
-				if (functions.get("lastfm")) {
-					Monitor.print("~COMMAND Lastfm: " + nick);
-					executor.execute(new LastfmHandler(event));
-				}
-
-				// Call for help
-			} else if (message.length() >= 5 && message.substring(1, 5).equals("help")) {
-				Monitor.print("~COMMAND Help: " + nick);
-				executor.execute(new HelpHandler(event));
-
-				// Call for wiki
-			} else if (message.length() >= 5 && message.substring(1, 5).equals("wiki")) {
-				if (functions.get("wiki")) {
-					Monitor.print("~COMMAND Wiki: " + nick);
-					executor.execute(new WikiHandler(event));
-				}
-
-				// Call for quotes
-			} else if (message.length() >= 6 && message.substring(1, 6).equals("booru")) {
-				if (functions.get("booru")) {
-					Monitor.print("~COMMAND Booru: " + nick);
-					executor.execute(new BooruHandler(event));
-				}
-
-				// Call for quotes
-			} else if (message.length() >= 6 && message.substring(1, 6).equals("quote")) {
-				if (functions.get("quote")) {
-					Monitor.print("~COMMAND Quote: " + nick);
-					executor.execute(new QuoteHandler(event, (message.split(" ").length >= 4 && message.split(" ")[1].equals("add")) ? QuoteType.ADD : QuoteType.QUOTE));
-				}
-
-				// Call for tell
-			} else if (message.length() >= 6 && message.substring(1, 6).equals("tell ")) {
-				if (functions.get("tell")) {
-					Monitor.print("~COMMAND Tell: " + nick);
-					executor.execute(new TellHandler(event, null, null, TellType.ADD));
-				}
-
-				// Call for 8ball
-			} else if (message.length() >= 7 && message.substring(1, 7).equals("8ball ")) {
-				if (functions.get("eightball")) {
-					Monitor.print("~COMMAND 8-Ball: " + nick);
-					executor.execute(new EightBallHandler(event));
-				}
-
-				// Call for search
-			} else if (message.length() >= 7 && message.substring(1, 7).equals("search")) {
-				if (functions.get("search")) {
-					Monitor.print("~COMMAND Search: " + nick);
-					executor.execute(new SearchHandler(event));
-				}
-
-				// Call for define
-			} else if (message.length() >= 7 && message.substring(1, 7).equals("define")) {
-				if (functions.get("define")) {
-					Monitor.print("~COMMAND Define: " + nick);
-					executor.execute(new DefineHandler(event));
-				}
-
-				// Call for romaji
-			} else if (message.length() >= 8 && message.substring(1, 8).equals("romaji ")) {
-				if (functions.get("romaji")) {
-					Monitor.print("~COMMAND Romaji: " + nick);
-					executor.execute(new RomajiHandler(event, RomajiType.ROMAJI));
-				}
-
-				// Call for katakana
-			} else if (message.length() >= 10 && message.substring(1, 10).equals("katakana ")) {
-				if (functions.get("romaji")) {
-					Monitor.print("~COMMAND Katakana: " + nick);
-					executor.execute(new RomajiHandler(event, RomajiType.KATAKANA));
-				}
-
-				// Call for translate
-			} else if (message.length() >= 11 && message.substring(1, 11).equals("translate ")) {
-				if (functions.get("translate")) {
-					Monitor.print("~COMMAND Translate: " + nick);
-					executor.execute(new TranslateHandler(event));
-				}
-
-				// Admins
-			} else if (message.substring(0, 1).equals(".") && Config.admins.containsKey(user.getHostmask())) {
-				executor.execute(new AdminHandler(event));
 			}
-
-			// Call for HTML Title
-		} else if (message.contains("http://") || message.contains("https://")) {
-			if (functions.get("html")) {
-				Monitor.print("~COMMAND Html: " + nick);
-				executor.execute(new HtmlHandler(event));
-			}
-
 		} else {
 			boolean add = true;
 			for (Bot b : chan.bots) {
@@ -229,7 +147,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 				executor.execute(new GreetHandler(event));
 			}
 		}
-		executor.execute(new TellHandler(null, event, null, TellType.TELL));
+		executor.execute(new TellHandler(null, event, null));
 		Monitor.print("~INFO Cleaned tells: " + event.getChannel().getName());
 	}
 
@@ -277,7 +195,9 @@ public class BotListener extends ListenerAdapter implements Listener {
 				}
 				event.getBot().reconnect();
 				for (Chan channel : Config.channels.values()) {
-					event.getBot().sendRawLine("JOIN " + channel.name);
+					if (channel.join) {
+						event.getBot().sendRawLine("JOIN " + channel.name);
+					}
 				}
 			} catch (Exception e) {
 				onDisconnect(event);
@@ -293,7 +213,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onNickChange(NickChangeEvent event) {
 		Monitor.print("<<NICKCHANGE");
-		executor.execute(new TellHandler(null, null, event, TellType.TELL));
+		executor.execute(new TellHandler(null, null, event));
 	}
 
 	public static void sendCustomMessage(String type, String target, String message) {

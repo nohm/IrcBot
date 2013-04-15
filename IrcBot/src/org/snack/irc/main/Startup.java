@@ -101,7 +101,9 @@ public class Startup {
 		}
 		// Join channels
 		for (Chan channel : Config.channels.values()) {
-			bot.sendRawLine("JOIN " + channel.name);
+			if (channel.join) {
+				bot.sendRawLine("JOIN " + channel.name);
+			}
 		}
 		Monitor.print("~INFO Joined channels");
 
