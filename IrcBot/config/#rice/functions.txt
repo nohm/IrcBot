@@ -13,7 +13,8 @@
 		{ "tell": "true" },
 		{ "html": "true" },
 		{ "wiki": "true" },
-		{ "booru": "true" }
+		{ "booru": "true" },
+		{ "tetete": "false" }
 	],
 	"defaults": [
 		{ "greet_visible": "public" },

@@ -71,7 +71,7 @@ public class Help extends TriggerHandler {
 
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
-		return (event.getMessage().length() >= 5 && event.getMessage().substring(1, 5).equals("help"));
+		return (Config.sett_str.get("IDENTIFIERS").contains(event.getMessage().substring(0, 1)) && event.getMessage().length() >= 5 && event.getMessage().substring(1, 5).equals("help"));
 	}
 
 	@Override

@@ -45,12 +45,12 @@ public class Admin extends TriggerHandler {
 				exists = true;
 			}
 		}
-		return (event.getMessage().substring(0, 1).equals(".") && exists);
+		return (event.getMessage().substring(0, 1).equals(".") && exists && Config.admins.containsKey(event.getUser().getHostmask()));
 	}
 
 	@Override
 	public boolean permission(Chan chan) {
-		return Config.admins.containsKey(event.getUser().getHostmask());
+		return true;
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class Admin extends TriggerHandler {
 		this.event = event;
 	}
 
-	private final String[] commands = {".admins",".admin",".enable ",".disable",".enabled",".disabled",".bot",".bots",".mute",".muted",".join",".leave",".restart",".reload"};
+	private final String[] commands = {".admins",".admin",".enable",".disable",".enabled",".disabled",".bot",".bots",".mute",".muted",".join",".leave",".restart",".reload"};
 
 	private void handleCommand() {
 		String message = event.getMessage();

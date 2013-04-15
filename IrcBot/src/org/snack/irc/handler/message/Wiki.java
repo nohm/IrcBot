@@ -4,6 +4,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.model.Chan;
+import org.snack.irc.settings.Config;
 import org.snack.irc.worker.WikiAPI;
 
 public class Wiki extends TriggerHandler {
@@ -23,7 +24,7 @@ public class Wiki extends TriggerHandler {
 
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
-		return (event.getMessage().length() >= 5 && event.getMessage().substring(1, 5).equals("wiki"));
+		return (Config.sett_str.get("IDENTIFIERS").contains(event.getMessage().substring(0, 1)) && event.getMessage().length() >= 5 && event.getMessage().substring(1, 5).equals("wiki"));
 	}
 
 	@Override

@@ -2,15 +2,16 @@
 	"name": "Moelicious",
 	"functions": [
 		{ "define": "false" },
+		{ "eightball": "true" },
+		{ "greet": "false" },
+		{ "tetete": "false" },
 		{ "lastfm": "false" },
 		{ "search": "true" },
-		{ "eightball": "true" },
 		{ "quote": "false" },
 		{ "weather": "false" },
-		{ "html": "false" },
-		{ "tell": "false" },
 		{ "translate": "false" },
-		{ "greet": "false" },
+		{ "tell": "false" },
+		{ "html": "false" },
 		{ "wiki": "false" },
 		{ "booru": "false" }
 	]

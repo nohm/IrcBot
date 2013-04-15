@@ -26,7 +26,7 @@ public class Translater extends TriggerHandler {
 
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
-		return (event.getMessage().length() >= 11 && event.getMessage().substring(1, 11).equals("translate "));
+		return (Config.sett_str.get("IDENTIFIERS").contains(event.getMessage().substring(0, 1)) && event.getMessage().length() >= 11 && event.getMessage().substring(1, 11).equals("translate "));
 	}
 
 	@Override

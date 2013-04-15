@@ -87,7 +87,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 		db.putLastMsg(new LastMsg(nick, System.currentTimeMillis()));
 
 		// Command handler
-		if (!chan.mute && Config.sett_str.get("IDENTIFIERS").contains(message.substring(0, 1))) {
+		if (!chan.mute) {
 			boolean handled = false;
 			for (Class<? extends TriggerHandler> c : handlers) {
 				try {
@@ -102,6 +102,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 						executor.execute(tHandler);
 						handled = true;
 					}
+					// System.out.println(tHandler.getClass().getName() + ": " + tHandler.trigger(event) + " ; " + tHandler.permission(chan));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

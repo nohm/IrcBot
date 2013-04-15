@@ -26,7 +26,7 @@ public class AddTell extends TriggerHandler implements Runnable {
 
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
-		return (event.getMessage().length() >= 6 && event.getMessage().substring(1, 6).equals("tell "));
+		return (Config.sett_str.get("IDENTIFIERS").contains(event.getMessage().substring(0, 1)) && event.getMessage().length() >= 6 && event.getMessage().substring(1, 6).equals("tell "));
 	}
 
 	@Override

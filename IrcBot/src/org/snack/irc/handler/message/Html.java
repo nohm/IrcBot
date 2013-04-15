@@ -53,7 +53,7 @@ public class Html extends TriggerHandler {
 
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
-		return (event.getMessage().contains("http://") || event.getMessage().contains("https://"));
+		return (Config.sett_str.get("IDENTIFIERS").contains(event.getMessage().substring(0, 1)) && event.getMessage().contains("http://") || event.getMessage().contains("https://"));
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.model.Chan;
+import org.snack.irc.settings.Config;
 import org.snack.irc.worker.DictionaryAPI;
 
 public class Define extends TriggerHandler {
@@ -23,7 +24,7 @@ public class Define extends TriggerHandler {
 
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
-		return (event.getMessage().length() >= 7 && event.getMessage().substring(1, 7).equals("define"));
+		return (Config.sett_str.get("IDENTIFIERS").contains(event.getMessage().substring(0, 1)) && event.getMessage().length() >= 7 && event.getMessage().substring(1, 7).equals("define"));
 	}
 
 	@Override

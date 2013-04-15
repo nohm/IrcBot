@@ -12,6 +12,7 @@
 		{ "tell": "false" },
 		{ "translate": "false" },
 		{ "wiki": "false" },
-		{ "booru": "false" }
+		{ "booru": "false" },
+		{ "tetete": "false" }
 	]
 }

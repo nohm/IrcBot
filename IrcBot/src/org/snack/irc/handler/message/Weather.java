@@ -26,7 +26,7 @@ public class Weather extends TriggerHandler implements Runnable {
 
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
-		return (event.getMessage().length() >= 3 && event.getMessage().substring(1, 3).equals("we"));
+		return (Config.sett_str.get("IDENTIFIERS").contains(event.getMessage().substring(0, 1)) && event.getMessage().length() >= 3 && event.getMessage().substring(1, 3).equals("we"));
 	}
 
 	@Override

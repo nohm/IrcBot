@@ -26,7 +26,7 @@ public class Lastfm extends TriggerHandler {
 
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
-		return (event.getMessage().length() >= 3 && event.getMessage().substring(1, 3).equals("np"));
+		return (Config.sett_str.get("IDENTIFIERS").contains(event.getMessage().substring(0, 1)) && event.getMessage().length() >= 3 && event.getMessage().substring(1, 3).equals("np"));
 	}
 
 	@Override
