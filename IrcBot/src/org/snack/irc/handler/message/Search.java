@@ -3,17 +3,18 @@ package org.snack.irc.handler.message;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
+import org.snack.irc.model.Chan;
 import org.snack.irc.model.FThread;
 import org.snack.irc.settings.Config;
 import org.snack.irc.worker.FourChanAPI;
 
-public class SearchHandler extends TriggerHandler {
+public class Search extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public SearchHandler() {}
+	public Search() {}
 
-	public SearchHandler(MessageEvent<?> event) {
+	public Search(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -25,6 +26,15 @@ public class SearchHandler extends TriggerHandler {
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
 		return (event.getMessage().length() >= 7 && event.getMessage().substring(1, 7).equals("search"));
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		if (chan.functions.containsKey("search")) {
+			return chan.functions.get("search");
+		} else {
+			return true;
+		}
 	}
 
 	@Override

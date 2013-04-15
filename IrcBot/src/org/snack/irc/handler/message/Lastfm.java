@@ -4,17 +4,18 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
+import org.snack.irc.model.Chan;
 import org.snack.irc.model.LastfmUser;
 import org.snack.irc.settings.Config;
 import org.snack.irc.worker.LastfmAPI;
 
-public class LastfmHandler extends TriggerHandler {
+public class Lastfm extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public LastfmHandler() {}
+	public Lastfm() {}
 
-	public LastfmHandler(MessageEvent<?> event) {
+	public Lastfm(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -26,6 +27,15 @@ public class LastfmHandler extends TriggerHandler {
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
 		return (event.getMessage().length() >= 3 && event.getMessage().substring(1, 3).equals("np"));
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		if (chan.functions.containsKey("lastfm")) {
+			return chan.functions.get("lastfm");
+		} else {
+			return true;
+		}
 	}
 
 	@Override

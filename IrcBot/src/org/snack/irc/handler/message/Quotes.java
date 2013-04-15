@@ -4,16 +4,17 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
+import org.snack.irc.model.Chan;
 import org.snack.irc.model.Quote;
 import org.snack.irc.settings.Config;
 
-public class QuoteHandler extends TriggerHandler {
+public class Quotes extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public QuoteHandler() {}
+	public Quotes() {}
 
-	public QuoteHandler(MessageEvent<?> event) {
+	public Quotes(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -25,6 +26,15 @@ public class QuoteHandler extends TriggerHandler {
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
 		return (event.getMessage().length() >= 6 && event.getMessage().substring(1, 6).equals("quote"));
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		if (chan.functions.containsKey("quote")) {
+			return chan.functions.get("quote");
+		} else {
+			return true;
+		}
 	}
 
 	@Override

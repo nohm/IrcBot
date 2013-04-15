@@ -4,17 +4,18 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
+import org.snack.irc.model.Chan;
 import org.snack.irc.model.WeatherUser;
 import org.snack.irc.settings.Config;
 import org.snack.irc.worker.WeatherAPI;
 
-public class WeatherHandler extends TriggerHandler implements Runnable {
+public class Weather extends TriggerHandler implements Runnable {
 
 	private MessageEvent<?> event;
 
-	public WeatherHandler() {}
+	public Weather() {}
 
-	public WeatherHandler(MessageEvent<?> event) {
+	public Weather(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -26,6 +27,15 @@ public class WeatherHandler extends TriggerHandler implements Runnable {
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
 		return (event.getMessage().length() >= 3 && event.getMessage().substring(1, 3).equals("we"));
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		if (chan.functions.containsKey("weather")) {
+			return chan.functions.get("weather");
+		} else {
+			return true;
+		}
 	}
 
 	@Override

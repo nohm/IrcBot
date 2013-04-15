@@ -5,16 +5,17 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
+import org.snack.irc.model.Chan;
 import org.snack.irc.model.Tell;
 import org.snack.irc.settings.Config;
 
-public class TellAddHandler extends TriggerHandler implements Runnable {
+public class AddTell extends TriggerHandler implements Runnable {
 
 	private MessageEvent<?> event;
 
-	public TellAddHandler() {}
+	public AddTell() {}
 
-	public TellAddHandler(MessageEvent<?> event) {
+	public AddTell(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -26,6 +27,15 @@ public class TellAddHandler extends TriggerHandler implements Runnable {
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
 		return (event.getMessage().length() >= 6 && event.getMessage().substring(1, 6).equals("tell "));
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		if (chan.functions.containsKey("tell")) {
+			return chan.functions.get("tell");
+		} else {
+			return true;
+		}
 	}
 
 	@Override

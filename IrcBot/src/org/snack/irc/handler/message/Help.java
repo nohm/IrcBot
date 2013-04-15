@@ -9,13 +9,13 @@ import org.snack.irc.model.Chan;
 import org.snack.irc.model.HelpModule;
 import org.snack.irc.settings.Config;
 
-public class HelpHandler extends TriggerHandler {
+public class Help extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public HelpHandler() {}
+	public Help() {}
 
-	public HelpHandler(MessageEvent<?> event) {
+	public Help(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -77,5 +77,10 @@ public class HelpHandler extends TriggerHandler {
 	@Override
 	public void attachEvent(MessageEvent<?> event) {
 		this.event = event;
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		return true;
 	}
 }

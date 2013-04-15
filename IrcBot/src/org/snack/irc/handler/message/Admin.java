@@ -16,13 +16,13 @@ import org.snack.irc.model.Chan;
 import org.snack.irc.settings.Config;
 import org.snack.irc.settings.ConfigStorer;
 
-public class AdminHandler extends TriggerHandler {
+public class Admin extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public AdminHandler() {}
+	public Admin() {}
 
-	public AdminHandler(MessageEvent<?> event) {
+	public Admin(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -45,7 +45,12 @@ public class AdminHandler extends TriggerHandler {
 				exists = true;
 			}
 		}
-		return (event.getMessage().substring(0, 1).equals(".") && exists && Config.admins.containsKey(event.getUser().getHostmask()));
+		return (event.getMessage().substring(0, 1).equals(".") && exists);
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		return Config.admins.containsKey(event.getUser().getHostmask());
 	}
 
 	@Override

@@ -5,16 +5,17 @@ import java.util.ArrayList;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
+import org.snack.irc.model.Chan;
 import org.snack.irc.settings.Config;
 import org.snack.irc.worker.HtmlGetter;
 
-public class HtmlHandler extends TriggerHandler {
+public class Html extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public HtmlHandler() {}
+	public Html() {}
 
-	public HtmlHandler(MessageEvent<?> event) {
+	public Html(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -58,5 +59,14 @@ public class HtmlHandler extends TriggerHandler {
 	@Override
 	public void attachEvent(MessageEvent<?> event) {
 		this.event = event;
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		if (chan.functions.containsKey("html")) {
+			return chan.functions.get("html");
+		} else {
+			return true;
+		}
 	}
 }

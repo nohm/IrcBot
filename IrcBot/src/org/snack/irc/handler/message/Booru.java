@@ -5,15 +5,16 @@ import java.net.URLEncoder;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
+import org.snack.irc.model.Chan;
 import org.snack.irc.settings.Config;
 
-public class BooruHandler extends TriggerHandler {
+public class Booru extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public BooruHandler() {};
+	public Booru() {};
 
-	public BooruHandler(MessageEvent<?> event) {
+	public Booru(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -64,6 +65,15 @@ public class BooruHandler extends TriggerHandler {
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
 		return (event.getMessage().length() >= 6 && event.getMessage().substring(1, 6).equals("booru"));
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		if (chan.functions.containsKey("booru")) {
+			return chan.functions.get("booru");
+		} else {
+			return true;
+		}
 	}
 
 	@Override

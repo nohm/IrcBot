@@ -97,7 +97,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 						cl = loadedClass.asSubclass(TriggerHandler.class);
 					}
 					TriggerHandler tHandler = (TriggerHandler) cl.newInstance();
-					if (tHandler.trigger(event) && !handled) {
+					if (tHandler.trigger(event) && tHandler.permission(chan) && !handled) {
 						tHandler.attachEvent(event);
 						executor.execute(tHandler);
 						handled = true;

@@ -5,14 +5,15 @@ import java.util.Random;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
+import org.snack.irc.model.Chan;
 
-public class EightBallHandler extends TriggerHandler {
+public class EightBall extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public EightBallHandler() {}
+	public EightBall() {}
 
-	public EightBallHandler(MessageEvent<?> event) {
+	public EightBall(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -63,5 +64,14 @@ public class EightBallHandler extends TriggerHandler {
 	@Override
 	public void attachEvent(MessageEvent<?> event) {
 		this.event = event;
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		if (chan.functions.containsKey("eightball")) {
+			return chan.functions.get("eightball");
+		} else {
+			return true;
+		}
 	}
 }

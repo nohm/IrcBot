@@ -12,7 +12,8 @@
 			{ "translate": "false" },
 			{ "greet": "false" },
 			{ "wiki": "false" },
-			{ "booru": "false" }
+			{ "booru": "false" },
+			{ "tetete": "false" }
 		]
 	},
 	"channel": {
@@ -28,7 +29,8 @@
 			{ "translate": "false" },
 			{ "greet": "false" },
 			{ "wiki": "false" },
-			{ "booru": "false" }
+			{ "booru": "false" },
+			{ "tetete": "false" }
 		],
 		"defaults": [
 			{ "greet_visible": "private" },

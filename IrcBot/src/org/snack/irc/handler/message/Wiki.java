@@ -3,15 +3,16 @@ package org.snack.irc.handler.message;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.main.Monitor;
 import org.snack.irc.main.TriggerHandler;
+import org.snack.irc.model.Chan;
 import org.snack.irc.worker.WikiAPI;
 
-public class WikiHandler extends TriggerHandler {
+public class Wiki extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public WikiHandler() {}
+	public Wiki() {}
 
-	public WikiHandler(MessageEvent<?> event) {
+	public Wiki(MessageEvent<?> event) {
 		this.event = event;
 	}
 
@@ -23,6 +24,15 @@ public class WikiHandler extends TriggerHandler {
 	@Override
 	public boolean trigger(MessageEvent<?> event) {
 		return (event.getMessage().length() >= 5 && event.getMessage().substring(1, 5).equals("wiki"));
+	}
+
+	@Override
+	public boolean permission(Chan chan) {
+		if (chan.functions.containsKey("wiki")) {
+			return chan.functions.get("wiki");
+		} else {
+			return true;
+		}
 	}
 
 	@Override
