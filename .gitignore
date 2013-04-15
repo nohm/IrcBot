@@ -1,8 +1,9 @@
+# Clean crap
 .classpath
 .project
 *.class
-
-# Package Files #
-# *.jar #
+# *.jar # ignore build jars
 *.war
 *.ear
+log.txt
+log.txt.*

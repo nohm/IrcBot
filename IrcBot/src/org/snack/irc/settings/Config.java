@@ -36,6 +36,8 @@ public class Config {
 		initChannels();
 		initSpeech();
 		initHelp();
+
+		ConfigStorer.storeChannels(); // Update new functions
 	}
 
 	// All the settings

@@ -54,7 +54,7 @@ public class EightBall extends TriggerHandler {
 		}
 
 		Monitor.print("~INFO Response: " + reply);
-		event.getBot().sendMessage(event.getChannel(), "8-Ball says: " + reply);
+		event.getBot().sendAction(event.getChannel(), "shakes the magic 8ball: " + reply);
 	}
 
 	@Override

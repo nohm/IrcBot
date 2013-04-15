@@ -2,8 +2,10 @@ IrcBot
 ======
 Hai.
 
-Compile to a jar.
-Put the txt files in the same dir as the jar.
-Update config.txt with the correct path.
-Edit any other settings in there.
-Run it.
+Much to do, not even sure it works anywhere else.
+Requires local mongodb.
+
+Adding a module;
+Create a new one and put  it in the handler.messages package
+Optional: add it to default-config.txt for permissions
+Optional: add en entry to help.txt for, well, help
