@@ -219,8 +219,7 @@ public class Config {
 
 		HashMap<String, String> defaults = new HashMap<String, String>();
 
-		JSONObject channel = jo.getJSONObject("channel");
-		JSONArray def = channel.getJSONArray("defaults");
+		JSONArray def = jo.getJSONArray("defaults");
 		for (int i = 0; i < def.size(); i++) {
 			JSONObject function = def.getJSONObject(i);
 			String cleaned = function.toString().replaceAll("[{}\"]", "");
@@ -230,33 +229,16 @@ public class Config {
 		return defaults;
 	}
 
-	public static HashMap<String, Boolean> getDefaultChannelBooleans() throws Exception {
+	public static HashMap<String, Boolean> getDefaultBooleans() throws Exception {
 		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/default_config.txt"));
 
 		HashMap<String, Boolean> defaults = new HashMap<String, Boolean>();
 
-		JSONObject channel = jo.getJSONObject("channel");
-		JSONArray def = channel.getJSONArray("functions");
+		JSONArray def = jo.getJSONArray("functions");
 		for (int i = 0; i < def.size(); i++) {
 			JSONObject function = def.getJSONObject(i);
 			String cleaned = function.toString().replaceAll("[{}\"]", "");
 			defaults.put(cleaned.substring(0, cleaned.indexOf(":")), Boolean.valueOf(cleaned.substring(cleaned.indexOf(":") + 1)));
-		}
-
-		return defaults;
-	}
-
-	public static HashMap<String, Boolean> getDefaultBotBooleans() throws Exception {
-		JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt("config/default_config.txt"));
-
-		HashMap<String, Boolean> defaults = new HashMap<String, Boolean>();
-
-		JSONObject channel = jo.getJSONObject("bot");
-		JSONArray def = channel.getJSONArray("functions");
-		for (int i = 0; i < def.size(); i++) {
-			JSONObject function = def.getJSONObject(i);
-			String cleaned = function.toString().replaceAll("[{}\"]", "");
-			defaults.put(cleaned.substring(0, cleaned.indexOf(":")), Boolean.valueOf(cleaned.substring(0, cleaned.indexOf(":") + 1)));
 		}
 
 		return defaults;

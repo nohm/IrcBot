@@ -25,7 +25,7 @@ public class Bot {
 
 	public void initDefault() {
 		try {
-			functions.putAll(Config.getDefaultBotBooleans());
+			functions.putAll(Config.getDefaultBooleans());
 		} catch (Exception e) {
 		}
 	}

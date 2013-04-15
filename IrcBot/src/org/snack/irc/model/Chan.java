@@ -42,7 +42,7 @@ public class Chan {
 
 	public void initDefault() {
 		try {
-			functions.putAll(Config.getDefaultChannelBooleans());
+			functions.putAll(Config.getDefaultBooleans());
 			def_func.putAll(functions);
 			defaults.putAll(Config.getDefaultChannelStrings());
 		} catch (Exception e) {

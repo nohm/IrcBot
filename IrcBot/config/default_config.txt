@@ -1,40 +1,21 @@
 {
-	"bot": {
-		"functions": [
-			{ "define": "false" },
-			{ "lastfm": "false" },
-			{ "search": "false" },
-			{ "eightball": "false" },
-			{ "quote": "false" },
-			{ "weather": "false" },
-			{ "html": "false" },
-			{ "tell": "false" },
-			{ "translate": "false" },
-			{ "greet": "false" },
-			{ "wiki": "false" },
-			{ "booru": "false" },
-			{ "tetete": "false" }
-		]
-	},
-	"channel": {
-		"functions": [
-			{ "define": "false" },
-			{ "lastfm": "false" },
-			{ "search": "false" },
-			{ "eightball": "false" },
-			{ "quote": "false" },
-			{ "weather": "false" },
-			{ "html": "false" },
-			{ "tell": "false" },
-			{ "translate": "false" },
-			{ "greet": "false" },
-			{ "wiki": "false" },
-			{ "booru": "false" },
-			{ "tetete": "false" }
-		],
-		"defaults": [
-			{ "greet_visible": "private" },
-			{ "search_default": "g" }
-		]
-	}
+	"functions": [
+		{ "define": "false" },
+		{ "lastfm": "false" },
+		{ "search": "false" },
+		{ "eightball": "false" },
+		{ "quote": "false" },
+		{ "weather": "false" },
+		{ "html": "false" },
+		{ "tell": "false" },
+		{ "translate": "false" },
+		{ "greet": "false" },
+		{ "wiki": "false" },
+		{ "booru": "false" },
+		{ "tetete": "false" }
+	],
+	"defaults": [
+		{ "greet_visible": "private" },
+		{ "search_default": "g" }
+	]
 }
