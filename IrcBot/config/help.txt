@@ -17,7 +17,7 @@
 				{ "translate": "Translate something: .translate [message]" },
 				{ "wiki": "Search wikipedia: .wiki[-language] [query] (language is optional)" },
 				{ "booru": "Search booru: .booru[-booru] [query]" },
-				{ "tetete": "tetete: tetete <nick><nick><nick>" }
+				{ "tetete": "tetete: tetete <nick><nick><nick>" },
 				{ "whisper": "Whisper to someone: .whisper [nick] [message]" }
 			]
 		},
