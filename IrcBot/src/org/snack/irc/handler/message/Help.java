@@ -21,20 +21,13 @@ public class Help extends TriggerHandler {
 
 	@Override
 	public void run() {
-		sendHelp();
-	}
-
-	/**
-	 * Returns help based on the channels enabled functions
-	 */
-	private void sendHelp() {
 		Chan chan = Config.channels.get(event.getChannel().getName());
 		String hostmask = event.getUser().getHostmask();
 		String permission = Config.admins.containsKey(hostmask) ? Config.admins.get(hostmask) : "all";
 		String message = event.getMessage();
 		ArrayList<String> response = new ArrayList<String>();
 
-		if (message.substring(1).equals("help")) {
+		if (message.substring(1).equals("commands")) {
 			response.add(Config.speech.get("modules"));
 			for (Entry<String, HelpModule> module : Config.help.entrySet()) {
 				if (module.getValue().hasPermission(permission)) {

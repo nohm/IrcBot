@@ -56,7 +56,7 @@ public class FunctionTester implements Runnable {
 		if (eventType == EventType.USERLIST) {
 			for (User user : event.getBot().getUsers(channel)) {
 				for (Bot b : chan.bots) {
-					if (b.name.equalsIgnoreCase(user.getNick())) {
+					if (b.name.equalsIgnoreCase(user.getNick()) && b.enabled) {
 						testFunctions(chan, user.getNick());
 					}
 				}
@@ -89,7 +89,7 @@ public class FunctionTester implements Runnable {
 		for (Entry<String, Boolean> entry : chan.functions.entrySet()) {
 			toPrint += entry.getKey() + ":" + entry.getValue() + " ";
 		}
-		Monitor.print(toPrint);
+		Startup.print(toPrint);
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class FunctionTester implements Runnable {
 		HashMap<String, Boolean> chan_func = chan.functions;
 		HashMap<String, Boolean> chan_def_func = chan.def_func;
 		for (Bot bot : chan.bots) {
-			if (bot.name.equals(nick)) {
+			if (bot.name.equals(nick) && bot.enabled) {
 				boolean event = (eventType == EventType.JOIN || eventType == EventType.USERLIST);
 				HashMap<String, Boolean> bot_func = bot.functions;
 				for (String key : bot_func.keySet()) {

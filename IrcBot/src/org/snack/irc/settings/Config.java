@@ -94,7 +94,7 @@ public class Config {
 			if (!bot.isDirectory() && bot.getName().startsWith("bot-")) {
 				JSONObject jo = (JSONObject) JSONSerializer.toJSON(TxtReader.parseTxt(bot.getAbsolutePath()));
 				JSONArray func = jo.getJSONArray("functions");
-				Bot b = new Bot(jo.getString("name"));
+				Bot b = new Bot(jo.getString("name"), jo.getBoolean("enabled"));
 				b.initDefault();
 				for (int i = 0; i < func.size(); i++) {
 					JSONObject function = func.getJSONObject(i);

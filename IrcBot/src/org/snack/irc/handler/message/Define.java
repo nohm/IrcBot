@@ -1,25 +1,45 @@
 package org.snack.irc.handler.message;
 
+import java.io.ByteArrayOutputStream;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
+
 import org.pircbotx.hooks.events.MessageEvent;
-import org.snack.irc.main.Monitor;
+import org.snack.irc.main.Startup;
 import org.snack.irc.main.TriggerHandler;
+import org.snack.irc.main.Utils;
 import org.snack.irc.model.Chan;
 import org.snack.irc.settings.Config;
-import org.snack.irc.worker.DictionaryAPI;
 
 public class Define extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public Define() {}
-
-	public Define(MessageEvent<?> event) {
-		this.event = event;
-	}
-
 	@Override
 	public void run() {
-		define();
+		String response;
+		try {
+			String searchWord = event.getMessage().substring(event.getMessage().indexOf(" ") + 1);
+			String uriWord = Utils.encodeQuery(searchWord, true);
+
+			ByteArrayOutputStream output  = Utils.httpRequest("http://api.pearson.com/v2/dictionaries/entries?headword=" + uriWord + "&apikey=f1f4514986ce72d85fb82db55fa4f3c7");
+			JSONObject jo = (JSONObject) JSONSerializer.toJSON(output.toString());
+			JSONArray results = jo.getJSONArray("results");
+			JSONObject result = results.getJSONObject(0);
+
+			String type = result.getString("part_of_speech");
+			JSONArray senses = result.getJSONArray("senses");
+			JSONObject sense = senses.getJSONObject(0);
+			String definition = sense.getString("definition");
+
+			response = Config.speech.get("DE_SUC").replace("<query>", uriWord).replace("<type>", type).replace("<definition>", definition);
+		} catch (Exception e) {
+			response =  Config.speech.get("DE_ERR");
+		}
+		Startup.print("~INFO Response: " + response);
+		event.getBot().sendMessage(event.getChannel(), response);
 	}
 
 	@Override
@@ -39,11 +59,5 @@ public class Define extends TriggerHandler {
 	@Override
 	public void attachEvent(MessageEvent<?> event) {
 		this.event = event;
-	}
-
-	private void define() {
-		String response = DictionaryAPI.search(event.getMessage().substring(event.getMessage().indexOf(" ") + 1));
-		Monitor.print("~INFO Response: " + response);
-		event.getBot().sendMessage(event.getChannel(), response);
 	}
 }

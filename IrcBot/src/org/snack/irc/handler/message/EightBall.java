@@ -3,7 +3,7 @@ package org.snack.irc.handler.message;
 import java.util.Random;
 
 import org.pircbotx.hooks.events.MessageEvent;
-import org.snack.irc.main.Monitor;
+import org.snack.irc.main.Startup;
 import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.model.Chan;
 import org.snack.irc.settings.Config;
@@ -12,18 +12,8 @@ public class EightBall extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public EightBall() {}
-
-	public EightBall(MessageEvent<?> event) {
-		this.event = event;
-	}
-
 	@Override
 	public void run() {
-		askBall();
-	}
-
-	private void askBall() {
 		String[] replies = {
 				"It is certain",
 				"It is decidedly so",
@@ -53,7 +43,7 @@ public class EightBall extends TriggerHandler {
 			reply = "Questions end with a question mark.";
 		}
 
-		Monitor.print("~INFO Response: " + reply);
+		Startup.print("~INFO Response: " + reply);
 		event.getBot().sendAction(event.getChannel(), "shakes the magic 8ball: " + reply);
 	}
 

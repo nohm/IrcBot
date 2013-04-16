@@ -11,7 +11,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.pircbotx.hooks.events.MessageEvent;
-import org.snack.irc.main.Monitor;
+import org.snack.irc.main.Startup;
 import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.model.Chan;
 import org.snack.irc.settings.Config;
@@ -20,15 +20,50 @@ public class Translater extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public Translater() {}
-
-	public Translater(MessageEvent<?> event) {
-		this.event = event;
-	}
-
 	@Override
 	public void run() {
-		translate();
+		HashMap<String, String> languages = getHashMap();
+		String message = event.getMessage();
+		String text = message.substring(11); // Cut off the command
+
+		String from = "auto";
+		String to = "auto";
+
+		if (message.split(" ").length >= 4 && message.split(" ")[1].equals("from") && languages.containsKey(message.split(" ")[2])) {
+			from = languages.get(message.split(" ")[2]);
+			text = message.substring(message.indexOf(message.split(" ")[2]) + message.split(" ")[4].length() + 1);
+		}
+		if (message.split(" ").length >= 4 && message.split(" ")[1].equals("to") && languages.containsKey(message.split(" ")[2])) {
+			to = languages.get(message.split(" ")[2]);
+			text = message.substring(message.indexOf(message.split(" ")[2]) + message.split(" ")[2].length() + 1);
+		} else if (message.split(" ").length >= 6 && !from.equals("") && message.split(" ")[3].equals("to") && languages.containsKey(message.split(" ")[4])) {
+			to = languages.get(message.split(" ")[4]);
+			text = message.substring(message.indexOf(message.split(" ")[4]) + message.split(" ")[4].length() + 1);
+		}
+
+		String response;
+
+		try {
+			text = URLEncoder.encode(text, "utf-8");
+
+			URL url = new URL("http://translate.google.com/m?hl=" + to + "&sl=" + from + "&q=" + text + "&ie=UTF-8&oe=UTF-8");
+			URLConnection urlConn = url.openConnection();
+			urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			IOUtils.copy(urlConn.getInputStream(), output);
+
+			String html = output.toString();
+			Document doc = Jsoup.parse(html, "UTF-8");
+			Elements element = doc.select("div[dir=ltr]");
+			String translated = element.text();
+
+			response = Config.speech.get("TR_SUC").replace("<from>", from).replace("<to>", to).replace("<response>", translated);
+		} catch (Exception e) {
+			response = Config.speech.get("TR_ERR");
+		}
+
+		Startup.print("~RESPONSE  Translate: " + response);
+		event.getBot().sendMessage(event.getChannel(), response);
 	}
 
 	@Override
@@ -99,53 +134,5 @@ public class Translater extends TriggerHandler {
 			languages.put("indonesian", "id");
 		}
 		return languages;
-	}
-
-	/**
-	 * Translates text using the Bing translate API
-	 */
-	private void translate() {
-		HashMap<String, String> languages = getHashMap();
-		String message = event.getMessage();
-		String text = message.substring(11); // Cut off the command
-
-		String from = "auto";
-		String to = "auto";
-
-		if (message.split(" ").length >= 4 && message.split(" ")[1].equals("from") && languages.containsKey(message.split(" ")[2])) {
-			from = languages.get(message.split(" ")[2]);
-			text = message.substring(message.indexOf(message.split(" ")[2]) + message.split(" ")[4].length() + 1);
-		}
-		if (message.split(" ").length >= 4 && message.split(" ")[1].equals("to") && languages.containsKey(message.split(" ")[2])) {
-			to = languages.get(message.split(" ")[2]);
-			text = message.substring(message.indexOf(message.split(" ")[2]) + message.split(" ")[2].length() + 1);
-		} else if (message.split(" ").length >= 6 && !from.equals("") && message.split(" ")[3].equals("to") && languages.containsKey(message.split(" ")[4])) {
-			to = languages.get(message.split(" ")[4]);
-			text = message.substring(message.indexOf(message.split(" ")[4]) + message.split(" ")[4].length() + 1);
-		}
-
-		String response;
-
-		try {
-			text = URLEncoder.encode(text, "utf-8");
-
-			URL url = new URL("http://translate.google.com/m?hl=" + to + "&sl=" + from + "&q=" + text + "&ie=UTF-8&oe=UTF-8");
-			URLConnection urlConn = url.openConnection();
-			urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-			ByteArrayOutputStream output = new ByteArrayOutputStream();
-			IOUtils.copy(urlConn.getInputStream(), output);
-
-			String html = output.toString();
-			Document doc = Jsoup.parse(html, "UTF-8");
-			Elements element = doc.select("div[dir=ltr]");
-			String translated = element.text();
-
-			response = Config.speech.get("TR_SUC").replace("<from>", from).replace("<to>", to).replace("<response>", translated);
-		} catch (Exception e) {
-			response = Config.speech.get("TR_ERR");
-		}
-
-		Monitor.print("~RESPONSE  Translate: " + response);
-		event.getBot().sendMessage(event.getChannel(), response);
 	}
 }

@@ -7,7 +7,7 @@ import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import org.snack.irc.main.Monitor;
+import org.snack.irc.main.Startup;
 import org.snack.irc.model.LastMsg;
 import org.snack.irc.model.LastfmUser;
 import org.snack.irc.model.Quote;
@@ -48,9 +48,9 @@ public class DatabaseManager {
 
 	public static DatabaseManager getInstance() {
 		if (instance == null) {
-			Monitor.print("~INFO Initializing database");
+			Startup.print("~INFO Initializing database");
 			instance = new DatabaseManager();
-			Monitor.print("~INFO Initialized database");
+			Startup.print("~INFO Initialized database");
 		}
 		return instance;
 	}
@@ -65,7 +65,7 @@ public class DatabaseManager {
 			tell_collection = db.getCollection(TELL_COLLECTION_NAME);
 			msg_collection = db.getCollection(MSG_COLLECTION_NAME);
 		} catch (Exception e) {
-			Monitor.print("~ERROR Database error");
+			Startup.print("~ERROR Database error");
 			System.exit(-1);
 		}
 	}

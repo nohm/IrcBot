@@ -1,6 +1,10 @@
 package org.snack.irc.main;
 
 import java.util.concurrent.Semaphore;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -19,12 +23,13 @@ import org.snack.irc.settings.Config;
  */
 public class Startup {
 
-	private final static boolean niceLookingMonitor = true;
+	private final static boolean niceLookingStartup = true;
 	private static PircBotX bot;
 	private static Semaphore restart;
+	private static Logger logger;
 
 	public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
-		if (niceLookingMonitor) {
+		if (niceLookingStartup) {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
 
@@ -35,31 +40,43 @@ public class Startup {
 			e.printStackTrace();
 		}
 
-		Monitor.getInstance();
+		try {
+			logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+			logger.setLevel(Level.INFO);
+			FileHandler handler = new FileHandler(Config.sett_str.get("LOG_LOC"));
+			handler.setFormatter(new SimpleFormatter());
+			logger.addHandler(handler);
+		} catch (Exception e) {
+			Startup.print("~ERROR Couldn't create log file");
+		}
 
 		start();
 	}
 
+	public static void print(String message) {
+		Startup.logger.info(message);
+	}
+
 	public static void restart() {
-		Monitor.print("~INFO Restarting");
+		Startup.print("~INFO Restarting");
 		restart = new Semaphore(1);
 		stop();
 		restart.acquireUninterruptibly();
 		start();
-		Monitor.print("~INFO Restarted");
+		Startup.print("~INFO Restarted");
 	}
 
 	private static void stop() {
-		Monitor.print("~INFO Stopping");
+		Startup.print("~INFO Stopping");
 		bot.disconnect();
 		bot = null;
 		DatabaseManager.getInstance().closeConnection();
 		restart.release();
-		Monitor.print("~INFO Stopped");
+		Startup.print("~INFO Stopped");
 	}
 
 	private static void start() {
-		Monitor.print("~INFO Starting");
+		Startup.print("~INFO Starting");
 
 		// Setup a new bot
 		bot = new PircBotX();
@@ -77,7 +94,7 @@ public class Startup {
 		bot.setAutoReconnectChannels(true);
 		// Give the bot a listener
 		bot.getListenerManager().addListener(new BotListener(bot));
-		Monitor.print("~INFO Initialized bot");
+		Startup.print("~INFO Initialized bot");
 
 		// Connect to a server & channel
 		try {
@@ -88,16 +105,16 @@ public class Startup {
 				bot.setName(Config.sett_str.get("BOT_ALT_NAME"));
 				bot.connect(Config.sett_str.get("SERVER"));
 			} catch (Exception e1) {
-				Monitor.print("~ERROR Couldn't connect, fix it or try later.");
+				Startup.print("~ERROR Couldn't connect, fix it or try later.");
 				System.exit(-1);
 			}
 		}
-		Monitor.print("~INFO Joined server");
+		Startup.print("~INFO Joined server");
 
 		// Authenticate
 		if (!Config.sett_str.get("BOT_PASS").equals("") && Config.sett_str.get("BOT_PASS") != null) {
 			bot.sendRawLine("NICKSERV IDENTIFY " + Config.sett_str.get("BOT_PASS"));
-			Monitor.print("~INFO Authenticated");
+			Startup.print("~INFO Authenticated");
 		}
 		// Join channels
 		for (Chan channel : Config.channels.values()) {
@@ -105,10 +122,10 @@ public class Startup {
 				bot.sendRawLine("JOIN " + channel.name);
 			}
 		}
-		Monitor.print("~INFO Joined channels");
+		Startup.print("~INFO Joined channels");
 
 		// Start DB
 		DatabaseManager.getInstance().initializeConnection();
-		Monitor.print("~INFO Started");
+		Startup.print("~INFO Started");
 	}
 }

@@ -3,7 +3,7 @@ package org.snack.irc.handler.message;
 import java.net.URLEncoder;
 
 import org.pircbotx.hooks.events.MessageEvent;
-import org.snack.irc.main.Monitor;
+import org.snack.irc.main.Startup;
 import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.model.Chan;
 import org.snack.irc.settings.Config;
@@ -12,18 +12,8 @@ public class Booru extends TriggerHandler {
 
 	private MessageEvent<?> event;
 
-	public Booru() {};
-
-	public Booru(MessageEvent<?> event) {
-		this.event = event;
-	}
-
 	@Override
 	public void run() {
-		searchBooru();
-	}
-
-	private void searchBooru() {
 		String response;
 		try {
 			String message = event.getMessage();
@@ -57,8 +47,7 @@ public class Booru extends TriggerHandler {
 		} catch (Exception e) {
 			response = "Invalid query.";
 		}
-
-		Monitor.print("~INFO Response: " + response);
+		Startup.print("~INFO Response: " + response);
 		event.getBot().sendMessage(event.getChannel(), response);
 	}
 

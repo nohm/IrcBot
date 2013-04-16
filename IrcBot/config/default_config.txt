@@ -15,10 +15,15 @@
 		{ "tetete": "false" },
 		{ "whisper": "false" },
 		{ "image": "false" },
-		{ "google": "false" }
+		{ "google": "false" },
+		{ "wordgen": "false" },
+		{ "fml": "false" },
+		{ "bitcoin": "false" },
+		{ "rules": "false" }
 	],
 	"defaults": [
 		{ "greet_visible": "private" },
-		{ "search_default": "g" }
+		{ "search_default": "g" },
+		{ "rules": "none." }
 	]
 }

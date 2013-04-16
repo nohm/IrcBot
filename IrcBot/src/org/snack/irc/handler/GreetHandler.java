@@ -18,13 +18,6 @@ public class GreetHandler implements Runnable {
 
 	@Override
 	public void run() {
-		greet();
-	}
-
-	/**
-	 * Returns a greeting
-	 */
-	private void greet() {
 		String greeting = Config.speech.get("GREET").replace("<name>", event.getUser().getNick());
 		if (Config.channels.get(event.getChannel().getName()).defaults.get("greet_visible").equals("public")) {
 			event.getBot().sendNotice(event.getChannel(), greeting);

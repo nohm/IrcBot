@@ -30,6 +30,7 @@ import org.reflections.util.FilterBuilder;
 import org.snack.irc.database.DatabaseManager;
 import org.snack.irc.enums.EventType;
 import org.snack.irc.handler.GreetHandler;
+import org.snack.irc.handler.RulesHandler;
 import org.snack.irc.handler.TellHandler;
 import org.snack.irc.model.Bot;
 import org.snack.irc.model.Chan;
@@ -78,7 +79,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 		String message = event.getMessage();
 		User user = event.getUser();
 		String nick = user.getNick();
-		Monitor.print("<<MSG " + chan.name + " " + nick + ": " + message);
+		Startup.print("<<MSG " + chan.name + " " + nick + ": " + message);
 
 		// Store last occurence of username
 		if ((System.currentTimeMillis() - db.getLastMsg(nick).getTime()) > (10 * 60 * 1000)) { // 10m
@@ -119,7 +120,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 			}
 			// Add random quotes
 			if (new Random().nextInt(100) > 90 && add && message.length() <= Config.sett_int.get("QUOTE_MAX") && message.length() >= Config.sett_int.get("QUOTE_MIN")) {
-				Monitor.print("~INFO Added quote: " + chan.name + " <" + user.getNick() + "> " + message);
+				Startup.print("~INFO Added quote: " + chan.name + " <" + user.getNick() + "> " + message);
 				DatabaseManager.getInstance().putQuote(new Quote(chan.name, user.getNick(), message));
 			}
 		}
@@ -130,9 +131,9 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onKick(KickEvent event) {
-		Monitor.print("<<KICK " + event.getChannel().getName());
+		Startup.print("<<KICK " + event.getChannel().getName());
 		event.getBot().sendRawLine("JOIN " + event.getChannel().getName());
-		Monitor.print("~INFO Rejoined");
+		Startup.print("~INFO Rejoined");
 	}
 
 	/**
@@ -141,15 +142,19 @@ public class BotListener extends ListenerAdapter implements Listener {
 	@Override
 	public void onJoin(JoinEvent event) {
 		if (!event.getUser().getNick().equals(Config.sett_str.get("BOT_NAME"))) {
-			Monitor.print("<<JOIN " + event.getChannel().getName() + " " + event.getUser().getNick());
+			Startup.print("<<JOIN " + event.getChannel().getName() + " " + event.getUser().getNick());
 			executor.execute(new FunctionTester(event, event.getChannel(), event.getUser(), EventType.JOIN));
 			Chan chan = Config.channels.get(event.getChannel().getName());
 			if (chan.functions.get("greet")) {
 				executor.execute(new GreetHandler(event));
 			}
+			if (chan.functions.get("rules") && !db.containsUser(new LastMsg(event.getUser().getNick(), 0))) {
+				executor.execute(new RulesHandler(event));
+			}
 		}
 		executor.execute(new TellHandler(null, event, null));
-		Monitor.print("~INFO Cleaned tells: " + event.getChannel().getName());
+		Startup.print("~INFO Cleaned tells: " + event.getChannel().getName());
+		db.putLastMsg(new LastMsg(event.getUser().getNick(), System.currentTimeMillis()));
 	}
 
 	/**
@@ -157,7 +162,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onPart(PartEvent event) {
-		Monitor.print("<<PART " + event.getChannel().getName() + " " + event.getUser().getNick());
+		Startup.print("<<PART " + event.getChannel().getName() + " " + event.getUser().getNick());
 		executor.execute(new FunctionTester(event, event.getChannel(), event.getUser(), EventType.PART));
 	}
 
@@ -167,7 +172,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onQuit(QuitEvent event) {
-		Monitor.print("<<QUIT " + event.getUser().getNick());
+		Startup.print("<<QUIT " + event.getUser().getNick());
 		if (event.getUser().getNick().equals(Config.sett_str.get("BOT_NAME"))) {
 			bot.setName(Config.sett_str.get("BOT_NAME"));
 		}
@@ -179,13 +184,13 @@ public class BotListener extends ListenerAdapter implements Listener {
 	 */
 	@Override
 	public void onUserList(UserListEvent event) {
-		Monitor.print("<<USERLIST");
+		Startup.print("<<USERLIST");
 		executor.execute(new FunctionTester(event, event.getChannel(), null, EventType.USERLIST));
 	}
 
 	@Override
 	public void onDisconnect(DisconnectEvent event) {
-		Monitor.print("<<<Disconnected");
+		Startup.print("<<<Disconnected");
 		while (!event.getBot().isConnected()) {
 			try {
 				Thread.sleep(15000);
@@ -208,32 +213,12 @@ public class BotListener extends ListenerAdapter implements Listener {
 
 	@Override
 	public void onAction(ActionEvent event) {
-		Monitor.print("<<ACTION " + event.getChannel().getName() + " " + event.getUser().getNick() + ": " + event.getMessage());
+		Startup.print("<<ACTION " + event.getChannel().getName() + " " + event.getUser().getNick() + ": " + event.getMessage());
 	}
 
 	@Override
 	public void onNickChange(NickChangeEvent event) {
-		Monitor.print("<<NICKCHANGE");
+		Startup.print("<<NICKCHANGE");
 		executor.execute(new TellHandler(null, null, event));
-	}
-
-	public static void sendCustomMessage(String type, String target, String message) {
-		if (type.equalsIgnoreCase("PRIVMSG") && (!target.equals("") || target == null)) {
-			if (target.equals("#")) {
-				Monitor.print(">>BROADCAST " + message);
-				for (Channel channel : bot.getChannels()) {
-					bot.sendMessage(channel, "Broadcast: " + message);
-				}
-			} else {
-				Monitor.print(">>MSG " + target + ": " + message);
-				bot.sendMessage(target, message);
-			}
-		} else if (type.equalsIgnoreCase("ACTION")) {
-			Monitor.print(">>ACTION " + target + ": " + message);
-			bot.sendAction(target, message);
-		} else {
-			Monitor.print(">>RAW " + type + " " + target + ": " + message);
-			bot.sendRawLine(type + " " + target + " :" + message);
-		}
 	}
 }

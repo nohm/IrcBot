@@ -20,7 +20,10 @@
 				{ "tetete": "tetete: tetete <nick><nick><nick>" },
 				{ "whisper": "Whisper to someone: .whisper [nick] [message]" },
 				{ "image": "Get a random image: >[name].[format] or .image [query]" },
-				{ "google": "Get the first result: .google [query]" }
+				{ "google": "Get the first result: .google [query]" },
+				{ "wordgen": "Generate a random word: .wordgen" },
+				{ "fml": "Get a random quote from fmylife.com: .fml" },
+				{ "bitcoin": "Get the current bitcoin status: .bitcoin/.buttcoin" }
 			]
 		},
 		{

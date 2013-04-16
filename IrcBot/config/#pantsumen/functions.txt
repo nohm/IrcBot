@@ -5,18 +5,18 @@
 		{ "define": "true" },
 		{ "google": "true" },
 		{ "wordgen": "false" },
-		{ "eightball": "false" },
+		{ "eightball": "true" },
 		{ "image": "true" },
 		{ "greet": "false" },
-		{ "tetete": "false" },
+		{ "tetete": "true" },
 		{ "fml": "false" },
 		{ "rules": "false" },
 		{ "lastfm": "true" },
-		{ "whisper": "false" },
+		{ "whisper": "true" },
 		{ "search": "true" },
 		{ "quote": "true" },
 		{ "weather": "true" },
-		{ "html": "true" },
+		{ "html": "false" },
 		{ "tell": "true" },
 		{ "translate": "true" },
 		{ "bitcoin": "false" },
@@ -24,7 +24,7 @@
 		{ "booru": "true" }
 	],
 	"defaults": [
-		{ "greet_visible": "public" },
+		{ "greet_visible": "private" },
 		{ "search_default": "g" }
 	]
 }

@@ -15,6 +15,7 @@ public class ConfigStorer {
 		}
 	}
 
+	// TODO: Remove bot or add an enabled flag
 	public static void storeChannel(String name) throws Exception {
 		if (!new File("./config/" + name).exists()) {
 			new File("./config/" + name).mkdir();
@@ -52,7 +53,7 @@ public class ConfigStorer {
 
 	private static void storeBot(String chan, Bot bot) throws Exception {
 		HashMap<String, Boolean> bot_func = bot.functions;
-		String data = "{\n\t\"name\": \""+bot.name+"\",\n\t\"functions\": [\n";
+		String data = "{\n\t\"name\": \""+bot.name+"\",\n\t\"enabled\": \""+bot.enabled+"\",\n\t\"functions\": [\n";
 		for (Entry<String, Boolean> entry : bot_func.entrySet()) {
 			data += "\t\t{ \"" + entry.getKey() + "\": \"" + entry.getValue() + "\" },\n";
 		}

@@ -6,7 +6,7 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.snack.irc.database.DatabaseManager;
-import org.snack.irc.main.Monitor;
+import org.snack.irc.main.Startup;
 import org.snack.irc.model.Tell;
 import org.snack.irc.settings.Config;
 
@@ -49,7 +49,7 @@ public class TellHandler implements Runnable {
 				for (Tell tell : tells) {
 					if (tell.getName().equalsIgnoreCase(nEvent.getUser().getNick())) {
 						String response = Config.speech.get("TE_TEL").replace("<sender>", tell.getSender()).replace("<message>", tell.getMessage());
-						Monitor.print("~RESPONSE  Told: " + response);
+						Startup.print("~RESPONSE  Told: " + response);
 						mEvent.getBot().sendNotice(mEvent.getUser(), response);
 						db.removeTell(tell);
 					}
@@ -59,7 +59,7 @@ public class TellHandler implements Runnable {
 				for (Tell tell : tells) {
 					if (tell.getName().equalsIgnoreCase(nEvent.getUser().getNick())) {
 						String response = Config.speech.get("TE_TEL").replace("<sender>", tell.getSender()).replace("<message>", tell.getMessage());
-						Monitor.print("~RESPONSE  Told: " + response);
+						Startup.print("~RESPONSE  Told: " + response);
 						nEvent.getBot().sendNotice(nEvent.getUser(), response);
 						db.removeTell(tell);
 					}
@@ -70,7 +70,7 @@ public class TellHandler implements Runnable {
 			for (Tell tell : tells) {
 				if (tell.getName().equalsIgnoreCase(jEvent.getUser().getNick())) {
 					String response = Config.speech.get("TE_TEL").replace("<sender>", tell.getSender()).replace("<message>", tell.getMessage());
-					Monitor.print("~RESPONSE  Told: " + response);
+					Startup.print("~RESPONSE  Told: " + response);
 					jEvent.getBot().sendNotice(jEvent.getUser(), response);
 					db.removeTell(tell);
 				}

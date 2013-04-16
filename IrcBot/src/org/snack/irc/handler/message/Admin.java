@@ -8,7 +8,6 @@ import org.pircbotx.Channel;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.snack.irc.enums.EventType;
 import org.snack.irc.main.FunctionTester;
-import org.snack.irc.main.Monitor;
 import org.snack.irc.main.Startup;
 import org.snack.irc.main.TriggerHandler;
 import org.snack.irc.model.Bot;
@@ -19,12 +18,6 @@ import org.snack.irc.settings.ConfigStorer;
 public class Admin extends TriggerHandler {
 
 	private MessageEvent<?> event;
-
-	public Admin() {}
-
-	public Admin(MessageEvent<?> event) {
-		this.event = event;
-	}
 
 	@Override
 	public void run() {
@@ -218,14 +211,13 @@ public class Admin extends TriggerHandler {
 				if (message.split(" ")[1].equals("add")) {
 					response = "[Error] Bot already known: " + message.split(" ")[2];
 				} else {
-
-					chan.bots.remove(chan.bots.remove(index));
+					chan.bots.get(index).enabled = false;
 					response = "Removed bot: " + message.split(" ")[2];
 					response = storeChannel(response, channel.getName());
 				}
 			} else {
 				if (message.split(" ")[1].equals("add")) {
-					Bot b = new Bot(message.split(" ")[2]);
+					Bot b = new Bot(message.split(" ")[2], true);
 					b.initDefault();
 					chan.bots.add(b);
 
@@ -307,7 +299,7 @@ public class Admin extends TriggerHandler {
 		}
 
 		if (!response.equals("")) {
-			Monitor.print("~INFO Response: " + response);
+			Startup.print("~INFO Response: " + response);
 			event.getBot().sendNotice(event.getUser(), response);
 		}
 	}

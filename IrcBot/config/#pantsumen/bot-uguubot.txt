@@ -1,30 +1,26 @@
 {
-	"join": "false",
-	"mute": "false",
+	"name": "uguubot",
+	"enabled": "true",
 	"functions": [
 		{ "define": "true" },
 		{ "google": "true" },
+		{ "eightball": "true" },
 		{ "wordgen": "false" },
-		{ "eightball": "false" },
 		{ "image": "true" },
-		{ "greet": "false" },
-		{ "tetete": "false" },
+		{ "tetete": "true" },
+		{ "greet": "true" },
 		{ "fml": "false" },
 		{ "rules": "false" },
 		{ "lastfm": "true" },
-		{ "whisper": "false" },
+		{ "whisper": "true" },
 		{ "search": "true" },
 		{ "quote": "true" },
 		{ "weather": "true" },
-		{ "html": "true" },
-		{ "tell": "true" },
 		{ "translate": "true" },
-		{ "bitcoin": "false" },
+		{ "tell": "true" },
+		{ "html": "false" },
 		{ "wiki": "true" },
+		{ "bitcoin": "false" },
 		{ "booru": "true" }
-	],
-	"defaults": [
-		{ "greet_visible": "public" },
-		{ "search_default": "g" }
 	]
 }

@@ -1,10 +1,10 @@
 {
-	"name": "Moelicious",
+	"name": "MikuBot",
 	"enabled": "true",
 	"functions": [
 		{ "define": "false" },
 		{ "google": "false" },
-		{ "eightball": "true" },
+		{ "eightball": "false" },
 		{ "wordgen": "false" },
 		{ "image": "false" },
 		{ "tetete": "false" },
@@ -13,12 +13,12 @@
 		{ "rules": "false" },
 		{ "lastfm": "false" },
 		{ "whisper": "false" },
-		{ "search": "true" },
+		{ "search": "false" },
 		{ "quote": "false" },
 		{ "weather": "false" },
 		{ "translate": "false" },
 		{ "tell": "false" },
-		{ "html": "false" },
+		{ "html": "true" },
 		{ "wiki": "false" },
 		{ "bitcoin": "false" },
 		{ "booru": "false" }

@@ -1,12 +1,16 @@
 {
 	"name": "Moelicious",
+	"enabled": "true",
 	"functions": [
 		{ "define": "false" },
 		{ "google": "false" },
 		{ "eightball": "true" },
+		{ "wordgen": "false" },
 		{ "image": "false" },
-		{ "greet": "false" },
 		{ "tetete": "false" },
+		{ "greet": "false" },
+		{ "fml": "false" },
+		{ "rules": "false" },
 		{ "lastfm": "false" },
 		{ "whisper": "false" },
 		{ "search": "true" },
@@ -16,6 +20,7 @@
 		{ "tell": "false" },
 		{ "html": "false" },
 		{ "wiki": "false" },
+		{ "bitcoin": "false" },
 		{ "booru": "false" }
 	]
 }

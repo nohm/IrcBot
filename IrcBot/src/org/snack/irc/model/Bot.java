@@ -12,10 +12,12 @@ import org.snack.irc.settings.Config;
  */
 public class Bot {
 	public final String name;
+	public boolean enabled;
 	public final HashMap<String, Boolean> functions;
 
-	public Bot(String name) {
+	public Bot(String name, boolean enabled) {
 		this.name = name;
+		this.enabled = enabled;
 		functions = new HashMap<String, Boolean>();
 	}
 
