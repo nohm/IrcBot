@@ -15,15 +15,23 @@ import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
 /**
- * TODO Documentation Config Integration Handler Format
+ * Handles using the 4chan api to get threads
  * 
+ * @author snack
+ *
  */
-
 public class FourChanAPI {
 
+	/**
+	 * Returns all threads on specific board containing the term
+	 * @param board the board to search
+	 * @param term the term to match
+	 * @return a list of found threads
+	 * @throws Exception connection error most likely
+	 */
 	public static FThread[] search(String board, String term) throws Exception {
 		ArrayList<FThread> threadList = new ArrayList<FThread>();
-		String cleanedTerm = term.toLowerCase();//Utils.encodeQuery(term, true);
+		String cleanedTerm = term.toLowerCase();
 
 		ByteArrayOutputStream output = Utils.httpRequest("https://api.4chan.org/" + board.toLowerCase() + "/catalog.json");
 		JSONArray jo = (JSONArray) JSONSerializer.toJSON(output.toString().replace("&gt;", ">").replace("&lt;", "<"));
@@ -44,10 +52,16 @@ public class FourChanAPI {
 				}
 			}
 		}
-
 		return threadList.toArray(new FThread[threadList.size()]);
 	}
 
+	/**
+	 * Returns ONE thread on specific board that is #threadNumber
+	 * @param board the board to search
+	 * @param threadNumber the thread to search
+	 * @return a found thread, or an error
+	 * @throws Exception connection error most likely, or nothing found
+	 */
 	public static FThread retrieve(String board, String threadNumber) throws Exception {
 		ByteArrayOutputStream output = Utils.httpRequest("https://api.4chan.org/" + board.toLowerCase() + "/res/" + threadNumber + ".json");
 		JSONObject jo = (JSONObject) JSONSerializer.toJSON(output.toString().replace("&gt;", ">").replace("&lt;", "<"));
@@ -57,6 +71,13 @@ public class FourChanAPI {
 		return parseThread(board, thread);
 	}
 
+	/**
+	 * Parses the data from json to thread
+	 * @param board what board is it, for the url
+	 * @param thread the json to parse
+	 * @return a parsed FThread
+	 * @throws Exception incorrect uri, somehow
+	 */
 	private static FThread parseThread(String board, JSONObject thread) throws Exception {
 		String subject = thread.has("sub") ? Jsoup.clean(thread.getString("sub"), Whitelist.simpleText()).toString() : "n/a";
 		String post = thread.has("com") ? Jsoup.clean(thread.getString("com"), Whitelist.simpleText()).toString() : "n/a";
