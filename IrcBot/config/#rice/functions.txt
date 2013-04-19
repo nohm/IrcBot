@@ -1,31 +1,40 @@
 {
-	"join": "true",
+	"join": "false",
 	"mute": "false",
 	"functions": [
-		{ "define": "true" },
 		{ "google": "true" },
-		{ "wordgen": "true" },
 		{ "eightball": "false" },
-		{ "image": "true" },
-		{ "greet": "false" },
+		{ "convert": "true" },
+		{ "fortune": "true" },
 		{ "tetete": "false" },
 		{ "fml": "true" },
-		{ "rules": "true" },
-		{ "lastfm": "true" },
 		{ "whisper": "false" },
 		{ "search": "true" },
 		{ "quote": "true" },
 		{ "weather": "true" },
-		{ "html": "true" },
 		{ "tell": "true" },
-		{ "translate": "true" },
 		{ "bitcoin": "true" },
 		{ "wiki": "true" },
-		{ "booru": "true" }
+		{ "booru": "true" },
+		{ "define": "true" },
+		{ "wordgen": "true" },
+		{ "image": "true" },
+		{ "seen": "false" },
+		{ "greet": "false" },
+		{ "rules": "true" },
+		{ "lastfm": "true" },
+		{ "html": "true" },
+		{ "translate": "true" },
+		{ "anime": "false" },
+		{ "sysinfo": "true" }
 	],
 	"defaults": [
 		{ "greet_visible": "public" },
 		{ "search_default": "g" },
-		{ "rules": "1) Before asking any questions related to ricing, you should read the /w/ pastebin, available at http://pastebin.com/W0SsUtEH~~!~~2) No circlejerking spam.~~!~~3) Don't be rude to other users, this includes shitposting.~~!~~4) We're not \"rice\" support. We'd love to help you, but you also need to do some research on your own, we won't spoon-feed you everything.~~!~~5) You'll get two warnings before being banned. You may appeal this ban with the mod that banned you." }
+		{ "rules": "1) Before asking any questions related to ricing, you should read the /w/ pastebin, available at http://pastebin.com/W0SsUtEH~~!~~2) No circlejerking spam.~~!~~3) Don't be rude to other users, this includes shitposting.~~!~~4) We're not rice support. We'd love to help you, but you also need to do some research on your own, we won't spoon-feed you everything.~~!~~5) You'll get two warnings before being banned. You may appeal this ban with the mod that banned you." }
+	],
+	"ignore": [
+		{ "someoneihateaswell": "false" },
+		{ "someoneihate": "false" }
 	]
 }

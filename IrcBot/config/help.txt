@@ -8,11 +8,11 @@
 			"permission": "all",
 			"modules": [
 				{ "define": "Define a word: .define [word]" },
-				{ "lastfm": "Get Last.FM music status: .np [name] (name gets stored)" },
+				{ "lastfm": "Get Last.FM music status: .np [@][name] (@ to user someone elses name, name gets stored)" },
 				{ "search": "Search 4chan for a thread: .search[-board] [query] (board is optional)" },
 				{ "eightball": "Ask the 8-ball: .8ball [query]?" },
 				{ "quote": "Ask for a quote: .quote [name] (name is optional)" },
-				{ "weather": "Get weather status: .we [location] (location gets stored)" },
+				{ "weather": "Get weather status: .we [@][location] (@ to user someone elses name, location gets stored)" },
 				{ "tell": "Tell something to a user: .tell [user] [message]" },
 				{ "translate": "Translate something: .translate [from <lang>] [to <lang>] [message] (from/to is optional)" },
 				{ "wiki": "Search wikipedia: .wiki[-language] [query] (language is optional)" },
@@ -23,7 +23,13 @@
 				{ "google": "Get the first result: .google [query]" },
 				{ "wordgen": "Generate a random word: .wordgen" },
 				{ "fml": "Get a random quote from fmylife.com: .fml" },
-				{ "bitcoin": "Get the current bitcoin status: .bitcoin/.buttcoin" }
+				{ "bitcoin": "Get the current bitcoin status: .bitcoin/.buttcoin" },
+				{ "sysinfo": "Get the bots system info" },
+				{ "convert": "Convert currency: .convert [number] [valuta] to [valuta]" },
+				{ "fortune": "Get a random fortune quote: .fortune" },
+				{ "seen": "When was the user last seen: .seen [name]" },
+				{ "anime": "Get anime releases: .anime [list/get] [name] (name only for get)"},
+				{ "release": "Get release from animecalendar: .release [today/tomorrow/day] (Currently can't check next month)" }
 			]
 		},
 		{
@@ -47,7 +53,9 @@
 				{ "bot-disable": "Disable bot module(s): .bot [nick] disable [module(s)]" },
 				{ "bot-enabled": "Get bot enabled module(s): .bot [nick] enabled" },
 				{ "bot-disabled": "Get bot disabled module(s): .bot [nick] disabled" },
-				{ "reload": "Reload the config: .reload"}
+				{ "reload": "Reload the config: .reload"},
+				{ "ignore": "Ignore a user: .ignore [nick]" },
+				{ "unignore": "Uninore a user: .unignore [nick]" }
 			]
 		},
 		{

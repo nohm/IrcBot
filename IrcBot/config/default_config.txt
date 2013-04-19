@@ -19,11 +19,21 @@
 		{ "wordgen": "false" },
 		{ "fml": "false" },
 		{ "bitcoin": "false" },
-		{ "rules": "false" }
+		{ "rules": "false" },
+		{ "sysinfo": "false" },
+		{ "convert": "false" },
+		{ "fortune": "false" },
+		{ "seen": "false" },
+		{ "anime": "false" },
+		{ "release": "false" }
 	],
 	"defaults": [
 		{ "greet_visible": "private" },
 		{ "search_default": "g" },
 		{ "rules": "none." }
+	],
+	"ignore": [
+		{ "someoneihate": "false" },
+		{ "someoneihateaswell": "false" }
 	]
 }

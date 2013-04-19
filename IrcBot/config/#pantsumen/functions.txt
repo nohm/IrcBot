@@ -2,29 +2,39 @@
 	"join": "false",
 	"mute": "false",
 	"functions": [
-		{ "define": "true" },
 		{ "google": "true" },
-		{ "wordgen": "false" },
 		{ "eightball": "true" },
-		{ "image": "true" },
-		{ "greet": "false" },
+		{ "convert": "false" },
+		{ "fortune": "false" },
 		{ "tetete": "true" },
 		{ "fml": "false" },
-		{ "rules": "false" },
-		{ "lastfm": "true" },
 		{ "whisper": "true" },
 		{ "search": "true" },
 		{ "quote": "true" },
 		{ "weather": "true" },
-		{ "html": "false" },
 		{ "tell": "true" },
-		{ "translate": "true" },
 		{ "bitcoin": "false" },
 		{ "wiki": "true" },
-		{ "booru": "true" }
+		{ "booru": "true" },
+		{ "define": "true" },
+		{ "wordgen": "false" },
+		{ "image": "true" },
+		{ "seen": "false" },
+		{ "greet": "false" },
+		{ "rules": "false" },
+		{ "lastfm": "true" },
+		{ "html": "false" },
+		{ "translate": "true" },
+		{ "anime": "false" },
+		{ "sysinfo": "false" }
 	],
 	"defaults": [
 		{ "greet_visible": "private" },
-		{ "search_default": "g" }
+		{ "search_default": "g" },
+		{ "rules": "none." }
+	],
+	"ignore": [
+		{ "someoneihateaswell": "false" },
+		{ "someoneihate": "false" }
 	]
 }

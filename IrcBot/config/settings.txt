@@ -12,6 +12,8 @@
 	},
 	
 	"server": "irc.rizon.net",
+	"port": "6697",
+	"ssl": "true",
 
 	"settings": {
 		"log": "log.txt",

@@ -1,10 +1,26 @@
-Apr 16, 2013 6:05:59 PM org.snack.irc.main.Monitor print
-INFO: ~INFO Initialized interface
-Apr 16, 2013 6:05:59 PM org.snack.irc.main.Monitor print
+Apr 17, 2013 10:58:48 PM org.snack.irc.main.Startup print
 INFO: ~INFO Starting
-Apr 16, 2013 6:05:59 PM org.snack.irc.main.Monitor print
+Apr 17, 2013 10:58:48 PM org.snack.irc.main.Startup print
 INFO: ~INFO Initializing database
-Apr 16, 2013 6:05:59 PM org.snack.irc.main.Monitor print
+Apr 17, 2013 10:58:48 PM org.snack.irc.main.Startup print
 INFO: ~INFO Initialized database
-Apr 16, 2013 6:06:00 PM org.snack.irc.main.Monitor print
+Apr 17, 2013 10:58:48 PM org.snack.irc.main.Startup print
 INFO: ~INFO Initialized bot
+Apr 17, 2013 10:58:56 PM org.snack.irc.main.Startup print
+INFO: ~INFO Joined server
+Apr 17, 2013 10:58:56 PM org.snack.irc.main.Startup print
+INFO: ~INFO Authenticated
+Apr 17, 2013 10:58:56 PM org.snack.irc.main.Startup print
+INFO: ~INFO Joined channels
+Apr 17, 2013 10:58:57 PM org.snack.irc.main.Startup print
+INFO: <<JOIN #snacktest snackbot
+Apr 17, 2013 10:58:57 PM org.snack.irc.main.Startup print
+INFO: ~INFO Join: #snacktest Functions: google:true eightball:false convert:true tetete:false fortune:false fml:false whisper:false search:true quote:true weather:true tell:true wiki:true bitcoin:false booru:true define:true wordgen:false image:true greet:false seen:false rules:false lastfm:true translate:true html:true anime:false sysinfo:false 
+Apr 17, 2013 10:58:57 PM org.snack.irc.main.Startup print
+INFO: ~INFO Cleaned tells: #snacktest
+Apr 17, 2013 10:58:57 PM org.snack.irc.main.Startup print
+INFO: <<USERLIST
+Apr 17, 2013 10:58:57 PM org.snack.irc.main.Startup print
+INFO: ~INFO Userlist: #snacktest Functions: google:true eightball:false convert:true tetete:false fortune:false fml:false whisper:false search:true quote:true weather:true tell:true wiki:true bitcoin:false booru:true define:true wordgen:false image:true greet:false seen:false rules:false lastfm:true translate:true html:true anime:false sysinfo:false 
+Apr 17, 2013 10:58:57 PM org.snack.irc.main.Startup print
+INFO: ~INFO Started
