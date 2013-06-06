@@ -25,7 +25,9 @@
 		{ "fortune": "false" },
 		{ "seen": "false" },
 		{ "anime": "false" },
-		{ "release": "false" }
+		{ "release": "false" },
+		{ "replies": "false" },
+		{ "youtube": "false" }
 	],
 	"defaults": [
 		{ "greet_visible": "private" },

@@ -29,7 +29,9 @@
 				{ "fortune": "Get a random fortune quote: .fortune" },
 				{ "seen": "When was the user last seen: .seen [name]" },
 				{ "anime": "Get anime releases: .anime [list/get] [name] (name only for get)"},
-				{ "release": "Get release from animecalendar: .release [today/tomorrow/day] (Currently can't check next month)" }
+				{ "release": "Get release from animecalendar: .release [today/tomorrow/day/query]" },
+				{ "replies": "Get the post with the most replies from the frontpage of a board: .replies[-board] (board is optional)"},
+				{ "youtube": "Search videos on youtube: .youtube [query]" }
 			]
 		},
 		{

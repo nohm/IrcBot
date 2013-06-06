@@ -6,13 +6,17 @@ import irc.model.FThread;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.jsoup.safety.Whitelist;
+import org.jsoup.select.Elements;
 
 /**
  * Handles using the 4chan api to get threads
@@ -89,5 +93,59 @@ public class FourChanAPI {
 			comment = comment.substring(0, 96) + "...";
 		}
 		return new FThread(name, subject, post, new URI("https://boards.4chan.org/" + board.toLowerCase() + "/res/" + number).toString(), comment, replies);
+	}
+
+	/**
+	 * Returns the post with the most replies from the frontpage
+	 * @param board the board to check
+	 * @return an url and the number of replies
+	 * @throws Exception
+	 */
+	public static String getMostReplies(String board) throws Exception {
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+		// Get the first page
+		ByteArrayOutputStream output = Utils.httpRequest("https://api.4chan.org/" + board.toLowerCase() + "/0.json");
+		JSONObject jo = (JSONObject) JSONSerializer.toJSON(output.toString().replace("&gt;", ">").replace("&lt;", "<"));
+		JSONArray threads = jo.getJSONArray("threads");
+		// Check all threads
+		for (int i = 0; i < threads.size(); i++) {
+			String number = threads.getJSONObject(i).getJSONArray("posts").getJSONObject(0).getString("no");
+			// Get the thread by number
+			output = Utils.httpRequest("https://api.4chan.org/" + board.toLowerCase() + "/res/" + number + ".json");
+			jo = (JSONObject) JSONSerializer.toJSON(output.toString().replace("&gt;", ">").replace("&lt;", "<"));
+			JSONArray threadData = jo.getJSONArray("posts");
+			// Check all posts
+			for (int j = 0; j < threadData.size(); j++) {
+				JSONObject post = threadData.getJSONObject(j);
+				String comment = post.has("com") ? post.getString("com") : "";
+				Elements quoteLinks = Jsoup.parse(comment).select("a.quotelink");
+				// Get all quotelinks
+				for (Element link : quoteLinks) {
+					String clean = number + link.text().replace(">>", "#p");
+					map.put(clean, map.containsKey(clean) ? map.get(clean) + 1 : 1);
+				}
+			}
+		}
+		// Find the highest amount of replies, first one in wins (ergo newest thread wins)
+		String highest = "";
+		int num = 0;
+		for (Entry<String, Integer> entry : map.entrySet()) {
+			if (entry.getValue() > num) {
+				highest = entry.getKey();
+				num = entry.getValue();
+			}
+		}
+		// Return the url + replycount
+		output = Utils.httpRequest("https://boards.4chan.org/" + board.toLowerCase() + "/res/" + highest);
+		String comment = Jsoup.parse(output.toString()).select("blockquote[id=m" + highest.split("#p")[1] + "]").text();
+		if (comment.length() > 100) {
+			comment = comment.substring(0, 96) + "...";
+		}
+		if (comment.equals("")) {
+			return "https://boards.4chan.org/" + board.toLowerCase() + "/res/" + highest + " - with " + num + " replies";
+		} else {
+			return "https://boards.4chan.org/" + board.toLowerCase() + "/res/" + highest + " - with " + num + " replies | " + comment;
+		}
 	}
 }

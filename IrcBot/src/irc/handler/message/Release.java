@@ -18,6 +18,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.pircbotx.hooks.events.MessageEvent;
 
+/**
+ * Gets releases from animecalender, parameters are days or queries
+ * @author snack
+ *
+ */
 public class Release extends TriggerHandler {
 
 	private MessageEvent<?> event;
@@ -52,16 +57,20 @@ public class Release extends TriggerHandler {
 				} else if (command.equalsIgnoreCase("tomorrow")) {
 					curDayMonth += 1;
 				}
-				results.addAll(getViews(days, curDayMonth));
+				results.addAll(getViews("", days, curDayMonth));
 			} else {
 				for (int i = 0; i < 7; i++) {
 					curDayMonth = parseDayName(dayNames[i]);
-					results.addAll(getViews(days, curDayMonth));
+					results.addAll(getViews(command, days, curDayMonth));
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			results.add("Unable to retrieve :(");
+		}
+
+		if (results.size() == 0) {
+			results.add("No results :(");
 		}
 
 		for (String s : results) {
@@ -70,7 +79,14 @@ public class Release extends TriggerHandler {
 		}
 	}
 
-	private ArrayList<String> getViews(Elements days, int day) {
+	/**
+	 * Get the data for specific day, optionally filter
+	 * @param query
+	 * @param days
+	 * @param day
+	 * @return
+	 */
+	private ArrayList<String> getViews(String query, Elements days, int day) {
 		ArrayList<String> results = new ArrayList<String>();
 		String showDate = days.get(day).select("thead").select("h2").select("a").attr("href").replaceFirst("/", "");
 		Elements shows = days.get(day).select("table").select("tbody").select("div.tooltip");
@@ -82,15 +98,30 @@ public class Release extends TriggerHandler {
 			String[] airTimeArray = airTime.split(":");
 			String[] airDateArray = airDate.split("-");
 			String timeUntil = getTimeUntil(Integer.valueOf(airDateArray[0]), Integer.valueOf(airDateArray[1]), Integer.valueOf(airDateArray[2]), Integer.valueOf(airTimeArray[0]), Integer.valueOf(airTimeArray[1]), Integer.valueOf(airTimeArray[2]));
-			try {
-				results.add(URLDecoder.decode(showName, "UTF-8") + " - " + showTime + " [" + timeUntil + "]");
-			} catch (Exception e) {
-				results.add(showName + " - " + showTime + " [" + timeUntil + "]");
+			if (query.equals("") || showName.toLowerCase().contains(query.toLowerCase()) || showName.equalsIgnoreCase(query)) {
+				if (query.equals("")) {
+					try {
+						results.add(URLDecoder.decode(showName, "UTF-8") + " - " + showTime + " [" + timeUntil + "]");
+					} catch (Exception e) {
+						results.add(showName + " - " + showTime + " [" + timeUntil + "]");
+					}
+				} else {
+					try {
+						results.add(URLDecoder.decode(showName, "UTF-8") + " - " + showTime +  " on " + airDate + " [" + timeUntil + "]");
+					} catch (Exception e) {
+						results.add(showName + " - " + showTime + " on " + airDate + " [" + timeUntil + "]");
+					}
+				}
 			}
 		}
 		return results;
 	}
 
+	/**
+	 * Which date should we parse?..
+	 * @param day
+	 * @return
+	 */
 	private int parseDayName(String day) {
 		GregorianCalendar airJp = new GregorianCalendar(TimeZone.getTimeZone("Asia/Tokyo"));
 		airJp.setTimeInMillis(new GregorianCalendar().getTimeInMillis());
@@ -107,24 +138,16 @@ public class Release extends TriggerHandler {
 		return airJp.get(Calendar.DAY_OF_MONTH) + (destDay - curDay);
 	}
 
-	private String getInHMS(long millis) {
-		long diffInDays  = millis/1000/86400;
-		long diffInHours = (millis/1000 - 86400*diffInDays) / 3600;
-		long diffInMins  = (millis/1000 - 86400*diffInDays - 3600*diffInHours) / 60;
-		long diffInSecs  = (millis/1000 - 86400*diffInDays - 3600*diffInHours - 60*diffInMins);
-		String dayStr = diffInDays < 10 ? "0" + diffInDays : "" + diffInDays;
-		String hourStr = diffInHours < 10 ? "0" + diffInHours : "" + diffInHours;
-		String minStr = diffInMins < 10 ? "0" + diffInMins : "" + diffInMins;
-		String secStr = diffInSecs < 10 ? "0" + diffInSecs : "" + diffInSecs;
-		if (diffInDays == 0) {
-			if (diffInHours == 0) {
-				return minStr + ":" + secStr;
-			}
-			return hourStr + ":" + minStr + ":" + secStr;
-		}
-		return dayStr + ":" + hourStr + ":" + minStr + ":" + secStr;
-	}
-
+	/**
+	 * Get the time until a certain moment (can be negative)
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @param hours
+	 * @param minutes
+	 * @param seconds
+	 * @return
+	 */
 	private String getTimeUntil(int year, int month, int day, int hours, int minutes, int seconds) {
 		GregorianCalendar nowJp = new GregorianCalendar(TimeZone.getTimeZone("Asia/Tokyo"));
 		GregorianCalendar airJp = new GregorianCalendar(TimeZone.getTimeZone("Asia/Tokyo"));
@@ -132,9 +155,9 @@ public class Release extends TriggerHandler {
 		// 86400000 yay timezones, TODO: probably not portable at all!
 		long aired = (((airJp.getTimeInMillis() - 86400000) - nowJp.getTimeInMillis()));
 		if (aired < 0) {
-			return "Aired " + getInHMS(aired * -1) + " ago";
+			return "Aired " + Utils.getInHMS(aired * -1) + " ago";
 		}
-		return getInHMS(aired);
+		return Utils.getInHMS(aired);
 	}
 
 	@Override

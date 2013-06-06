@@ -27,8 +27,8 @@ public class LastfmAPI {
 	/**
 	 * Connects with last.fm, parses xml and return given data.
 	 * 
-	 * @param username
-	 * @return
+	 * @param username username to look for
+	 * @return last played/now playing or an error
 	 */
 	public static String[] getSong(String username) {
 		String data[] = new String[4];
@@ -60,7 +60,6 @@ public class LastfmAPI {
 			data[3] = album_data.equals("") ? Config.speech.get("LA_SUC_ALB") : album_data;
 		} catch (Exception e) {
 			// Unknown username? Return an error.
-			// e.printStackTrace();
 			return null;
 		}
 		return data;

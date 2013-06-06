@@ -3,6 +3,7 @@ package irc.main;
 import irc.database.DatabaseManager;
 import irc.enums.EventType;
 import irc.handler.GreetHandler;
+import irc.handler.RankHandler;
 import irc.handler.RulesHandler;
 import irc.handler.TellHandler;
 import irc.model.Bot;
@@ -66,7 +67,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 		Reflections reflections = new Reflections(new ConfigurationBuilder()
 		.setScanners(new SubTypesScanner(false /* don't exclude Object.class */), new ResourcesScanner())
 		.setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
-		.filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("org.snack.irc.handler.message"))));
+		.filterInputsBy(new FilterBuilder().include(FilterBuilder.prefix("irc.handler.message")))); // VERY CAREFUL WITH REFACTORING
 
 		handlers = reflections.getSubTypesOf(TriggerHandler.class);
 	}
@@ -90,7 +91,7 @@ public class BotListener extends ListenerAdapter implements Listener {
 		db.putLastMsg(new LastMsg(nick, System.currentTimeMillis(), event.getMessage()));
 
 		// Command handler
-		if (!chan.mute && (!(chan.ignore.containsKey(nick) && chan.ignore.get(nick)) || Config.admins.containsKey(user.getHostmask()))) {
+		if (!chan.mute && (!(chan.ignore.containsKey(nick) && chan.ignore.get(nick)) || !Config.admins.containsKey(user.getHostmask()))) {
 			boolean handled = false;
 			for (Class<? extends TriggerHandler> c : handlers) {
 				try {
@@ -155,6 +156,9 @@ public class BotListener extends ListenerAdapter implements Listener {
 			if (chan.functions.get("rules") && !db.containsUser(new LastMsg(event.getUser().getNick(), 0, ""))) {
 				executor.execute(new RulesHandler(event));
 			}
+			//if (chan.functions.get("fantasy")) {
+			executor.execute(new RankHandler(event));
+			//}
 		}
 		executor.execute(new TellHandler(null, event, null));
 		Startup.print("~INFO Cleaned tells: " + event.getChannel().getName());

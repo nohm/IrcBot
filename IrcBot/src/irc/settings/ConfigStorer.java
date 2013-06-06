@@ -7,16 +7,29 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-
+/**
+ * Stores the config that's currently loaded
+ * 
+ * @author snack
+ *
+ */
 public class ConfigStorer {
 
+	/**
+	 * Iterates all channels to store them
+	 * @throws Exception
+	 */
 	public static void storeChannels() throws Exception {
 		for (String s : Config.channels.keySet()) {
 			storeChannel(s);
 		}
 	}
 
-	// TODO: Remove bot or add an enabled flag
+	/**
+	 * Checks for file existance and stores data
+	 * @param name the name of the channel
+	 * @throws Exception
+	 */
 	public static void storeChannel(String name) throws Exception {
 		if (!new File("./config/" + name).exists()) {
 			new File("./config/" + name).mkdir();
@@ -31,6 +44,11 @@ public class ConfigStorer {
 		}
 	}
 
+	/**
+	 * Stores the channel functions
+	 * @param chan the channel to store
+	 * @throws Exception
+	 */
 	private static void storeFunctions(Chan chan) throws Exception {
 		HashMap<String, Boolean> chan_func = chan.def_func;
 		HashMap<String, String> chan_def = chan.defaults;
@@ -58,6 +76,12 @@ public class ConfigStorer {
 		TxtWriter.writeTxt("./config/"+chan.name+"/functions.txt", data);
 	}
 
+	/**
+	 * Stores bot functions
+	 * @param chan the channel the bot is from
+	 * @param bot the bot to store
+	 * @throws Exception
+	 */
 	private static void storeBot(String chan, Bot bot) throws Exception {
 		HashMap<String, Boolean> bot_func = bot.functions;
 		String data = "{\n\t\"name\": \""+bot.name+"\",\n\t\"enabled\": \""+bot.enabled+"\",\n\t\"functions\": [\n";
@@ -69,6 +93,10 @@ public class ConfigStorer {
 		TxtWriter.writeTxt("./config/"+chan+"/bot-"+bot.name+".txt", data);
 	}
 
+	/**
+	 * Stores the admins
+	 * @throws Exception
+	 */
 	public static void storeAdmins() throws Exception {
 		String data = "{\n\t\"admins\": [\n";
 		for (Entry<String, String> entry : Config.admins.entrySet()) {

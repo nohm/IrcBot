@@ -33,8 +33,12 @@ public class Html extends TriggerHandler {
 		}
 		for (String toPrint : cleaned) {
 			String response = HtmlGetter.getTitle(toPrint);
-			Startup.print("~RESPONSE " + response);
-			event.getBot().sendMessage(event.getChannel(), Config.speech.get("HT_TIT").replace("<title>", response));
+			Startup.print("~RESPONSE " + response);String youtube = toPrint.substring(toPrint.indexOf("://") + 3);
+			if ((youtube.startsWith("youtube.") || youtube.startsWith("www.youtube.")) && youtube.contains("watch?v=") && youtube.split("/").length == 2 || (youtube.startsWith("youtu.be/") || youtube.startsWith("www.youtu.be/")) && youtube.split("/").length == 2) {
+				event.getBot().sendMessage(event.getChannel(), response);
+			} else {
+				event.getBot().sendMessage(event.getChannel(), Config.speech.get("HT_TIT").replace("<title>", response));
+			}
 		}
 	}
 	@Override

@@ -10,7 +10,7 @@ public class LastMsg extends BasicDBObject {
 	public static final String TEXT_KEY = "Text";
 
 	public LastMsg(String name, long time, String msg) {
-		super(2);
+		super(3);
 		put(NAME_KEY, name);
 		put(TIME_KEY, time);
 		put(TEXT_KEY, msg);

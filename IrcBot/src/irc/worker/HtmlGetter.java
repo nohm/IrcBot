@@ -19,6 +19,7 @@ import org.jsoup.Jsoup;
 public class HtmlGetter {
 	public static String getTitle(String urlString) {
 		try {
+			// Module that catches 4chan threads and returns their info
 			if ((urlString.startsWith("http://boards.4chan.org/") || urlString.startsWith("https://boards.4chan.org/")) && urlString.length() > "https://boards.4chan.org/".length() + 2) {
 				try {
 					String board = urlString.split("boards.4chan.org/")[1].split("/")[0];
@@ -29,6 +30,21 @@ public class HtmlGetter {
 				} catch (Exception e) {
 					return Config.speech.get("SE_ERR");
 				}
+			}
+			// Module that catches youtube urls and returns their info
+			String youtube = urlString.substring(urlString.indexOf("://") + 3);
+			if ((youtube.startsWith("youtube.") || youtube.startsWith("www.youtube.")) && youtube.contains("watch?v=") && youtube.split("/").length == 2 || (youtube.startsWith("youtu.be/") || youtube.startsWith("www.youtu.be/")) && youtube.split("/").length == 2) {
+				String query = youtube;
+				if (query.contains("&feature")) {
+					query = query.split("&feature")[0];
+				}
+				if (query.contains("watch?v=")) {
+					query = query.split("watch")[1].substring(3);
+				}
+				if (query.contains("/")) {
+					query = query.split("/")[1];
+				}
+				return YoutubeAPI.getVideoDescription(query);
 			}
 			// Try to get the title
 			String title = Jsoup.connect(urlString).timeout(5000).userAgent("Mozilla").followRedirects(true).get().title();
@@ -45,7 +61,7 @@ public class HtmlGetter {
 				throw new Exception();
 			}
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 			try {
 				// Try to determine filesize/type/encoding
 				URL url = new URL(urlString);
@@ -87,13 +103,11 @@ public class HtmlGetter {
 					conn.getContentEncoding().isEmpty();
 					encoding = Config.speech.get("HT_SUC_ENC").replace("<content-type>", conn.getContentType()).replace("<content-encoding>", conn.getContentEncoding());
 				} catch (Exception conEx) {
-					// conEx.printStackTrace();
 					encoding = Config.speech.get("HT_SUC_!ENC").replace("<content-type>", conn.getContentType());
 				}
 				return Config.speech.get("HT_SUC").replace("<encoding>", encoding).replace("<size>", output);
 			} catch (Exception ex) {
 				// Only got errors? Return it.
-				// ex.printStackTrace();
 				if (ex.getMessage().contains("403")) {
 					return Config.speech.get("HT_ERR_403");
 				} else if (ex.getMessage().contains("404")) {

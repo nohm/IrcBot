@@ -3,6 +3,7 @@ package irc.database;
 import irc.main.Startup;
 import irc.model.LastMsg;
 import irc.model.LastfmUser;
+import irc.model.Permission;
 import irc.model.Quote;
 import irc.model.Tell;
 import irc.model.WeatherUser;
@@ -14,7 +15,6 @@ import java.util.regex.Pattern;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
-
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -37,12 +37,13 @@ public class DatabaseManager {
 	private static final String QUOTE_COLLECTION_NAME = "quotecollection";
 	private static final String TELL_COLLECTION_NAME = "tellcollection";
 	private static final String MSG_COLLECTION_NAME = "msgcollection";
+	private static final String PERM_COLLECTION_NAME = "permissioncollection";
 
 	private static final String MONGO_IP = "localhost";
 
 	private Mongo mongo;
 	private DB db;
-	private DBCollection weather_collection, lastfm_collection, quote_collection, tell_collection, msg_collection;
+	private DBCollection weather_collection, lastfm_collection, quote_collection, tell_collection, msg_collection, perm_collection;
 
 	private static DatabaseManager instance = null;
 
@@ -66,6 +67,7 @@ public class DatabaseManager {
 			quote_collection = db.getCollection(QUOTE_COLLECTION_NAME);
 			tell_collection = db.getCollection(TELL_COLLECTION_NAME);
 			msg_collection = db.getCollection(MSG_COLLECTION_NAME);
+			perm_collection = db.getCollection(PERM_COLLECTION_NAME);
 		} catch (Exception e) {
 			Startup.print("~ERROR Database error");
 			System.exit(-1);
@@ -321,5 +323,51 @@ public class DatabaseManager {
 		BasicDBObject query = new BasicDBObject();
 		query.put(LastMsg.NAME_KEY, Pattern.compile("^" + msg.getName() + "$" , Pattern.CASE_INSENSITIVE));
 		return msg_collection.count(query) > 0;
+	}
+
+	public void putPermission(Permission p) {
+		if (containsPermission(p)) {
+			updatePermission(p);
+		} else {
+			perm_collection.insert(p);
+		}
+	}
+
+	public void updatePermission(Permission p) {
+		BasicDBObject query = new BasicDBObject();
+		query.put(Permission.NAME_KEY, Pattern.compile("^" + p.getName() + "$" , Pattern.CASE_INSENSITIVE));
+		query.put(Permission.CHANNEL_KEY, Pattern.compile("^" + p.getChannel() + "$" , Pattern.CASE_INSENSITIVE));
+		DBCursor cursor = perm_collection.find(query);
+		DBObject existing = cursor.next();
+		perm_collection.remove(existing);
+		existing.put(Permission.PERMISSION_KEY, p.getPermission());
+		perm_collection.insert(existing);
+	}
+
+	public Permission getPermission(String name, String channel) {
+		BasicDBObject query = new BasicDBObject();
+		query.put(Permission.NAME_KEY, Pattern.compile("^" + name + "$" , Pattern.CASE_INSENSITIVE));
+		query.put(Permission.CHANNEL_KEY, Pattern.compile("^" + channel + "$" , Pattern.CASE_INSENSITIVE));
+		DBCursor cursor = perm_collection.find(query);
+
+		if (cursor.count() == 0) {
+			return new Permission("", "", "");
+		}
+
+		try {
+			JSONObject jsonObject = (JSONObject) JSONSerializer.toJSON(cursor.next().toString());
+			return new Permission(jsonObject.getString(Permission.NAME_KEY), jsonObject.getString(Permission.CHANNEL_KEY), jsonObject.getString(Permission.PERMISSION_KEY));
+		} catch (JSONException e) {
+			return new Permission("", "", "");
+		} finally {
+			cursor.close();
+		}
+	}
+
+	public boolean containsPermission(Permission p) {
+		BasicDBObject query = new BasicDBObject();
+		query.put(Permission.NAME_KEY, Pattern.compile("^" + p.getName() + "$" , Pattern.CASE_INSENSITIVE));
+		query.put(Permission.CHANNEL_KEY, Pattern.compile("^" + p.getChannel() + "$" , Pattern.CASE_INSENSITIVE));
+		return perm_collection.count(query) > 0;
 	}
 }

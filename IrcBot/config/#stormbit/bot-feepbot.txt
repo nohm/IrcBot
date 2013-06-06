@@ -1,5 +1,5 @@
 {
-	"name": "MikuBot",
+	"name": "feepbot",
 	"enabled": "true",
 	"functions": [
 		{ "google": "false" },
@@ -25,7 +25,7 @@
 		{ "rules": "false" },
 		{ "lastfm": "false" },
 		{ "replies": "false" },
-		{ "html": "true" },
+		{ "html": "false" },
 		{ "translate": "false" },
 		{ "anime": "false" },
 		{ "release": "false" },

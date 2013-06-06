@@ -1,6 +1,6 @@
 {
 	"admins": [
 		{ "name": "im.not.edible", "type": "global" },
-		{ "name": "delicious.flat.chested.lolis", "type": "main" }
+		{ "name": "currently.resisting", "type": "global" }
 	]
 }

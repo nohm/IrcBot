@@ -90,7 +90,7 @@ public class Startup {
 		// Toggle debugging
 		bot.setVerbose(Config.sett_bool.get("DEBUG"));
 		// Message delay
-		bot.setMessageDelay(0);
+		bot.setMessageDelay(100);
 		// Auto reconnect
 		bot.setAutoReconnect(true);
 		bot.setAutoReconnectChannels(true);
